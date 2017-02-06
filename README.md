@@ -42,7 +42,7 @@ source vnuts/bin/activate
 2) Clone git repo
 ```
 cd vnuts
-git clone https://github.com/maet3608/nuts-flow
+git clone https://github.com/maet3608/nuts-ml
 ```
 
 3) Install package with dependencies and run unit tests
