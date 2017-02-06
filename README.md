@@ -3,7 +3,7 @@
 Flow-based data preprocessing for (GPU/deep) machine learning.
 
 API documentation and tutorials can be found here:  
-https://pages.github.ibm.com/aur/nuts-ml/
+https://maet3608.github.io/nuts-ml/
 
 
 # Installation
@@ -42,7 +42,7 @@ source vnuts/bin/activate
 2) Clone git repo
 ```
 cd vnuts
-git clone git@github.ibm.com:aur/nuts-ml.git
+git clone https://github.com/maet3608/nuts-flow
 ```
 
 3) Install package with dependencies and run unit tests
@@ -58,7 +58,6 @@ pip install numpy
 pip install matplotlib
 pip install xlrd
 pip install pandas
-pip install opencv-python
 pip install pillow
 pip install scikit-image
 pip install scipy
