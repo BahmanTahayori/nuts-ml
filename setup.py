@@ -49,6 +49,7 @@ setup(
         'nutsflow >= 1.0.0',
         'pyyaml >= 3.12',
         'dplython >= 0.0.7',
+        'xlrd >= 1.0.0',
         'numpy >= 1.11.1',
         'matplotlib >= 1.5.1',
         'scipy >= 0.17.0',
