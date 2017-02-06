@@ -6,7 +6,7 @@
 import skimage.io as sio
 
 from nutsflow.base import NutFunction
-from nutsflow.source import Steps
+from nutsflow.source import Enumerate
 
 
 class WriteImage(NutFunction):
@@ -14,7 +14,7 @@ class WriteImage(NutFunction):
     Write images within samples.
     """
 
-    def __init__(self, column, pathfunc, names=Steps()):
+    def __init__(self, column, pathfunc, names=Enumerate()):
         """
         Write images within samples to file.
 
