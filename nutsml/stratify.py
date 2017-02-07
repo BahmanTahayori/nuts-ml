@@ -18,6 +18,7 @@ def Stratify(iterable, labelcol, mode='downrnd', rand=rnd.Random()):
     up-sampling classes by duplicating samples.
     Loads all samples in memory!
 
+    >>> from nutsflow import Collect
     >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]
     >>> samples >> Stratify(1) >> Collect()
     [('neg', 0), ('pos', 1)]
