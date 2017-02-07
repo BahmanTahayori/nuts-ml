@@ -44,7 +44,7 @@ setup(
     license='Apache Software License (http://www.apache.org/licenses/LICENSE-2.0)',
     author='Stefan Maetschke',
     author_email='stefan.maetschke@gmail.com',
-    description='Flow-based data preprocessing for Machine Learning',
+    description='Flow-based data pre-processing for Machine Learning',
     install_requires=[
         'nutsflow >= 1.0.0',
         'pyyaml >= 3.12',
