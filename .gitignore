@@ -26,12 +26,9 @@ var/
 *.tar.gz
 
 # Sphinx
-sphinx/
-!sphinx/make.bat
-!sphinx/make_html.bat
-!sphinx/Makefile
-!sphinx/source/conf.py
-!sphinx/source/index.rst
+doctrees/
+_sources
+_modules
 
 # Documentation
 doc/doctrees/
