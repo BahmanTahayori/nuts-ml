@@ -48,6 +48,7 @@ setup(
     install_requires=[
         'nutsflow >= 1.0.0',
         'pyyaml >= 3.12',
+        'xlrd >= 1.0.0',
         'dplython >= 0.0.7',
         'numpy >= 1.11.1',
         'matplotlib >= 1.5.1',
