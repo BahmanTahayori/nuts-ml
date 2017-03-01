@@ -68,8 +68,9 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False):
     Load images for samples.
 
     Loads images in jpg, gif, png, tif and bmp format.
-    Images are returned as numpy arrays.
-    See nutsml.util.load_image for details.
+    Images are returned as numpy arrays of shape (h, w, c) or (h, w) for
+    color images or gray scale images respectively.
+    See nutsml.imageutil.load_image for details.
 
     >>> samples = [('tests/data/img_formats/nut_color.gif', 'class0')]
     >>> img_samples = samples >> ReadImage(0) >> Collect()
@@ -95,6 +96,7 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False):
       None, in this case the image id is take as filepath.
     :param as_grey: If true, load as grayscale image.
     :return: Sample with image ids replaced by image (=ndarray)
+            of shape (h, w, c) or (h, w)
     :rtype: tuple
     """
 
@@ -130,14 +132,14 @@ class ReadPandas(NutSource):
         Note that samples.table contains the original Pandas dataframe and
         any Pandas operations can be performed on it.
         >>> samples = ReadPandas('tests/data/pandas_table.csv')
-        >>> samples.table.head()
+        >>> samples.dataframe.head()
            col1  col2
         0     1   4.0
         1     2   NaN
         2     3   6.0
 
         >>> samples = ReadPandas('tests/data/pandas_table.csv')
-        >>> samples.table.columns.values.tolist()
+        >>> samples.dataframe.columns.values.tolist()
         ['col1', 'col2']
 
         :param str filepath: Path to a table in CSV, TSV, XLSX or
@@ -162,7 +164,7 @@ class ReadPandas(NutSource):
         self.dropnan = dropnan
         self.replacenan = replacenan
         self.kwargs = kwargs
-        self.table = self._load_table(filepath)
+        self.dataframe = self._load_table(filepath)
 
     def print_head(self, n=5):  # pragma: no cover
         """
@@ -177,7 +179,7 @@ class ReadPandas(NutSource):
 
         :param int n: Number of rows to print.
         """
-        print self.table.head(n)
+        print self.dataframe.head(n)
 
     def print_info(self):  # pragma: no cover
         """
@@ -193,7 +195,7 @@ class ReadPandas(NutSource):
         dtypes: float64(1), int64(1)
         memory usage: 120.0 bytes
         """
-        self.table.info()
+        self.dataframe.info()
 
     @staticmethod
     def isnull(value):
@@ -242,7 +244,7 @@ class ReadPandas(NutSource):
         :return: dplyr dataframe instead of Pandas dataframe.
         :rtype: DplyFrame
         """
-        return DplyFrame(self.table)
+        return DplyFrame(self.dataframe)
 
     def _load_table(self, filepath):
         """
@@ -269,7 +271,7 @@ class ReadPandas(NutSource):
         :return: Iterator over rows.
         :rtype: iterator
         """
-        rows = self.table.query(self.rows) if self.rows else self.table
+        rows = self.dataframe.query(self.rows) if self.rows else self.dataframe
         series = rows[self.columns] if self.columns else rows
         if self.replacenan:
             return (ReadPandas._replacenan(row) for row in series.values)
