@@ -102,3 +102,6 @@ ENV/
 
 # training logs
 log*.txt
+
+# temporary data
+temp/
