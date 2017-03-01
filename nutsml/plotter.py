@@ -53,7 +53,7 @@ class PlotLines(NutFunction):  # pragma no coverage
             Alternatively an iterator or a function can be provided that
             generates the x-data for the plot, e.g. xcols = itertools.count()
             or xcols = lambda: epoch
-        :param tuple layout: Rows and columns of the plooter layout., e.g.
+        :param tuple layout: Rows and columns of the plotter layout., e.g.
                a layout of (2,3) means that 6 plots in the data are
                arranged in 2 rows and 3 columns.
                Number of cols can be None is then derived from ycols
