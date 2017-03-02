@@ -151,9 +151,10 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
     """
 
     def __init__(self, imgcol, annocols, figsize=None,
-                 pause=0.0001, **annoargs):
+                 pause=0.0001, interpolation=None, **annoargs):
         """
-        iterable >> ViewImageAnnotation(imgcol, annocols, figsize=None, **plotargs)
+        iterable >> ViewImageAnnotation(imgcol, annocols, figsize=None,
+                                        pause, interpolation, **annoargs)
 
         Images must be numpy arrays in one of the following formats:
         MxN - luminance (grayscale, float array only)
@@ -169,6 +170,9 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         :param tuple figsize: Figure size in inch.
         :param float pause: Waiting time in seconds after each plot.
                Pressing a key skips the waiting time.
+        :param string interpolation: Interpolation for imshow, e.g.
+                'nearest', 'bilinear', 'bicubic'. for details see
+                http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
         :param kwargs annoargs: Keyword arguments for visual properties of
                annotation, e.g.  edgecolor='y', linewidth=1
         """
@@ -179,6 +183,7 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         self.imgcol = imgcol
         self.annocols = as_set(annocols)
         self.pause = pause
+        self.interpolation = interpolation
         self.annoargs = self._getargs(annoargs)
 
     def _getargs(self, kwargs):
@@ -198,7 +203,7 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         img = data[self.imgcol]
         ax = self.axes
         ax.clear()
-        ax.imshow(img)
+        ax.imshow(img, interpolation=self.interpolation)
         labelcol = 1
         for acol in self.annocols:
             annos = data[acol]
