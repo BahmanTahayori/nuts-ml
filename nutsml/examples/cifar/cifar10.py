@@ -106,11 +106,11 @@ def predict(val_samples, names):
 
 
 def view(train_samples, names):
-    show_image = ViewImageAnnotation(0, (1,2), pause=0.1,
+    show_image = ViewImageAnnotation(0, 1, pause=0.1,
                                      interpolation='spline36', figsize=(3, 3))
     Class2Name = nut_function(lambda (i, c, l): (i, names[c]))
-    (train_samples >> Take(10000) >> PrintTypeInfo() >> Class2Name() >>
-     GetCols(0, 1, 1) >> show_image >> Consume())
+    (train_samples >> Take(10) >> PrintTypeInfo() >> Class2Name() >>
+     show_image >> Consume())
 
 
 def load_data():
@@ -123,6 +123,6 @@ def load_data():
 
 if __name__ == "__main__":
     names, train_samples, val_samples = load_data()
-    #view(train_samples, names)
-    # train(train_samples, val_samples)
+    view(train_samples, names)
+    train(train_samples, val_samples)
     predict(val_samples, names)
