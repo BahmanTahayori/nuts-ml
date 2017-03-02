@@ -119,10 +119,10 @@ def test_Network_save_best():
     assert network.best_score == 2.0
     assert model.saved_weights == filepath
 
-    network.save_best(1.0, minimum=True)
+    network.save_best(1.0, isloss=True)
     assert network.best_score == 1.0
 
-    network.save_best(3.0, minimum=False)
+    network.save_best(3.0, isloss=False)
     assert network.best_score == 3.0
 
 

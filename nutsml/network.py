@@ -163,18 +163,18 @@ class Network(object):
         """
         return EvalNut(self, metrics, predcol, targetcol)
 
-    def save_best(self, score, minimum=True):
+    def save_best(self, score, isloss=True):
         """
         Save weights of best network
 
         :param float score: Score of the network, e.g. loss, accuracy
-        :param bool minimum: True means lower score is better, e.g. loss
+        :param bool isloss: True means lower score is better, e.g. loss
           and the network with the lower score score is saved.
         """
 
         if (not self.best_score or
-                (minimum is True and score < self.best_score) or
-                (minimum is False and score > self.best_score)):
+                (isloss is True and score < self.best_score) or
+                (isloss is False and score > self.best_score)):
             self.best_score = score
             self.save_weights()
 
