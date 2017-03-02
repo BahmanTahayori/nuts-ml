@@ -188,7 +188,8 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
 
     def _getargs(self, kwargs):
         """Return default values for annotation drawing if not provided."""
-        defargs = {'edgecolor': 'y', 'facecolor': 'none', 'linewidth': 1}
+        defargs = {'edgecolor': 'k', 'backgroundcolor': (1, 1, 1, 0.5),
+                   'facecolor': 'none', 'linewidth': 1}
         defargs.update(kwargs)
         return defargs
 
@@ -204,18 +205,22 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         ax = self.axes
         ax.clear()
         ax.imshow(img, interpolation=self.interpolation)
-        labelcol = 1
+        labelcol = 0.7
         for acol in self.annocols:
             annos = data[acol]
             if hasattr(annos, '__iter__'):
                 for anno in iu.annotation2pltpatch(annos, **self.annoargs):
                     ax.add_patch(anno)
             else:
-                color = self.annoargs['edgecolor']
-                x = img.shape[0] / 10
-                y = x * labelcol
+                fs = ax.get_window_extent().height / 18
+                p = img.shape[0] / 6
+                x, y = p / 2,  p * labelcol
                 labelcol += 1
-                ax.text(x, y, str(annos), color=color, fontsize=20)
+                aa = self.annoargs
+                ax.text(x, y, str(annos),
+                        color=aa['edgecolor'],
+                        backgroundcolor=aa['backgroundcolor'],
+                        size=fs, family='monospace')
         ax.figure.canvas.draw()
         plt.waitforbuttonpress(timeout=self.pause)  # or plt.pause(self.pause)
         return data
