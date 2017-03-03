@@ -72,11 +72,6 @@ def test_ReadPandas_dply():
     nt.assert_equal(samples, [[1], [2], [3]])
 
 
-def test_ReadPandas_replacenan():
-    data = [1, np.NaN, 2]
-    nt.assert_equal(ReadPandas._replacenan(data), [1, None, 2])
-
-
 def test_ReadPandas_pkl():
     # create pickle version of table from CSV table
     df = pd.read_csv('tests/data/pandas_table.csv')
@@ -90,7 +85,7 @@ def test_ReadPandas_pkl():
         samples = ReadPandas(filepath, dropnan=False) >> Collect()
         nt.assert_equal(samples, [[1, 4], [2, np.NaN], [3, 6]])
 
-        samples = ReadPandas(filepath, replacenan=True) >> Collect()
+        samples = ReadPandas(filepath, replacenan=None) >> Collect()
         nt.assert_equal(samples, [[1, 4], [2, None], [3, 6]])
 
         samples = ReadPandas(filepath, columns=['col1', 'col2']) >> Collect()
@@ -103,12 +98,12 @@ def test_ReadPandas_pkl():
         nt.assert_equal(samples, [[4], [6]])
 
         samples = ReadPandas(filepath,
-                             columns=['col2'], replacenan=True) >> Collect()
-        nt.assert_equal(samples, [[4], [None], [6]])
+                             columns=['col2'], replacenan='NA') >> Collect()
+        nt.assert_equal(samples, [[4], ['NA'], [6]])
 
         samples = ReadPandas(filepath,
-                             rows='col1 > 1', replacenan=True) >> Collect()
-        nt.assert_equal(samples, [[2, None], [3, 6]])
+                             rows='col1 > 1', replacenan=0) >> Collect()
+        nt.assert_equal(samples, [[2, 0], [3, 6]])
 
         samples = ReadPandas(filepath,
                              rows='col1 < 3', columns=['col1']) >> Collect()

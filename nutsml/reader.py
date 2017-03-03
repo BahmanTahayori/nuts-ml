@@ -152,7 +152,8 @@ class ReadPandas(NutSource):
         :param list columns: List of names for the table columns to return.
           For columns = None all columns are returned.
         :param bool dropnan: If True all rows that contain NaN are dropped.
-        :param bool replacenan: If True all NaNs are replaced by None.
+        :param object replacenan: If not False all NaNs are replaced by
+             the value of replacenan
         :param kwargs kwargs: Key word arguments passed on the the Pandas
           methods for data reading, e.g, header=None.
           See  pandas/pandas/io/parsers.py for detais
@@ -218,8 +219,7 @@ class ReadPandas(NutSource):
         """
         return pd.isnull(value)
 
-    @staticmethod
-    def _replacenan(row):
+    def _replacenan(self, row):
         """
         Replace NaN values in row by None
 
@@ -227,7 +227,8 @@ class ReadPandas(NutSource):
         :return: Row with None instead of NaN
         :rtype: tuple
         """
-        return tuple(None if pd.isnull(v) else v for v in row)
+        value = self.replacenan
+        return tuple(value if pd.isnull(v) else v for v in row)
 
     def dply(self):
         """
@@ -273,8 +274,8 @@ class ReadPandas(NutSource):
         """
         rows = self.dataframe.query(self.rows) if self.rows else self.dataframe
         series = rows[self.columns] if self.columns else rows
-        if self.replacenan:
-            return (ReadPandas._replacenan(row) for row in series.values)
+        if not self.replacenan is False:
+            return (self._replacenan(row) for row in series.values)
         if self.dropnan:
             return (tuple(row) for row in series.dropna().values)
         return (tuple(row) for row in series.values)
