@@ -72,6 +72,9 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False):
     color images or gray scale images respectively.
     See nutsml.imageutil.load_image for details.
 
+    >>> samples = ['tests/data/img_formats/nut_color.gif']
+    >>> img_samples = samples >> ReadImage() >> Collect()
+
     >>> samples = [('tests/data/img_formats/nut_color.gif', 'class0')]
     >>> img_samples = samples >> ReadImage(0) >> Collect()
 
@@ -83,8 +86,10 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False):
     >>> img_samples = samples >> ReadImage(1, pathfunc) >> Collect()
 
     :param tuple|list sample: ('nut_color', 1)
-    :param int|tuple columns: Indices of columns in sample to be replaced
-                              by image (based on image id in that column
+    :param None|int|tuple columns: Indices of columns in sample to be replaced
+                              by image (based on image id in that column)
+                              If None then a flat samples is assumed and
+                              a tuple with the image is returned.
     :param string|function|None pathfunc: Filepath with wildcard '*',
       which is replaced by the imageid provided in the sample, e.g.
       'tests/data/img_formats/*.jpg' for sample ('nut_grayscale', 2)
@@ -109,6 +114,10 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False):
         else:
             filepath = fileid
         return load_image(filepath, as_grey=as_grey)
+
+
+    if columns is None:
+        return (load(sample), )   # image as tuple with one element
 
     colset = as_set(columns)
     elems = enumerate(sample)
