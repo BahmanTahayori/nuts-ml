@@ -101,7 +101,7 @@ def predict(val_samples, names):
     samples = val_samples >> Take(1000) >> Collect()
     truelabels = samples >> Map(lambda (i, c, l): 'true: ' + names[c])
     predictions = (samples >> rerange >> pred_batch >> network.predict() >>
-                   Map(np.argmax) >> Map(lambda c: 'pred: ' + names[c]))
+                   Map(ArgMax()) >> Map(lambda c: 'pred: ' + names[c]))
     samples >> Get(0) >> Zip(predictions, truelabels) >> show_image >> Consume()
 
 
