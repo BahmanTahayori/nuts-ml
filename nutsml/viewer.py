@@ -28,12 +28,10 @@ def PrintColType(data, cols=None):
 
     0: <int> 3
 
-
     >>> [(1, 2), (3, 4)] >> PrintColType(1) >> Consume()
     1: <int> 2
 
     1: <int> 4
-
 
     :param any data: Any type of fas
     :param int|tuple|None cols: Indices of columnbs to show info for.
