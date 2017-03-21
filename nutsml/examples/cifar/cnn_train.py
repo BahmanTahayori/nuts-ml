@@ -15,7 +15,7 @@ from nutsflow import (PrintProgress, Collect, Zip, Unzip, Pick, Take, Map,
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     PlotLines)
 
-PICK = 0.01   # Pick 1% of the data for a quick trial
+PICK = 0.1   # Pick 10% of the data for a quick trial
 NUM_EPOCHS = 10
 BATCH_SIZE = 32
 NUM_CLASSES = 10
@@ -79,7 +79,7 @@ def train(train_samples, val_samples):
     build_batch = (BuildBatch(BATCH_SIZE)
                    .by(0, 'image', 'float32')
                    .by(1, 'one_hot', 'uint8', NUM_CLASSES))
-    p = 0.5
+    p = 0.1
     augment = (AugmentImage(0)
                .by('identical', 1.0)
                .by('brightness', p, [0.7, 1.3])
