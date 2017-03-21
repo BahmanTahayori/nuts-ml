@@ -12,15 +12,15 @@ from matplotlib import pyplot as plt
 
 
 @nut_function
-def PrintColInfo(data, cols=None):
+def PrintColType(data, cols=None):
     """
-    iterable >> PrintColInfo()
+    iterable >> PrintColType()
 
-    Print (type) information for all columns in data.
+    Print type and other information for columns in data.
 
     >>> data = [(np.zeros((10, 20, 3)), 1), ('text', 2), 3]
-    >>> data >> PrintColInfo() >> Consume()
-    0: <ndarray> shape:10x20x3, dtype:float64, min:0.0, max:0.0
+    >>> data >> PrintColType() >> Consume()
+    0: <ndarray> shape:10x20x3 dtype:float64 min:0.0 max:0.0
     1: <int> 1
 
     0: <str> text
@@ -29,7 +29,7 @@ def PrintColInfo(data, cols=None):
     0: <int> 3
 
 
-    >>> [(1, 2), (3, 4)] >> PrintColInfo(1) >> Consume()
+    >>> [(1, 2), (3, 4)] >> PrintColType(1) >> Consume()
     1: <int> 2
 
     1: <int> 4
@@ -47,7 +47,7 @@ def PrintColInfo(data, cols=None):
         if cols is None or i in cols:
             print '{}: <{}>'.format(i, type(e).__name__),
             if isinstance(e, np.ndarray):
-                text = 'shape:{}, dtype:{}, min:{}, max:{}'
+                text = 'shape:{} dtype:{} min:{} max:{}'
                 print text.format(shapestr(e), e.dtype, np.min(e), np.max(e))
             else:
                 print '{}'.format(str(e))
