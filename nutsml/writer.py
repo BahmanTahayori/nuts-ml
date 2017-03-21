@@ -2,9 +2,11 @@
 .. module:: writer
    :synopsis: Writing of sample and image data
 """
+import os
 
 import skimage.io as sio
 
+from fileutil import create_folders
 from nutsflow.base import NutFunction
 from nutsflow.source import Enumerate
 
@@ -21,6 +23,8 @@ class WriteImage(NutFunction):
         Writes jpg, gif, png, tif and bmp format depending on file extension.
         Images in samples are expected to be numpy arrays.
         See nutsml.util.load_image for details.
+
+        Folders on output file path are created if missing.
 
         >>> from nutsml import ReadImage
         >>> from nutsflow import Collect, Get, Consume
@@ -56,5 +60,6 @@ class WriteImage(NutFunction):
             filepath = self.pathfunc(sample, name)
         else:
             raise ValueError('Expect path or function: ' + str(self.pathfunc))
+        create_folders(os.path.split(filepath)[0])
         sio.imsave(filepath, sample[self.column])
         return sample
