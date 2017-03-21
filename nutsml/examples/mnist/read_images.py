@@ -1,10 +1,8 @@
 from glob import glob
-from nutsflow import Consume
-from nutsml import ReadImage, ViewImage, PrintTypeInfo
+from nutsflow import Consume, Print
+from nutsml import ReadLabelDirs, ReadImage, ViewImageAnnotation, PrintTypeInfo
 
-show_image = ViewImage(0, pause=1, figsize=(3, 3))
-paths = glob('images/*.png')
+show_image = ViewImageAnnotation(0, 1, pause=1, figsize=(3, 3))
 
-paths >> ReadImage(None) >> PrintTypeInfo() >> show_image >> Consume()
-
-
+ReadLabelDirs('images', '*.png') >> Print() >> ReadImage(0) >> \
+PrintTypeInfo() >> show_image >> Consume()

@@ -11,11 +11,12 @@ import os.path as osp
 from keras.datasets import cifar10
 from keras.utils.data_utils import get_file
 from nutsflow import (PrintProgress, Collect, Zip, Unzip, Pick, Take, Map,
-                      ArgMax, Get, Consume, nut_function)
+                      ArgMax, Get, Consume, Shuffle, nut_function)
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
-                    PrintTypeInfo, PlotLines)
+                    PlotLines)
 
-NUM_EPOCHS = 1
+PICK = 0.01   # Pick 1% of the data for a quick trial
+NUM_EPOCHS = 10
 BATCH_SIZE = 32
 NUM_CLASSES = 10
 INPUT_SHAPE = (3, 32, 32)
@@ -96,7 +97,7 @@ def train(train_samples, val_samples):
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
-                         Pick(1) >> augment >> rerange >>
+                         Pick(PICK) >> augment >> rerange >> Shuffle(100) >>
                          build_batch >> network.train() >> Unzip())
         print("training loss  :\t\t{:.6f}".format(np.mean(t_loss)))
         print("training acc   :\t\t{:.1f}".format(100 * np.mean(t_acc)))
@@ -106,8 +107,8 @@ def train(train_samples, val_samples):
         print("validation loss :\t\t{:.6f}".format(np.mean(v_loss)))
         print("validation acc  :\t\t{:.1f}".format(100 * np.mean(v_acc)))
 
-        e_acc = (val_samples >> rerange >> b112uild_batch
-                 >> network.evaluate([categorical_accuracy]))
+        e_acc = (val_samples >> rerange >> build_batch >>
+                 network.evaluate([categorical_accuracy]))
         print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
 
         network.save_best(e_acc, isloss=False)

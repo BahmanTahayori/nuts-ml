@@ -10,7 +10,7 @@ TransformImage.register('flatten', lambda img: img.flatten())
 transform = (TransformImage(0)
              .by('rerange', 0, 255, 0, 1, 'float32')
              .by('flatten'))
-show_image = ViewImageAnnotation(0, (1,2), pause=3, figsize=(3, 3))
+show_image = ViewImageAnnotation(0, (1, 2), pause=3, figsize=(3, 3))
 pred_batch = BuildBatch(BATCH_SIZE).by(0, 'vector', 'float32')
 IsMisclassified = nut_filter(lambda (i, t, p): p != t)
 

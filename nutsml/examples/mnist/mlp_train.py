@@ -17,9 +17,9 @@ from keras.metrics import categorical_accuracy
 from nutsflow import PrintProgress, Collect, Unzip
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
+NUM_EPOCHS = 3
 BATCH_SIZE = 128
 NUM_CLASSES = 10
-NUM_EPOCHS = 1
 
 
 def load_samples():
@@ -65,8 +65,8 @@ def train():
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
-                         transform >> build_batch >> network.train() >>
-                         plot >> Unzip())
+                         transform >> build_batch >>
+                         network.train() >> plot >> Unzip())
         print("training loss  : {:.6f}".format(np.mean(t_loss)))
         print("training acc   : {:.1f}".format(100 * np.mean(t_acc)))
 

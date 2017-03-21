@@ -1,9 +1,9 @@
 from __future__ import print_function
 
-from glob import glob
 from cnn_train import create_network
-from nutsflow import Collect, Consume, Get, Zip, Map, ArgMax
-from nutsml import TransformImage, BuildBatch, ReadImage, ViewImageAnnotation
+from nutsflow import Collect, Consume, Get, Zip, Map, ArgMax, Format
+from nutsml import (TransformImage, BuildBatch, ReadLabelDirs, ReadImage,
+                    ViewImageAnnotation)
 
 BATCH_SIZE = 128
 
@@ -16,8 +16,7 @@ network = create_network()
 network.load_weights()
 
 print('predicting...')
-samples = glob('images/*.png') >> ReadImage(None) >> Collect()
-
+samples = ReadLabelDirs('images', '*.png') >> ReadImage(0) >> Collect()
 predictions = (samples >> transform >> pred_batch >>
                network.predict() >> Map(ArgMax()))
 samples >> Get(0) >> Zip(predictions) >> show_image >> Consume()

@@ -1,5 +1,5 @@
 from keras.datasets import mnist
-from nutsflow import Take, Print, Consume
+from nutsflow import Take, Print, Consume, Enumerate, Zip, Format, Get
 from nutsml import WriteImage
 
 
@@ -10,6 +10,6 @@ def load_samples():
 
 if __name__ == '__main__':
     train_samples, val_samples = load_samples()
-    imagepath = 'images/img_*.png'
-    (train_samples >> Take(10) >> Print('label: {1}') >>
-     WriteImage(0, imagepath) >> Consume())
+    imagepath = 'images/*.png'
+    names = Enumerate() >> Zip(train_samples >> Get(1)) >> Format('{1}/img{0}')
+    train_samples >> Take(30) >> WriteImage(0, imagepath, names) >> Consume()

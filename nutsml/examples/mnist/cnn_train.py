@@ -15,13 +15,15 @@ from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.metrics import categorical_accuracy
 
-from nutsflow import PrintProgress, Collect, Unzip
+from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
+PICK = 0.1   # Pick 10% of the data for a quick trial
+NUM_EPOCHS = 5
 INPUT_SHAPE = (1, 28, 28)
 BATCH_SIZE = 128
 NUM_CLASSES = 10
-NUM_EPOCHS = 1
+
 
 
 def load_samples():
@@ -67,8 +69,8 @@ def train():
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
-                         transform >> build_batch >> network.train() >>
-                         plot >> Unzip())
+                         Pick(PICK) >> transform >> Shuffle(100) >>
+                         build_batch >> network.train() >> plot >> Unzip())
         print("training loss  : {:.6f}".format(np.mean(t_loss)))
         print("training acc   : {:.1f}".format(100 * np.mean(t_acc)))
 
