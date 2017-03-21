@@ -4,7 +4,6 @@
 """
 
 import numpy as np
-import itertools as itt
 import nutsml.imageutil as iu
 
 from datautil import shapestr
@@ -13,63 +12,45 @@ from matplotlib import pyplot as plt
 
 
 @nut_function
-def PrintImageInfo(data, imgcol):
+def PrintColInfo(data, cols=None):
     """
-    iterable >> PrintImageInfo(imgcol)
+    iterable >> PrintColInfo()
 
-    Print shape and type information of image at imgcol in data item.
-
-    >>> data = [(np.zeros((10, 20, 3)), 1), (np.ones((15, 5, 3)), 2)]
-    >>> data >> PrintImageInfo(0) >> Consume()
-    Image shape:10x20x3, dtype:float64, min:0.0, max:0.0
-    Image shape:15x5x3, dtype:float64, min:1.0, max:1.0
-
-    :param tuple data: Tuple that contains an image (ndarray) at imgcol.
-    :param int imgcol: Index of item in data that is image.
-    :return: input data unchanged
-    :rtype: same as data
-    """
-    img = data[imgcol]
-    if not isinstance(img, np.ndarray):
-        raise ValueError('Expect image but get: ' + type(img).__name__)
-    text = 'Image shape:{}, dtype:{}, min:{}, max:{}'
-    print text.format(shapestr(img), img.dtype, np.min(img), np.max(img))
-    return data
-
-
-@nut_function
-def PrintTypeInfo(data, counter=itt.count()):
-    """
-    iterable >> PrintTypeInfo()
-
-    Print type information for all items in data.
+    Print (type) information for all columns in data.
 
     >>> data = [(np.zeros((10, 20, 3)), 1), ('text', 2), 3]
-    >>> data >> PrintTypeInfo() >> Consume()
-    Row 0
-      Col 0: <ndarray> shape:10x20x3, dtype:float64, min:0.0, max:0.0
-      Col 1: <int> 1
+    >>> data >> PrintColInfo() >> Consume()
+    0: <ndarray> shape:10x20x3, dtype:float64, min:0.0, max:0.0
+    1: <int> 1
 
-    Row 1
-      Col 0: <str> text
-      Col 1: <int> 2
+    0: <str> text
+    1: <int> 2
 
-    Row 2
-      Col 0: <int> 3
+    0: <int> 3
+
+
+    >>> [(1, 2), (3, 4)] >> PrintColInfo(1) >> Consume()
+    1: <int> 2
+
+    1: <int> 4
+
 
     :param any data: Any type of fas
-    :param iterable counter: Infinite iterable that produces row indices.
+    :param int|tuple|None cols: Indices of columnbs to show info for.
+        None means all columns. Can be a single index or a tuple of indices.
     :return: input data unchanged
     :rtype: same as data
     """
-    print '\nRow {}'.format(next(counter))
+    cols = None if cols is None else as_tuple(cols)
+    print   # empty line
     for i, e in enumerate(as_tuple(data)):
-        print '  Col {}: <{}>'.format(i, type(e).__name__),
-        if isinstance(e, np.ndarray):
-            text = 'shape:{}, dtype:{}, min:{}, max:{}'
-            print text.format(shapestr(e), e.dtype, np.min(e), np.max(e))
-        else:
-            print '{}'.format(str(e))
+        if cols is None or i in cols:
+            print '{}: <{}>'.format(i, type(e).__name__),
+            if isinstance(e, np.ndarray):
+                text = 'shape:{}, dtype:{}, min:{}, max:{}'
+                print text.format(shapestr(e), e.dtype, np.min(e), np.max(e))
+            else:
+                print '{}'.format(str(e))
     return data
 
 
