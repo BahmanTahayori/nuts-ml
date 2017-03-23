@@ -11,10 +11,9 @@ Contents:
 
    introduction
    installation
-   tutorial/intro
+   tutorial/introduction
    nutsml
 
-   
 Indices
 =======
 

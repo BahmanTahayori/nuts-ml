@@ -6,7 +6,11 @@ provides examples of its usage.
 
 .. toctree::
 
-   reader
-   batcher
-
-   
+   example
+   reading_labels
+   split_stratify
+   image_processing
+   batching
+   network
+   log_plot
+   configuration
