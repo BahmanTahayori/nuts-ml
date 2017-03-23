@@ -115,9 +115,8 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False):
             filepath = fileid
         return load_image(filepath, as_grey=as_grey)
 
-
     if columns is None:
-        return (load(sample), )   # image as tuple with one element
+        return (load(sample),)  # image as tuple with one element
 
     colset = as_set(columns)
     elems = enumerate(sample)
