@@ -1,5 +1,5 @@
-TITEL
-==============
+Logging and plotting
+====================
 
 TODO
    
