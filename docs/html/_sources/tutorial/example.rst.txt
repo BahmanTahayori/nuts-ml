@@ -6,6 +6,11 @@ CIFAR10 example
 Training
 --------
 
+Validation
+^^^^^^^^^^
+
+Augmentation
+^^^^^^^^^^^^
 
 Prediction
 ----------

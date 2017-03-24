@@ -1,6 +1,7 @@
 Tutorial
 ========
 
+
 This tutorial introduces the basic concepts of **nuts-ml** and
 provides examples of its usage.
 
@@ -9,8 +10,10 @@ provides examples of its usage.
    example
    reading_labels
    split_stratify
+   loading_images
    image_processing
    batching
    network
-   log_plot
+   logging
+   plotting
    configuration
