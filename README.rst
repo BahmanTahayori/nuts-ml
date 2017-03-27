@@ -3,10 +3,12 @@ nuts-ml
 
 Flow-based data pre-processing for (GPU/deep) machine learning.
 
+
+
 **nuts-ml** is data pre-processing library for for (GPU/deep) machine learning
 that provides common pre-processing functions as independent units, so called 'nuts'. 
-Nuts can be freely arranged to build complex data flows that are efficient,
-easy to read and easy to change.
+Nuts can be freely arranged to build complex data flows based on chained iterators 
+that are efficient, easy to read and easy to modify.
 
 The following example gives a taste of a **nuts-ml** data-flow that
 trains a network on image data and prints training loss and accuracy
