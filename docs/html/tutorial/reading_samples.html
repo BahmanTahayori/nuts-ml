@@ -46,10 +46,11 @@
   <div class="section" id="reading-samples">
 <span id="reader"></span><h1>Reading samples<a class="headerlink" href="#reading-samples" title="Permalink to this headline">¶</a></h1>
 <p><strong>nuts-ml</strong> does not have a specific class or data structure defining data samples
-buts many nuts nuts return <code class="docutils literal"><span class="pre">tuples</span></code> and expect indexable data structures such as
+buts many nuts return <code class="docutils literal"><span class="pre">tuples</span></code> and expect indexable data structures such as
 <code class="docutils literal"><span class="pre">tuples</span></code> or <code class="docutils literal"><span class="pre">lists</span></code> as input.</p>
-<p>Here a toy example to demonstrate some basic operation before moving on to more advanced topics. Given the file <code class="docutils literal"><span class="pre">tests/data/and.csv</span></code> that contains the truth table of the logical <code class="docutils literal"><span class="pre">and</span></code>
-operation</p>
+<p>Here a toy example to demonstrate some basic operations before moving on to more advanced
+and better methods to read sample data. Given the file <code class="docutils literal"><span class="pre">tests/data/and.csv</span></code> that
+contains the truth table of the logical <code class="docutils literal"><span class="pre">and</span></code> operation</p>
 <div class="code highlight-default"><div class="highlight"><pre><span></span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y</span>
 <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">no</span>
 <span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">no</span>
@@ -77,17 +78,50 @@ pesky newline character (<code class="docutils literal"><span class="pre">\n</sp
 <span class="go">[&#39;1&#39;, &#39;1&#39;, &#39;yes&#39;]</span>
 </pre></div>
 </div>
-<p>Better but all numbers in the first and second column are strings. We use
-<code class="docutils literal"><span class="pre">MapCol</span></code> and <code class="docutils literal"><span class="pre">int</span></code> to convert them to integers and also make the loading
-of the data more generic</p>
+<p>Better! But all numbers in the first and second column are strings. We use
+<code class="docutils literal"><span class="pre">MapCol</span></code>, which maps the <code class="docutils literal"><span class="pre">int</span></code> function on the specified colums <code class="docutils literal"><span class="pre">(0,</span> <span class="pre">1)</span></code>
+and also make the loading of the data a bit more generic</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Load</span> <span class="o">=</span> <span class="n">nut_source</span><span class="p">(</span><span class="k">lambda</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;tests/data/&#39;</span><span class="o">+</span><span class="n">fname</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">Load</span><span class="p">(</span><span class="s1">&#39;and.csv&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Drop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Split</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">MapCol</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">Load</span><span class="p">(</span><span class="s1">&#39;and.csv&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Drop</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Split</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">MapCol</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
 <span class="gp">... </span><span class="n">Print</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">())</span>
 <span class="go">(0, 0, &#39;no&#39;)</span>
 <span class="go">(0, 1, &#39;no&#39;)</span>
 <span class="go">(1, 0, &#39;no&#39;)</span>
 <span class="go">(1, 1, &#39;yes&#39;)</span>
 </pre></div>
+</div>
+<p>There is a  <a class="reference external" href="https://github.com/maet3608/nuts-flow/blob/master/nutsflow/source.py">ReadCSV</a>
+nut in <strong>nuts-flow</strong> that could simplify or eliminate some of the steps above but
+we are going to use <a class="reference external" href="https://github.com/maet3608/nuts-ml/blob/master/nutsml/reader.py">ReadPandas</a>
+from <strong>nuts-ml</strong>, which is even more powerfull</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nutsml</span> <span class="k">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ReadPandas</span><span class="p">(</span><span class="s1">&#39;tests/data/and.csv&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Print</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">()</span>
+<span class="go">(0L, 0L, &#39;no&#39;)</span>
+<span class="go">(0L, 1L, &#39;no&#39;)</span>
+<span class="go">(1L, 0L, &#39;no&#39;)</span>
+<span class="go">(1L, 1L, &#39;yes&#39;)</span>
+</pre></div>
+</div>
+<p>It drops the header, splits the lines and converts numbers to (long) integers automatically.
+But maybe the label column should be numeric as well. Here we go</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">label2int</span> <span class="o">=</span> <span class="n">MapCol</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">label</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">label</span><span class="o">==</span><span class="s1">&#39;yes&#39;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ReadPandas</span><span class="p">(</span><span class="s1">&#39;tests/data/and.csv&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">label2int</span> <span class="o">&gt;&gt;</span> <span class="n">Print</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">()</span>
+<span class="go">(0L, 0L, 0)</span>
+<span class="go">(0L, 1L, 0)</span>
+<span class="go">(1L, 0L, 0)</span>
+<span class="go">(1L, 1L, 1)</span>
+</pre></div>
+</div>
+<p>Note: loads all data into memory at once</p>
+<div class="section" id="todo">
+<h2>TODO<a class="headerlink" href="#todo" title="Permalink to this headline">¶</a></h2>
+<p>More details about ReadPandas
+- reference to pandas
+- kwargs
+dplyr example</p>
+<p>Reading image/audio/text samples  (filepath, label)</p>
 </div>
 </div>
 
@@ -96,7 +130,15 @@ of the data more generic</p>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Reading samples</a><ul>
+<li><a class="reference internal" href="#todo">TODO</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>

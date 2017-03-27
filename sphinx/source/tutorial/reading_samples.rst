@@ -4,12 +4,12 @@ Reading samples
 ===============
 
 **nuts-ml** does not have a specific class or data structure defining data samples
-buts many nuts nuts return ``tuples`` and expect indexable data structures such as
+buts many nuts return ``tuples`` and expect indexable data structures such as
 ``tuples`` or ``lists`` as input.
 
 Here a toy example to demonstrate some basic operations before moving on to more advanced
-and better method. Given the file ``tests/data/and.csv`` that contains the truth table
-of the logical ``and`` operation
+and better methods to read sample data. Given the file ``tests/data/and.csv`` that 
+contains the truth table of the logical ``and`` operation
 
 .. code::
 
@@ -38,7 +38,7 @@ pesky newline character (``\n``)
   ['1', '0', 'no']
   ['1', '1', 'yes']
 
-Better; but all numbers in the first and second column are strings. We use
+Better! But all numbers in the first and second column are strings. We use
 ``MapCol``, which maps the ``int`` function on the specified colums ``(0, 1)`` 
 and also make the loading of the data a bit more generic
 
@@ -50,9 +50,37 @@ and also make the loading of the data a bit more generic
   (1, 0, 'no')
   (1, 1, 'yes')
 
-
-ReadCSV
+There is a  `ReadCSV <https://github.com/maet3608/nuts-flow/blob/master/nutsflow/source.py>`_
+nut in **nuts-flow** that could simplify or eliminate some of the steps above but
+we are going to use `ReadPandas <https://github.com/maet3608/nuts-ml/blob/master/nutsml/reader.py>`_
+from **nuts-ml**, which is even more powerfull 
 
   >>> from nutsml import *
-  >>> ReadPandas)()
 
+  >>> ReadPandas('tests/data/and.csv') >> Print() >> Consume()
+  (0L, 0L, 'no')
+  (0L, 1L, 'no')
+  (1L, 0L, 'no')
+  (1L, 1L, 'yes')
+
+It drops the header, splits the lines and converts numbers to (long) integers automatically.
+But maybe the label column should be numeric as well. Here we go
+
+  >>> label2int = MapCol(2, lambda label: 1 if label=='yes' else 0)
+  >>> ReadPandas('tests/data/and.csv') >> label2int >> Print() >> Consume()
+  (0L, 0L, 0)
+  (0L, 1L, 0)
+  (1L, 0L, 0)
+  (1L, 1L, 1)
+
+
+Note: loads all data into memory at once
+
+TODO
+-----
+More details about ReadPandas
+- reference to pandas
+- kwargs
+dplyr example
+
+Reading image/audio/text samples  (filepath, label)
