@@ -45,18 +45,15 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="pipeline">
-<h2>Pipeline<a class="headerlink" href="#pipeline" title="Permalink to this headline">¶</a></h2>
 <p>Software for GPU-based machine learning, specifically on image data,
-tends to have a certain, common structure visualized by the following
-<em>canonical pipeline</em></p>
+has a common structure depicted by the following <em>canonical pipeline</em></p>
 <img alt="_images/pipeline.png" src="_images/pipeline.png" />
-<p>When large data sets cannot be loaded into memory, data is instead read in
-small batches or single records that are processed individually through a
-sequence of common operations/components</p>
+<p>Since large (image) data sets often cannot be loaded into memory, data is
+instead read in small batches or single images that are processed
+by a pipeline of components</p>
 <ul class="simple">
 <li><em>Reader</em>: sample data stored in CSV files, <a class="reference external" href="http://pandas.pydata.org/">Pandas</a>
-tables or other formats is read,</li>
+tables, databases or other data sources is read,</li>
 <li><em>Splitter</em>: samples are split into training, validation and sets, and stratified
 if necessary,</li>
 <li><em>Loader</em>: image data is loaded for each sample when needed,</li>
@@ -71,35 +68,37 @@ if necessary,</li>
 <dd>for GPU processing,</dd>
 </dl>
 </li>
-<li><em>Network</em>: a neural network is trained, evaluated or tested,</li>
-<li><dl class="first docutils">
-<dt><em>Logger</em>: and finally the network performance (loss, accuracy, ...)</dt>
-<dd>is logged or plotted.</dd>
-</dl>
-</li>
+<li><em>Network</em>: a neural network is trained and evaluated on the GPU,</li>
+<li><em>Logger</em>: the network performance (loss, accuracy, ...) is logged or plotted.</li>
 </ul>
-<p>Depending on the actual task (training, testing, evaluation, ...), data type
-(image, video, text), or application some of the processing steps may differ but
-in general many components can be shared.</p>
+<p>Depending on the actual task (training, testing, evaluation, ...) or data type
+(image, video, text) some of the processing steps may differ but often
+many components can be shared between applications.</p>
+<p><strong>nuts-ml</strong> is a library that provides common data-processing and machine learning
+operations as encapsulated units, so called ‘nuts’.
+<strong>nuts-ml</strong> is based on <a class="reference external" href="https://maet3608.github.io/nuts-flow/">nuts-flow</a>,
+which itself is based on Python iterators and
+<a class="reference external" href="https://docs.python.org/2/library/itertools.html">itertools</a></p>
+<img alt="_images/architecture.png" class="align-center" src="_images/architecture.png" />
+<p><strong>nuts-flow</strong> wraps iterators and itertool functions into <em>nuts</em> that provide a
+<code class="docutils literal"><span class="pre">&gt;&gt;</span></code> operator to arrange compositions of iterators as pipelines. For instance,
+a nested itertool expression such as the following</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">ifilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
 </div>
-<div class="section" id="nuts-ml">
-<h2>nuts-ml<a class="headerlink" href="#nuts-ml" title="Permalink to this headline">¶</a></h2>
-<p><strong>nuts-ml</strong> is a library for flow-based data processing that provides common
-operations as independent units, so called &#8216;nuts&#8217;. Nuts can be freely arranged
-to build data flows that are efficient, easy to understand and easy to change.</p>
-<p>The following example gives a taste of a <strong>nuts-ml</strong> data flow:</p>
+<p>can be flattened and more clearly written with <strong>nuts-flow</strong> as</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Filter</span><span class="p">(</span><span class="n">_</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Collect</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>nuts-ml</strong> adds nuts specifically for machine learning and (image) data
+processing. The following example gives a taste of a <strong>nuts-ml</strong> pipeline:</p>
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">train_samples</span> <span class="o">&gt;&gt;</span> <span class="n">PrintProgress</span><span class="p">(</span><span class="n">train_samples</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
   <span class="n">load_image</span> <span class="o">&gt;&gt;</span> <span class="n">transform</span> <span class="o">&gt;&gt;</span> <span class="n">augment</span> <span class="o">&gt;&gt;</span> <span class="n">Shuffle</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
   <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">train</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="architecture">
-<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
-<p><strong>nuts-ml</strong> is based on <a class="reference external" href="https://github.com/maet3608/nuts-flow">nuts-flow</a>,
-which is described <a class="reference external" href="https://maet3608.github.io/nuts-flow/">here</a> .</p>
-<img alt="_images/architecture.png" src="_images/architecture.png" />
-</div>
+<p>Nuts can be freely arranged to build data flows that are efficient,
+easy to understand and easy to modify.</p>
 </div>
 
 
@@ -107,17 +106,7 @@ which is described <a class="reference external" href="https://maet3608.github.i
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Introduction</a><ul>
-<li><a class="reference internal" href="#pipeline">Pipeline</a></li>
-<li><a class="reference internal" href="#nuts-ml">nuts-ml</a></li>
-<li><a class="reference internal" href="#architecture">Architecture</a></li>
-</ul>
-</li>
-</ul>
-<div class="relations">
+        <div class="sphinxsidebarwrapper"><div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>

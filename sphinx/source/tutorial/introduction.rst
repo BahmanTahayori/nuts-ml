@@ -8,7 +8,7 @@ provides examples of its usage.
 .. toctree::
 
    example
-   reading_labels
+   reading_samples
    split_stratify
    loading_images
    image_processing
