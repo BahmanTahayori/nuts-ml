@@ -175,37 +175,6 @@ class ReadPandas(NutSource):
         self.kwargs = kwargs
         self.dataframe = self._load_table(filepath)
 
-    def print_head(self, n=5):  # pragma: no cover
-        """
-        Print head of table. Just a short cut for print self.table.head()
-
-        >>> samples = ReadPandas('tests/data/pandas_table.csv')
-        >>> samples.print_head()
-           col1  col2
-        0     1   4.0
-        1     2   NaN
-        2     3   6.0
-
-        :param int n: Number of rows to print.
-        """
-        print self.dataframe.head(n)
-
-    def print_info(self):  # pragma: no cover
-        """
-        Print info about table. Just a short cut for self.table.info()
-
-        >>> samples = ReadPandas('tests/data/pandas_table.csv')
-        >>> samples.print_info()
-        <class 'pandas.core.frame.DataFrame'>
-        RangeIndex: 3 entries, 0 to 2
-        Data columns (total 2 columns):
-        col1    3 non-null int64
-        col2    2 non-null float64
-        dtypes: float64(1), int64(1)
-        memory usage: 120.0 bytes
-        """
-        self.dataframe.info()
-
     @staticmethod
     def isnull(value):
         """
