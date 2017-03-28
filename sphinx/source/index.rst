@@ -1,7 +1,7 @@
 .. Nutsml documentation master file
 
 
-Nuts-ml
+nuts-ml
 =======
 
 Contents:
@@ -13,6 +13,7 @@ Contents:
    installation
    tutorial/introduction
    nutsml
+
 
 Indices
 =======
