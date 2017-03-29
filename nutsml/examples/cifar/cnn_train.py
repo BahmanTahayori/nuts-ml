@@ -70,7 +70,7 @@ def create_network():
 
     model.compile(loss='categorical_crossentropy',
                   optimizer='adam', metrics=['accuracy'])
-    return KerasNetwork(model, filepath='weights_cifar10.hd5')
+    return KerasNetwork(model, 'weights_cifar10.hd5')
 
 
 def train(train_samples, val_samples):

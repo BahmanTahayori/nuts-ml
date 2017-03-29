@@ -47,7 +47,7 @@ def create_network():
     model.compile(loss='categorical_crossentropy',
                   optimizer='adam',
                   metrics=['accuracy'])
-    return KerasNetwork(model, filepath='cnn_weights.hd5')
+    return KerasNetwork(model, 'cnn_weights.hd5')
 
 
 def train():
