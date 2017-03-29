@@ -11,6 +11,10 @@ import os.path as osp
 from keras.datasets import cifar10
 from keras.utils.data_utils import get_file
 from keras.metrics import categorical_accuracy
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Convolution2D, MaxPooling2D
+
 from nutsflow import (PrintProgress, Collect, Zip, Unzip, Pick, Take, Map,
                       ArgMax, Get, Consume, Shuffle, nut_function)
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
@@ -41,10 +45,6 @@ def load_names():
 
 
 def create_network():
-    from keras.models import Sequential
-    from keras.layers import Dense, Dropout, Activation, Flatten
-    from keras.layers import Convolution2D, MaxPooling2D
-
     model = Sequential()
     model.add(Convolution2D(32, 3, 3, border_mode='same',
                             input_shape=INPUT_SHAPE))
