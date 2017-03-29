@@ -10,6 +10,7 @@ import os.path as osp
 
 from keras.datasets import cifar10
 from keras.utils.data_utils import get_file
+from keras.metrics import categorical_accuracy
 from nutsflow import (PrintProgress, Collect, Zip, Unzip, Pick, Take, Map,
                       ArgMax, Get, Consume, Shuffle, nut_function)
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
@@ -73,8 +74,6 @@ def create_network():
 
 
 def train(train_samples, val_samples):
-    from keras.metrics import categorical_accuracy
-
     rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE)
                    .by(0, 'image', 'float32')
