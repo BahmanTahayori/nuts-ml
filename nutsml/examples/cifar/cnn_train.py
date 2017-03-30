@@ -15,8 +15,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 
-from nutsflow import (PrintProgress, Collect, Zip, Unzip, Pick, Take, Map,
-                      ArgMax, Get, Consume, Shuffle, nut_function)
+from nutsflow import (PrintProgress, Zip, Unzip, Pick, Shuffle)
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     PlotLines)
 
