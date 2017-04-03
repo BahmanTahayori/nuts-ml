@@ -64,7 +64,7 @@ def test_RegularImagePatches():
                 (np.array([[2, 3], [6, 7]]), 0)]
     patches = samples >> get_patches >> Collect()
     for (p, ps), (e, es) in zip(patches, expected):
-        nt.assert_array_equal(p, e)
+        nt.assert_allclose(p, e)
         assert ps == es
 
     samples = [(img1, img1 + 1)]
@@ -73,7 +73,7 @@ def test_RegularImagePatches():
                 (np.array([[3]]), np.array([[4]]))]
     patches = samples >> get_patches >> Collect()
     for p, e in zip(patches, expected):
-        nt.assert_array_equal(p, e)
+        nt.assert_allclose(p, e)
 
 
 def test_RandomImagePatches():
@@ -86,11 +86,11 @@ def test_RandomImagePatches():
 
     p, l = patches[0]
     img_patch0 = np.array([[7, 8], [13, 14], [19, 20]])
-    nt.assert_array_equal(p, img_patch0)
+    nt.assert_allclose(p, img_patch0)
 
     p, l = patches[1]
     img_patch1 = np.array([[8, 9], [14, 15], [20, 21]])
-    nt.assert_array_equal(p, img_patch1)
+    nt.assert_allclose(p, img_patch1)
 
 
 def test_ImagePatchesByMask():
@@ -106,14 +106,14 @@ def test_ImagePatchesByMask():
     p, m = patches[0]
     img_patch0 = np.array([[12, 13, 14], [17, 18, 19], [22, 23, 24]])
     mask_patch0 = np.array([[255, 0, 0], [0, 255, 0], [0, 0, 255]])
-    nt.assert_array_equal(p, img_patch0)
-    nt.assert_array_equal(m, mask_patch0)
+    nt.assert_allclose(p, img_patch0)
+    nt.assert_allclose(m, mask_patch0)
 
     p, m = patches[1]
     img_patch1 = np.array([[10, 11, 12], [15, 16, 17], [20, 21, 22]])
     mask_patch1 = np.array([[0, 0, 255], [0, 0, 0], [0, 0, 0]])
-    nt.assert_array_equal(p, img_patch1)
-    nt.assert_array_equal(m, mask_patch1)
+    nt.assert_allclose(p, img_patch1)
+    nt.assert_allclose(m, mask_patch1)
 
     with pytest.raises(ValueError) as ex:
         mask = np.eye(3, dtype='uint8') * 255
@@ -138,8 +138,8 @@ def test_ImagePatchesByMask_3channel():
                            [[51, 52, 53], [54, 55, 56], [57, 58, 59]],
                            [[66, 67, 68], [69, 70, 71], [72, 73, 74]]])
     mask_patch0 = np.array([[255, 0, 0], [0, 255, 0], [0, 0, 255]])
-    nt.assert_array_equal(p, img_patch0)
-    nt.assert_array_equal(m, mask_patch0)
+    nt.assert_allclose(p, img_patch0)
+    nt.assert_allclose(m, mask_patch0)
 
 
 def test_ImagePatchesByAnnotation():
@@ -154,17 +154,17 @@ def test_ImagePatchesByAnnotation():
     p, l = patches[0]
     img_patch0 = np.array([[12, 13, 14], [17, 18, 19], [22, 23, 24]])
     assert l == 0
-    nt.assert_array_equal(p, img_patch0)
+    nt.assert_allclose(p, img_patch0)
 
     p, l = patches[1]
     img_patch1 = np.array([[11, 12, 13], [16, 17, 18], [21, 22, 23]])
     assert l == 1
-    nt.assert_array_equal(p, img_patch1)
+    nt.assert_allclose(p, img_patch1)
 
     p, l = patches[2]
     img_patch1 = np.array([[7, 8, 9], [12, 13, 14], [17, 18, 19]])
     assert l == 1
-    nt.assert_array_equal(p, img_patch1)
+    nt.assert_allclose(p, img_patch1)
 
 
 def test_ImageAnnotationToMask():
@@ -173,7 +173,7 @@ def test_ImageAnnotationToMask():
     samples = [(img, anno)]
     masks = samples >> ImageAnnotationToMask(0, 1) >> Collect()
     expected = np.array([[0, 0, 255], [255, 0, 0], [0, 0, 0]], dtype='uint8')
-    assert str(masks[0][1]) == str(expected)  # nt.assert_array_equal fails!
+    assert str(masks[0][1]) == str(expected)  # nt.assert_allclose fails!
 
 
 def test_ImageMean():
@@ -186,20 +186,20 @@ def test_ImageMean():
     # compute means
     results = samples >> img_mean.train() >> Collect()
     expected = np.array([[3., 2., 2.], [2., 3., 2.], [2., 2., 3.]])
-    nt.assert_array_equal(img_mean.means, expected)
+    nt.assert_allclose(img_mean.means, expected)
     assert results == samples
     assert os.path.exists(meansfile)
 
     # re-loading means from file
     img_mean = ImageMean(0, meansfile)
-    nt.assert_array_equal(img_mean.means, expected)
+    nt.assert_allclose(img_mean.means, expected)
 
     # subtract means
     results = samples >> img_mean >> Collect()
     expected0 = np.array([[-1., -2., -2.], [-2., -1., -2.], [-2., -2., -1.]])
     expected1 = np.array([[1., 2., 2.], [2., 1., 2.], [2., 2., 1.]])
-    nt.assert_array_equal(results[0][0], expected0)
-    nt.assert_array_equal(results[1][0], expected1)
+    nt.assert_allclose(results[0][0], expected0)
+    nt.assert_allclose(results[1][0], expected1)
 
     with pytest.raises(ValueError) as ex:
         other_samples = [(np.eye(5),)]
@@ -224,26 +224,26 @@ def test_ImageChannelMean():
     # provide means directly
     img_mean = ImageChannelMean(0, means=[1, 2])
     expected = np.array([[[1., 2.]]])
-    nt.assert_array_equal(img_mean.means, expected)
+    nt.assert_allclose(img_mean.means, expected)
 
     # compute means
     img_mean = ImageChannelMean(0, filepath=meansfile)
     results = samples >> img_mean.train() >> Collect()
     expected = np.array([[[1., 2.]]])
-    nt.assert_array_equal(img_mean.means, expected)
+    nt.assert_allclose(img_mean.means, expected)
     assert results == samples
     assert os.path.exists(meansfile)
 
     # re-loading means from file
     img_mean = ImageChannelMean(0, filepath=meansfile)
-    nt.assert_array_equal(img_mean.means, expected)
+    nt.assert_allclose(img_mean.means, expected)
 
     # subtract means
     results = samples >> img_mean >> Collect()
     expected0 = np.array([[0., 0., 0.], [0., 0., 0.], [0., 0., 0.]])
     expected1 = np.array([[1., 1., 1.], [1., 1., 1.], [1., 1., 1.]])
-    nt.assert_array_equal(results[1][0][:, :, 0], expected0)
-    nt.assert_array_equal(results[1][0][:, :, 1], expected1)
+    nt.assert_allclose(results[1][0][:, :, 0], expected0)
+    nt.assert_allclose(results[1][0][:, :, 1], expected1)
 
     with pytest.raises(ValueError) as ex:
         other_samples = [(np.eye(5),)]
