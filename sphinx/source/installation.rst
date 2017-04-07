@@ -6,7 +6,7 @@ Installation via ``pip`` from `PyPi <https://pypi.python.org/pypi>`_ :
 
 .. code::
   
-  pip install nuts-ml
+  pip install nutsml
   
 
 or ``git clone`` from `GitHub <https://github.com/>`_  
