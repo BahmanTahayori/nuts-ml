@@ -104,14 +104,14 @@ class Network(object):
     network as a Nut in a nuts flow.
     """
 
-    def __init__(self, filepath):
+    def __init__(self, weightspath):
         """
         Constructs base wrapper for networks.
 
-        :param string filepath: Filepath where network weights are saved to
+        :param string weightspath: Filepath where network weights are saved to
             and loaded from.
         """
-        self.filepath = filepath
+        self.filepath = weightspath
         self.best_score = None  # score of best scoring network so far
 
     def train(self):
@@ -180,7 +180,7 @@ class Network(object):
 
     def save_weights(self):
         """
-        Save network weights. network.filepath is used.
+        Save network weights. self.weightspath is used.
 
         network.save_weights()
         """
@@ -188,7 +188,7 @@ class Network(object):
 
     def load_weights(self):
         """
-        Load network weights. network.filepath is used.
+        Load network weights. self.weightspath is used.
 
         network.load_weights()
         """
@@ -205,7 +205,7 @@ class LasagneNetwork(Network):  # pragma no cover
     """
 
     def __init__(self, out_layer, train_fn, val_fn, pred_fn,
-                 filepath='weights_lasagne_net.npz'):
+                 weightspath='weights_lasagne_net.npz'):
         """
         Construct wrapper around Lasagne network.
 
@@ -213,9 +213,9 @@ class LasagneNetwork(Network):  # pragma no cover
         :param Theano function train_fn: Training function
         :param Theano function val_fn: Validation function
         :param Theano function pred_fn: Prediction function
-        :param string filepath: Filepath to save/load model weights.
+        :param string weightspath: Filepath to save/load model weights.
         """
-        Network.__init__(self, filepath)
+        Network.__init__(self, weightspath)
         self.out_layer = out_layer
         self.train_fn = train_fn
         self.val_fn = val_fn
@@ -266,7 +266,7 @@ class KerasNetwork(Network):  # pragma no cover
     Wrapper for Keras models: https://keras.io/
     """
 
-    def __init__(self, model, filepath='weights_keras_net.hd5'):
+    def __init__(self, model, weightspath='weights_keras_net.hd5'):
         """
         Construct wrapper around Keras model.
 
@@ -274,9 +274,9 @@ class KerasNetwork(Network):  # pragma no cover
             https://keras.io/models/sequential/
             https://keras.io/models/model/
 
-        :param string filepath: Filepath to save/load model weights.
+        :param string weightspath: Filepath to save/load model weights.
         """
-        Network.__init__(self, filepath)
+        Network.__init__(self, weightspath)
         self.model = model
 
     def train(self):

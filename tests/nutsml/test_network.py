@@ -36,8 +36,8 @@ class FakeModel(object):
 
 
 class FakeNetwork(Network):
-    def __init__(self, model, filepath):
-        Network.__init__(self, filepath)
+    def __init__(self, model, weightspath):
+        Network.__init__(self, weightspath)
         self.model = model
 
     def train(self):
