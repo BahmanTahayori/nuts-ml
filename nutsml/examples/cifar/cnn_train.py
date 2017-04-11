@@ -28,9 +28,7 @@ INPUT_SHAPE = (32, 32, 3)
 
 def load_samples():
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-    y_train = map(int, y_train)
-    y_test = map(int, y_test)
-    return zip(x_train, y_train), zip(x_test, y_test)
+    return zip(x_train, map(int, y_train)), zip(x_test, map(int, y_test))
 
 
 def load_names():
@@ -103,8 +101,7 @@ def train(train_samples, val_samples):
         print("validation loss :\t\t{:.6f}".format(np.mean(v_loss)))
         print("validation acc  :\t\t{:.1f}".format(100 * np.mean(v_acc)))
 
-        from nutsflow import Take
-        e_acc = (val_samples >> Take(30) >> rerange >> build_batch >>
+        e_acc = (val_samples >> rerange >> build_batch >>
                  network.evaluate([categorical_accuracy]))
         print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
 
