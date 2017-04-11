@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 from mlp_train import create_network, load_samples
-from nutsflow import Consume, Get, Zip, Unzip, Map, ArgMax, nut_filter
+from nutsflow import Consume, Zip, Unzip, Map, ArgMax, nut_filter
 from nutsml import TransformImage, BuildBatch, ViewImageAnnotation
 
 BATCH_SIZE = 128

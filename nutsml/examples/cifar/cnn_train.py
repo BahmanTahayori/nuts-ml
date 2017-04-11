@@ -19,17 +19,15 @@ from nutsflow import (PrintProgress, Zip, Unzip, Pick, Shuffle)
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     PlotLines)
 
-PICK = 0.1   # Pick 10% of the data for a quick trial
+PICK = 0.1  # Pick 10% of the data for a quick trial
 NUM_EPOCHS = 10
 BATCH_SIZE = 32
 NUM_CLASSES = 10
-INPUT_SHAPE = (3, 32, 32)
+INPUT_SHAPE = (32, 32, 3)
 
 
 def load_samples():
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-    x_train = x_train.transpose(0, 2, 3, 1)
-    x_test = x_test.transpose(0, 2, 3, 1)
     y_train = map(int, y_train)
     y_test = map(int, y_test)
     return zip(x_train, y_train), zip(x_test, y_test)
@@ -45,17 +43,17 @@ def load_names():
 
 def create_network():
     model = Sequential()
-    model.add(Convolution2D(32, 3, 3, border_mode='same',
+    model.add(Convolution2D(32, (3, 3), padding='same',
                             input_shape=INPUT_SHAPE))
     model.add(Activation('relu'))
-    model.add(Convolution2D(32, 3, 3))
+    model.add(Convolution2D(32, (3, 3)))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.5))
 
-    model.add(Convolution2D(64, 3, 3, border_mode='same'))
+    model.add(Convolution2D(64, (3, 3), padding='same'))
     model.add(Activation('relu'))
-    model.add(Convolution2D(64, 3, 3))
+    model.add(Convolution2D(64, (3, 3)))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.5))
@@ -105,7 +103,8 @@ def train(train_samples, val_samples):
         print("validation loss :\t\t{:.6f}".format(np.mean(v_loss)))
         print("validation acc  :\t\t{:.1f}".format(100 * np.mean(v_acc)))
 
-        e_acc = (val_samples >> rerange >> build_batch >>
+        from nutsflow import Take
+        e_acc = (val_samples >> Take(30) >> rerange >> build_batch >>
                  network.evaluate([categorical_accuracy]))
         print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
 

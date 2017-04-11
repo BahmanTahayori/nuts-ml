@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from cnn_train import load_samples, load_names
 from nutsflow import Take, Consume, MapCol
 from nutsml import ViewImageAnnotation, PrintColType

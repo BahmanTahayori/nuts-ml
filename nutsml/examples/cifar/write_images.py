@@ -1,5 +1,5 @@
 from cnn_train import load_samples, load_names
-from nutsflow import (Take, Print, Consume, Map, Enumerate, Zip, Format, MapCol,
+from nutsflow import (Take, Print, Consume, Enumerate, Zip, Format, MapCol,
                       Get)
 from nutsml import WriteImage
 

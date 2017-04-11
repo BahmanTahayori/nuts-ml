@@ -1,7 +1,5 @@
 from __future__ import print_function
 
-import numpy as np
-
 from mlp_train import create_network
 from nutsflow import Collect, Consume, Get, Zip, Map, Format, ArgMax
 from nutsml import (TransformImage, BuildBatch, ReadImage, ReadLabelDirs,

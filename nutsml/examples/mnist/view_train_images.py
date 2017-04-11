@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from mlp_train import load_samples
 from nutsflow import Take, Consume
 from nutsml import ViewImageAnnotation

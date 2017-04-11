@@ -82,8 +82,11 @@ def EvalNut(batches, network, metrics, predcol=None, targetcol=-1):
 
     def compute_metric(metric, targets, preds):
         result = metric(targets, preds)
-        # call eval() on result if Theano function and convert ndarray to float
-        return float(result.eval() if hasattr(result, 'eval') else result)
+        # call eval() on result if Theano function 
+        result = result.eval() if hasattr(result, 'eval') else result
+        # Since Keras 2.x some metrics return vector instead of value: bug?
+        # compute mean or convert to float directly 
+        return float(np.mean(result) if hasattr(result, '__iter__') else result)
 
     @nut_function
     def Extract(x, col):

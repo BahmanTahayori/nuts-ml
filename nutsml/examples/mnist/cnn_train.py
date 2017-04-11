@@ -18,16 +18,15 @@ from keras.metrics import categorical_accuracy
 from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
-PICK = 0.1   # Pick 10% of the data for a quick trial
+PICK = 0.1  # Pick 10% of the data for a quick trial
 NUM_EPOCHS = 5
-INPUT_SHAPE = (1, 28, 28)
+INPUT_SHAPE = (28, 28, 1)
 BATCH_SIZE = 128
 NUM_CLASSES = 10
 
 
-
 def load_samples():
-    c, h, w = INPUT_SHAPE
+    h, w, c = INPUT_SHAPE
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train = x_train.reshape(x_train.shape[0], h, w, c)
     x_test = x_test.reshape(x_test.shape[0], h, w, c)
@@ -36,8 +35,8 @@ def load_samples():
 
 def create_network():
     model = Sequential()
-    model.add(Conv2D(32, 3, 3, activation='relu', input_shape=INPUT_SHAPE))
-    model.add(Conv2D(64, 3, 3, activation='relu'))
+    model.add(Conv2D(32, (3, 3), activation='relu', input_shape=INPUT_SHAPE))
+    model.add(Conv2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
     model.add(Flatten())

@@ -1,5 +1,5 @@
 from keras.datasets import mnist
-from nutsflow import Take, Print, Consume, Enumerate, Zip, Format, Get
+from nutsflow import Take, Consume, Enumerate, Zip, Format, Get
 from nutsml import WriteImage
 
 

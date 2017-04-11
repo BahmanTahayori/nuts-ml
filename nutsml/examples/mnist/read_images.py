@@ -1,4 +1,3 @@
-from glob import glob
 from nutsflow import Consume, Print
 from nutsml import ReadLabelDirs, ReadImage, ViewImageAnnotation, PrintColType
 

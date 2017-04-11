@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from cnn_train import create_network
 from nutsflow import Collect, Consume, Get, Zip, Map, ArgMax, Format
 from nutsml import (TransformImage, BuildBatch, ReadLabelDirs, ReadImage,
