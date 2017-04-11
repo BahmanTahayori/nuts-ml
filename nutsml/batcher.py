@@ -71,7 +71,7 @@ def build_vector_batch(vectors, dtype):
     return np.vstack(vectors).astype(dtype)
 
 
-def build_image_batch(images, dtype, channelfirst=True):
+def build_image_batch(images, dtype, channelfirst=False):
     """
     Return batch of images.
 
@@ -83,7 +83,7 @@ def build_image_batch(images, dtype, channelfirst=True):
 
     >>> from datautil import shapestr
     >>> images = [np.zeros((2, 3)), np.ones((2, 3))]
-    >>> batch = build_image_batch(images, 'uint8')
+    >>> batch = build_image_batch(images, 'uint8', True)
     >>> shapestr(batch)
     '2x1x2x3'
 

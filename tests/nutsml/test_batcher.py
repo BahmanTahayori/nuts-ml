@@ -91,7 +91,7 @@ def test_BuildBatch():
     build_batch = (nb.BuildBatch(2)
                    .by(0, 'number', float)
                    .by(1, 'vector', np.uint8)
-                   .by(2, 'image', np.uint8, True)
+                   .by(2, 'image', np.uint8, False)
                    .by(3, 'one_hot', 'uint8', 3))
     batches = samples >> build_batch >> Collect()
     assert len(batches) == 2, 'Expect two batches'
