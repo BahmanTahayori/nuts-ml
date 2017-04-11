@@ -14,6 +14,7 @@ import matplotlib.patches as plp
 from datautil import shapestr, isnan
 from PIL import ImageEnhance as ie
 from skimage.draw import circle, polygon
+from skimage.color import rgb2gray
 from warnings import warn
 
 
@@ -21,13 +22,13 @@ def load_image(filepath, as_grey=False, dtype='uint8', no_alpha=True):
     """
     Load image as numpy array from given filepath.
 
-    Supported formats: gif, png, jpg, bmp, tif
+    Supported formats: gif, png, jpg, bmp, tif, npy
 
     >>> img = load_image('tests/data/img_formats/nut_color.jpg')
     >>> shapestr(img)
     '213x320x3'
 
-    :param string filepath: Filepath to image file.
+    :param string filepath: Filepath to image file or numpy array.
     :param bool as_grey:
     :return: numpy array with shapes
              (h, w) for grayscale or monochrome,
@@ -37,8 +38,13 @@ def load_image(filepath, as_grey=False, dtype='uint8', no_alpha=True):
              pixel values are in range [0,255] for dtype = uint8
     :rtype: numpy ndarray
     """
-    # img_num=0 due to https://github.com/scikit-image/scikit-image/issues/2406
-    arr = sio.imread(filepath, as_grey=as_grey, img_num=0).astype(dtype)
+    if filepath.endswith('.npy'):  # image as numpy array
+        arr = np.load(filepath).astype(dtype)
+        arr = rgb2gray(arr) if as_grey else arr
+    else:
+        # img_num=0 due to 
+        # https://github.com/scikit-image/scikit-image/issues/2406
+        arr = sio.imread(filepath, as_grey=as_grey, img_num=0).astype(dtype)
     if arr.ndim == 3 and arr.shape[2] == 4 and no_alpha:
         arr = arr[..., :3]  # cut off alpha channel
     return arr
@@ -46,16 +52,19 @@ def load_image(filepath, as_grey=False, dtype='uint8', no_alpha=True):
 
 def save_image(filepath, image):
     """
-    Save numpy array as image to given filepath.
+    Save numpy array as image (or numpy array) to given filepath.
 
-    Supported formats: gif, png, jpg, bmp, tif
+    Supported formats: gif, png, jpg, bmp, tif, npy
 
     :param string filepath: File path for image file. Extension determines
         image file format, e.g. .gif
     :param numpy array image: Numpy array to save as image.
         Must be of shape (h,w) or (h,w,3) or (h,w,4)
     """
-    sio.imsave(filepath, image)
+    if filepath.endswith('.npy'):  # image as numpy array
+        np.save(filepath, image, allow_pickle=False)
+    else:
+        sio.imsave(filepath, image)
 
 
 def arr_to_pil(image):

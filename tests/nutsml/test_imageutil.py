@@ -59,7 +59,7 @@ def test_load_image(testdatadirs):
 
 def test_save_image(testdatadirs):
     _, formatsdir, _, _ = testdatadirs
-    formats = ['gif', 'png', 'jpg', 'bmp', 'tif']
+    formats = ['gif', 'png', 'jpg', 'bmp', 'tif', 'npy']
     for format in formats:
         inpath = formatsdir + 'nut_color.' + format
         outpath = formatsdir + 'temp_nut_color.' + format
