@@ -10,7 +10,7 @@ from nutsflow.common import Redirect
 from nutsml import PrintColType
 
 expected_col_info1 = """
-0: <ndarray> shape:10x20x3 dtype:float64 min:0.0 max:0.0
+0: <ndarray> shape:10x20x3 dtype:float64 range:0.0-0.0
 1: <int> 1
 
 0: <str> text

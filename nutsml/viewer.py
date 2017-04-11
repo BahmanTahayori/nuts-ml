@@ -20,7 +20,7 @@ def PrintColType(data, cols=None):
 
     >>> data = [(np.zeros((10, 20, 3)), 1), ('text', 2), 3]
     >>> data >> PrintColType() >> Consume()
-    0: <ndarray> shape:10x20x3 dtype:float64 min:0.0 max:0.0
+    0: <ndarray> shape:10x20x3 dtype:float64 range:0.0-0.0
     1: <int> 1
 
     0: <str> text
@@ -45,7 +45,7 @@ def PrintColType(data, cols=None):
         if cols is None or i in cols:
             print '{}: <{}>'.format(i, type(e).__name__),
             if isinstance(e, np.ndarray):
-                text = 'shape:{} dtype:{} min:{} max:{}'
+                text = 'shape:{} dtype:{} range:{}-{}'
                 print text.format(shapestr(e), e.dtype, np.min(e), np.max(e))
             else:
                 print '{}'.format(str(e))
