@@ -187,24 +187,4 @@ def col_map(sample, columns, func, *args, **kwargs):
     return tuple(f(e, *a, **kw) if i in colset else e for i, e in enum_iter)
 
 
-class AttributeDict(dict):
-    """
-    Dictionary that allows access via keys or attributes.
-    """
 
-    def __init__(self, *args, **kwargs):
-        """
-        Create dictionary.
-
-        >>> contact = AttributeDict({'age':13, 'name':'stefan'})
-        >>> contact['age']
-        13
-
-        >>> contact.name
-        'stefan'
-
-        :param args: See dict
-        :param kwargs: See dict
-        """
-        super(AttributeDict, self).__init__(*args, **kwargs)
-        self.__dict__ = self

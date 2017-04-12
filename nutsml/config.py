@@ -5,7 +5,31 @@
 
 import os
 import yaml
-from nutsml.datautil import AttributeDict
+
+
+class ConfigDict(dict):
+    """
+    Dictionary that allows access via keys or attributes.
+
+    Used to store and access configuration data.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        Create dictionary.
+
+        >>> contact = ConfigDict({'age':13, 'name':'stefan'})
+        >>> contact['age']
+        13
+
+        >>> contact.name
+        'stefan'
+
+        :param args: See dict
+        :param kwargs: See dict
+        """
+        super(ConfigDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
 
 
 def load_config(filename):
@@ -17,6 +41,10 @@ def load_config(filename):
     2) current dir
     3) full path
 
+    Example file: 'tests/data/config.yaml'
+    filepath : c:/Maet
+    imagesize : [100, 200]
+
     >>> cfg = load_config('tests/data/config.yaml')
     >>> cfg.filepath
     'c:/Maet'
@@ -24,10 +52,10 @@ def load_config(filename):
     >>> cfg['imagesize']
     [100, 200]
 
-    :param filename: Name or fullpath of configuration file.
+    :param filename: Name or full path of configuration file.
     :return: dictionary with config data. Note that config data can be
              accessed by key or attribute, e.g. cfg.filepath or cfg.['filepath']
-    :rtype: AttributeDict
+    :rtype: ConfigDict
     """
     filepaths = []
     for dirpath in os.path.expanduser('~'), os.curdir, '':
@@ -35,7 +63,7 @@ def load_config(filename):
             filepath = os.path.join(dirpath, filename)
             filepaths.append(filepath)
             with open(filepath, 'r') as f:
-                return AttributeDict(yaml.load(f))
+                return ConfigDict(yaml.load(f))
         except IOError:
             pass
     raise IOError('Configuration file not found: ' + ', '.join(filepaths))

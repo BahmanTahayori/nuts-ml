@@ -75,9 +75,3 @@ def test_col_map():
     add_n = lambda x, n: x + n
     assert util.col_map(sample, 1, add_n, 10) == (1, 12, 3)
     assert util.col_map(sample, (0, 2), add_n, 10) == (11, 2, 13)
-
-
-def test_AttributeDict():
-    d = util.AttributeDict({'number': 13})
-    assert d['number'] == 13
-    assert d.number == 13

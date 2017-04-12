@@ -8,6 +8,12 @@ import pytest
 import nutsml.config as nc
 
 
+def test_ConfigDict():
+    d = nc.ConfigDict({'number': 13})
+    assert d['number'] == 13
+    assert d.number == 13
+
+
 def test_load_config():
     cfg = nc.load_config('tests/data/config.yaml')
     assert cfg.filepath == 'c:/Maet'
