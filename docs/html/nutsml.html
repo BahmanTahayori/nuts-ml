@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Custom nuts" href="tutorial/custom_nuts.html" />
+    <link rel="prev" title="FAQ" href="faq.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -309,51 +309,17 @@ alpha channel is fine (w,h,4).</li>
 <span class="target" id="module-common"></span></div>
 <div class="section" id="module-nutsml.config">
 <span id="nutsml-config-module"></span><h2>nutsml.config module<a class="headerlink" href="#module-nutsml.config" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-config"></span><dl class="function">
-<dt id="nutsml.config.load_config">
-<code class="descname">load_config</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/config.html#load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.config.load_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load configuration file in YAML format.</p>
-<p>The search order for the config file is:
-1) user home dir
-2) current dir
-3) full path</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;tests/data/config.yaml&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">filepath</span>
-<span class="go">&#39;c:/Maet&#39;</span>
-</pre></div>
-</div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;imagesize&#39;</span><span class="p">]</span>
-<span class="go">[100, 200]</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> &#8211; Name or fullpath of configuration file.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary with config data. Note that config data can be
-accessed by key or attribute, e.g. cfg.filepath or cfg.[&#8216;filepath&#8217;]</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#nutsml.datautil.AttributeDict" title="nutsml.datautil.AttributeDict">AttributeDict</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-nutsml.datautil">
-<span id="nutsml-datautil-module"></span><h2>nutsml.datautil module<a class="headerlink" href="#module-nutsml.datautil" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-datautil"></span><dl class="class">
-<dt id="nutsml.datautil.AttributeDict">
-<em class="property">class </em><code class="descname">AttributeDict</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/datautil.html#AttributeDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.datautil.AttributeDict" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-config"></span><dl class="class">
+<dt id="nutsml.config.ConfigDict">
+<em class="property">class </em><code class="descname">ConfigDict</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/config.html#ConfigDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.config.ConfigDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a></p>
 <p>Dictionary that allows access via keys or attributes.</p>
+<p>Used to store and access configuration data.</p>
 <dl class="method">
-<dt id="nutsml.datautil.AttributeDict.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/datautil.html#AttributeDict.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.datautil.AttributeDict.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="nutsml.config.ConfigDict.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/config.html#ConfigDict.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.config.ConfigDict.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create dictionary.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">contact</span> <span class="o">=</span> <span class="n">AttributeDict</span><span class="p">({</span><span class="s1">&#39;age&#39;</span><span class="p">:</span><span class="mi">13</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;stefan&#39;</span><span class="p">})</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">contact</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">({</span><span class="s1">&#39;age&#39;</span><span class="p">:</span><span class="mi">13</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;stefan&#39;</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">contact</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">]</span>
 <span class="go">13</span>
 </pre></div>
@@ -379,15 +345,59 @@ accessed by key or attribute, e.g. cfg.filepath or cfg.[&#8216;filepath&#8217;]<
 </dd></dl>
 
 <dl class="function">
+<dt id="nutsml.config.load_config">
+<code class="descname">load_config</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/config.html#load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.config.load_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load configuration file in YAML format.</p>
+<p>The search order for the config file is:
+1) user home dir
+2) current dir
+3) full path</p>
+<div class="line-block">
+<div class="line">Example file: &#8216;tests/data/config.yaml&#8217;</div>
+<div class="line">filepath : c:/Maet</div>
+<div class="line">imagesize : [100, 200]</div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;tests/data/config.yaml&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="o">.</span><span class="n">filepath</span>
+<span class="go">&#39;c:/Maet&#39;</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;imagesize&#39;</span><span class="p">]</span>
+<span class="go">[100, 200]</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> &#8211; Name or full path of configuration file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary with config data. Note that config data can be
+accessed by key or attribute, e.g. cfg.filepath or cfg.[&#8216;filepath&#8217;]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#nutsml.config.ConfigDict" title="nutsml.config.ConfigDict">ConfigDict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-nutsml.datautil">
+<span id="nutsml-datautil-module"></span><h2>nutsml.datautil module<a class="headerlink" href="#module-nutsml.datautil" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-datautil"></span><dl class="function">
 <dt id="nutsml.datautil.col_map">
 <code class="descname">col_map</code><span class="sig-paren">(</span><em>sample</em>, <em>columns</em>, <em>func</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/datautil.html#col_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.datautil.col_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map function to given columns of sample and keep other columns</p>
-<p>&gt;&gt; sample = (1, 2, 3)
-&gt;&gt; add_n = lambda x, n: x + n
-&gt;&gt; col_map(sample, 1, add_n, 10)
-(1, 12, 3)</p>
-<p>&gt;&gt; col_map(sample, (0, 2), add_n, 10)
-(11, 2, 13)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sample</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">add_n</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">n</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">col_map</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">add_n</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">(1, 12, 3)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">col_map</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">add_n</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="go">(11, 2, 13)</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -413,10 +423,12 @@ columns.</p>
 <dt id="nutsml.datautil.group_by">
 <code class="descname">group_by</code><span class="sig-paren">(</span><em>elements</em>, <em>keyfunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/datautil.html#group_by"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.datautil.group_by" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group elements using the given key function.</p>
-<p>&gt;&gt; is_odd = lambda x: bool(x % 2)
-&gt;&gt; numbers = [0, 1, 2, 3, 4]
-&gt;&gt; group_by(numbers, is_odd)
-{False: [0, 2, 4], True: [1, 3]}</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">is_odd</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">group_by</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span> <span class="n">is_odd</span><span class="p">)</span>
+<span class="go">{False: [0, 2, 4], True: [1, 3]}</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -504,7 +516,7 @@ containing label frequencies.</p>
 
 <dl class="function">
 <dt id="nutsml.datautil.random_downsample">
-<code class="descname">random_downsample</code><span class="sig-paren">(</span><em>samples</em>, <em>labelcol</em>, <em>rand=&lt;random.Random object at 0x0000000003CADB58&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/datautil.html#random_downsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.datautil.random_downsample" title="Permalink to this definition">¶</a></dt>
+<code class="descname">random_downsample</code><span class="sig-paren">(</span><em>samples</em>, <em>labelcol</em>, <em>rand=&lt;random.Random object at 0x0000000003D1DB58&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/datautil.html#random_downsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.datautil.random_downsample" title="Permalink to this definition">¶</a></dt>
 <dd><p>Randomly down-sample samples.</p>
 <p>Creates stratified samples by down-sampling larger classes to the size of
 the smallest class.</p>
@@ -1902,7 +1914,9 @@ and loaded from.</td>
 <dt id="nutsml.network.Network.evaluate">
 <code class="descname">evaluate</code><span class="sig-paren">(</span><em>metrics</em>, <em>predcol=None</em>, <em>targetcol=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/network.html#Network.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.network.Network.evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate performance of network for given metrices</p>
-<p>acc, f1 = samples &gt;&gt; batcher &gt;&gt; network.evaluate([accuracy, f1_score])</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">acc</span><span class="p">,</span> <span class="n">f1</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">batcher</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">evaluate</span><span class="p">([</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">])</span>  
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1935,7 +1949,9 @@ there is only one metric.</p>
 <dt id="nutsml.network.Network.predict">
 <code class="descname">predict</code><span class="sig-paren">(</span><em>flatten=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/network.html#Network.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.network.Network.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get network predictions</p>
-<p>predictions = samples &gt;&gt; batcher &gt;&gt; network.predict() &gt;&gt; Collect()</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">predictions</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">batcher</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Collect</span><span class="p">()</span>  
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1987,7 +2003,9 @@ and the network with the lower score score is saved.</li>
 <dt id="nutsml.network.Network.train">
 <code class="descname">train</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/network.html#Network.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.network.Network.train" title="Permalink to this definition">¶</a></dt>
 <dd><p>Train network</p>
-<p>train_losses = samples &gt;&gt; batcher &gt;&gt; network.train() &gt;&gt; Collect()</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train_losses</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">batcher</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">train</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Collect</span><span class="p">()</span>  
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2002,7 +2020,9 @@ and the network with the lower score score is saved.</li>
 <dt id="nutsml.network.Network.validate">
 <code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/network.html#Network.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.network.Network.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate network</p>
-<p>val_losses = samples &gt;&gt; batcher &gt;&gt; network.validate() &gt;&gt; Collect()</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">val_losses</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">batcher</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Collect</span><span class="p">()</span>  
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2118,14 +2138,15 @@ plot will not appear on the screen.</li>
 </pre></div>
 </div>
 <p>Note that samples.table contains the original Pandas dataframe and
-any Pandas operations can be performed on it.
-&gt;&gt;&gt; samples = ReadPandas(&#8216;tests/data/pandas_table.csv&#8217;)
-&gt;&gt;&gt; samples.dataframe.head()</p>
-<blockquote>
-<div>col1  col2</div></blockquote>
-<p>0     1   4.0
-1     2   NaN
-2     3   6.0</p>
+any Pandas operations can be performed on it.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="n">ReadPandas</span><span class="p">(</span><span class="s1">&#39;tests/data/pandas_table.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="go">   col1  col2</span>
+<span class="go">0     1   4.0</span>
+<span class="go">1     2   NaN</span>
+<span class="go">2     3   6.0</span>
+</pre></div>
+</div>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="n">ReadPandas</span><span class="p">(</span><span class="s1">&#39;tests/data/pandas_table.csv&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span><span class="o">.</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 <span class="go">[&#39;col1&#39;, &#39;col2&#39;]</span>
@@ -2166,7 +2187,7 @@ See  pandas/pandas/io/parsers.py for detais</li>
 flow-like manner. See <a class="reference external" href="https://github.com/dodger487/dplython">https://github.com/dodger487/dplython</a> and
 <a class="reference external" href="https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html">https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html</a>
 for more details about dplyr.</p>
-<p>dplyr and Nuts use the same syntax (&gt;&gt;) for chaining functions and
+<p>dplyr and nuts-ml use the same syntax (&gt;&gt;) for chaining functions and
 integrate nicely with each other.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2184,13 +2205,19 @@ integrate nicely with each other.</p>
 <dt id="nutsml.reader.ReadPandas.isnull">
 <em class="property">static </em><code class="descname">isnull</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/reader.html#ReadPandas.isnull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.reader.ReadPandas.isnull" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return true if values is NaN or None.</p>
-<p>&gt;&gt; import numpy as np
-&gt;&gt; ReadPandas.isnull(np.NaN)
-True</p>
-<p>&gt;&gt; ReadPandas.isnull(None)
-True</p>
-<p>&gt;&gt; ReadPandas.isnull(0)
-False</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ReadPandas</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ReadPandas</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ReadPandas</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2215,12 +2242,12 @@ False</p>
 <span id="nutsml-transformer-module"></span><h2>nutsml.transformer module<a class="headerlink" href="#module-nutsml.transformer" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-transformer"></span><dl class="class">
 <dt id="nutsml.transformer.AugmentImage">
-<em class="property">class </em><code class="descname">AugmentImage</code><span class="sig-paren">(</span><em>imagecols</em>, <em>rand=&lt;random.Random object at 0x0000000003CB0398&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/transformer.html#AugmentImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.transformer.AugmentImage" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AugmentImage</code><span class="sig-paren">(</span><em>imagecols</em>, <em>rand=&lt;random.Random object at 0x0000000003D20398&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/transformer.html#AugmentImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.transformer.AugmentImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">nutsflow.base.Nut</span></code></p>
 <p>Random augmentation of images in samples</p>
 <dl class="method">
 <dt id="nutsml.transformer.AugmentImage.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>imagecols</em>, <em>rand=&lt;random.Random object at 0x0000000003CB0398&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/transformer.html#AugmentImage.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.transformer.AugmentImage.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>imagecols</em>, <em>rand=&lt;random.Random object at 0x0000000003D20398&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/transformer.html#AugmentImage.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.transformer.AugmentImage.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>samples &gt;&gt; AugmentImage(imagecols, rand=rnd.Random())</p>
 <p>Randomly augment images, e.g. changing contrast. See TransformImage for
 a full list of available augmentations. Every transformation can be
@@ -2254,7 +2281,9 @@ rotation or shearing:</p>
 <span class="gp">... </span>    <span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="s1">&#39;rotate&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">]))</span>
 </pre></div>
 </div>
-<p>samples &gt;&gt; augment1 &gt;&gt; augment2 &gt;&gt; Consume()</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">augment1</span> <span class="o">&gt;&gt;</span> <span class="n">augment2</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">()</span>  
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2501,8 +2530,9 @@ samples &gt;&gt; sub_mean.train() &gt;&gt; Consume()</p>
 <p>Images are expect to be numpy array of the shape (h, w, c) or (h, w)
 with a range of [0,255] and a dtype of uint8. Transformation should
 result in images with the same properties.</p>
-<p>Example
-&gt;&gt;&gt; transform = TransformImage(0).by(&#8216;resize&#8217;, 10, 20)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transform</span> <span class="o">=</span> <span class="n">TransformImage</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="s1">&#39;resize&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2578,7 +2608,7 @@ height for resize.</li>
 
 <dl class="attribute">
 <dt id="nutsml.transformer.TransformImage.transformations">
-<code class="descname">transformations</code><em class="property"> = {'identical': &lt;function identical at 0x00000000097426D8&gt;, 'normalize_histo': &lt;function normalize_histo&gt;, 'rerange': &lt;function rerange&gt;, 'color': &lt;function change_color at 0x0000000009742A58&gt;, 'sharpness': &lt;function change_sharpness at 0x00000000097429E8&gt;, 'crop': &lt;function crop&gt;, 'crop_center': &lt;function crop_center at 0x00000000097427B8&gt;, 'resize': &lt;function resize at 0x0000000009742B38&gt;, 'rotate': &lt;function rotate at 0x0000000009742AC8&gt;, 'flipud': &lt;function flipud at 0x0000000009742C88&gt;, 'brightness': &lt;function change_brightness&gt;, 'fliplr': &lt;function fliplr at 0x0000000009742C18&gt;, 'shear': &lt;function shear at 0x0000000009742BA8&gt;, 'contrast': &lt;function change_contrast&gt;}</em><a class="headerlink" href="#nutsml.transformer.TransformImage.transformations" title="Permalink to this definition">¶</a></dt>
+<code class="descname">transformations</code><em class="property"> = {'identical': &lt;function identical&gt;, 'normalize_histo': &lt;function normalize_histo at 0x00000000097427B8&gt;, 'rerange': &lt;function rerange at 0x00000000097425F8&gt;, 'color': &lt;function change_color at 0x00000000097429E8&gt;, 'sharpness': &lt;function change_sharpness&gt;, 'crop': &lt;function crop at 0x00000000097426D8&gt;, 'crop_center': &lt;function crop_center&gt;, 'resize': &lt;function resize at 0x0000000009742AC8&gt;, 'rotate': &lt;function rotate at 0x0000000009742A58&gt;, 'flipud': &lt;function flipud at 0x0000000009742C18&gt;, 'brightness': &lt;function change_brightness&gt;, 'fliplr': &lt;function fliplr at 0x0000000009742BA8&gt;, 'shear': &lt;function shear at 0x0000000009742B38&gt;, 'contrast': &lt;function change_contrast&gt;}</em><a class="headerlink" href="#nutsml.transformer.TransformImage.transformations" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2648,13 +2678,14 @@ MxNx3 - RGB (float or uint8 array)
 MxNx4 - RGBA (float or uint8 array)</p>
 <p>See
 <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow</a></p>
-<p>Example
-&gt;&gt;&gt; from nutsflow import Consume
-&gt;&gt;&gt; from nutsml import ReadImage
-&gt;&gt;&gt; imagepath = &#8216;tests/data/img_formats/<a href="#id3"><span class="problematic" id="id4">*</span></a>.jpg&#8217;
-&gt;&gt;&gt; samples = [(1, &#8216;nut_color&#8217;), (2, &#8216;nut_grayscale&#8217;)]
-&gt;&gt;&gt; read_image = ReadImage(1, imagepath)
-&gt;&gt;&gt; samples &gt;&gt; read_image &gt;&gt; ViewImage(1) &gt;&gt; Consume() # doctest: +SKIP</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nutsflow</span> <span class="k">import</span> <span class="n">Consume</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nutsml</span> <span class="k">import</span> <span class="n">ReadImage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">imagepath</span> <span class="o">=</span> <span class="s1">&#39;tests/data/img_formats/*.jpg&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;nut_color&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;nut_grayscale&#39;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">read_image</span> <span class="o">=</span> <span class="n">ReadImage</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">imagepath</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">read_image</span> <span class="o">&gt;&gt;</span> <span class="n">ViewImage</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">()</span> 
+</pre></div>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2709,7 +2740,7 @@ imshow() function. See
 <code class="descname">__init__</code><span class="sig-paren">(</span><em>imgcol</em>, <em>annocols</em>, <em>figsize=None</em>, <em>pause=0.0001</em>, <em>interpolation=None</em>, <em>**annoargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/viewer.html#ViewImageAnnotation.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.viewer.ViewImageAnnotation.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>iterable &gt;&gt; ViewImageAnnotation(imgcol, annocols, figsize=None,</dt>
-<dd>pause, interpolation, <a href="#id5"><span class="problematic" id="id6">**</span></a>annoargs)</dd>
+<dd>pause, interpolation, <a href="#id3"><span class="problematic" id="id4">**</span></a>annoargs)</dd>
 </dl>
 <p>Images must be numpy arrays in one of the following formats:
 MxN - luminance (grayscale, float array only)
@@ -2747,7 +2778,7 @@ annotation, e.g.  edgecolor=&#8217;y&#8217;, linewidth=1</li>
 <span id="nutsml-writer-module"></span><h2>nutsml.writer module<a class="headerlink" href="#module-nutsml.writer" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-writer"></span><dl class="class">
 <dt id="nutsml.writer.WriteImage">
-<em class="property">class </em><code class="descname">WriteImage</code><span class="sig-paren">(</span><em>column</em>, <em>pathfunc</em>, <em>names=&lt;nutsflow.factory.Wrapper object at 0x000000000B155898&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/writer.html#WriteImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.writer.WriteImage" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">WriteImage</code><span class="sig-paren">(</span><em>column</em>, <em>pathfunc</em>, <em>names=&lt;nutsflow.factory.Wrapper object at 0x000000000B23B898&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/writer.html#WriteImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.writer.WriteImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">nutsflow.base.NutFunction</span></code></p>
 <p>Write images within samples.</p>
 <dl class="method">
@@ -2758,7 +2789,7 @@ annotation, e.g.  edgecolor=&#8217;y&#8217;, linewidth=1</li>
 
 <dl class="method">
 <dt id="nutsml.writer.WriteImage.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>column</em>, <em>pathfunc</em>, <em>names=&lt;nutsflow.factory.Wrapper object at 0x000000000B155898&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/writer.html#WriteImage.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.writer.WriteImage.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>column</em>, <em>pathfunc</em>, <em>names=&lt;nutsflow.factory.Wrapper object at 0x000000000B23B898&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/writer.html#WriteImage.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.writer.WriteImage.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write images within samples to file.</p>
 <p>Writes jpg, gif, png, tif and bmp format depending on file extension.
 Images in samples are expected to be numpy arrays.
@@ -2784,7 +2815,7 @@ See nutsml.util.load_image for details.</p>
 <li><strong>column</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Column in sample that contains image.</li>
 <li><strong>pathfunc</strong> (<em>str|function</em>) &#8211; Filepath with wildcard &#8216;*&#8217;,
 which is replaced by the name provided names e.g.
-&#8216;tests/data/img_formats/<a href="#id7"><span class="problematic" id="id8">*</span></a>.jpg&#8217; for names = [&#8216;nut_grayscale&#8217;]
+&#8216;tests/data/img_formats/<a href="#id5"><span class="problematic" id="id6">*</span></a>.jpg&#8217; for names = [&#8216;nut_grayscale&#8217;]
 will become &#8216;tests/data/img_formats/nut_grayscale.jpg&#8217;
 or
 Function to compute path to image file from sample and name, e.g.
@@ -2839,7 +2870,7 @@ Length need to be the same as samples.</li>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="tutorial/custom_nuts.html" title="previous chapter">Custom nuts</a></li>
+      <li>Previous: <a href="faq.html" title="previous chapter">FAQ</a></li>
   </ul></li>
 </ul>
 </div>

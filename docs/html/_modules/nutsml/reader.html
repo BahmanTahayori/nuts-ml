@@ -183,6 +183,7 @@
 
 <span class="sd">        Note that samples.table contains the original Pandas dataframe and</span>
 <span class="sd">        any Pandas operations can be performed on it.</span>
+<span class="sd">        </span>
 <span class="sd">        &gt;&gt;&gt; samples = ReadPandas(&#39;tests/data/pandas_table.csv&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; samples.dataframe.head()</span>
 <span class="sd">           col1  col2</span>
@@ -224,14 +225,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return true if values is NaN or None.</span>
 
-<span class="sd">        &gt;&gt; import numpy as np</span>
-<span class="sd">        &gt;&gt; ReadPandas.isnull(np.NaN)</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; ReadPandas.isnull(np.NaN)</span>
 <span class="sd">        True</span>
 
-<span class="sd">        &gt;&gt; ReadPandas.isnull(None)</span>
+<span class="sd">        &gt;&gt;&gt; ReadPandas.isnull(None)</span>
 <span class="sd">        True</span>
 
-<span class="sd">        &gt;&gt; ReadPandas.isnull(0)</span>
+<span class="sd">        &gt;&gt;&gt; ReadPandas.isnull(0)</span>
 <span class="sd">        False</span>
 
 <span class="sd">        :param value: Value to test</span>
@@ -260,7 +261,7 @@
 <span class="sd">        https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html</span>
 <span class="sd">        for more details about dplyr.</span>
 
-<span class="sd">        dplyr and Nuts use the same syntax (&gt;&gt;) for chaining functions and</span>
+<span class="sd">        dplyr and nuts-ml use the same syntax (&gt;&gt;) for chaining functions and</span>
 <span class="sd">        integrate nicely with each other.</span>
 
 <span class="sd">        :return: dplyr dataframe instead of Pandas dataframe.</span>

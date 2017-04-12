@@ -1,7 +1,11 @@
 Example
 =======
 
-
+Prerequisites for this tutorial are a good knowledge of Python and
+`nuts-flow <https://github.com/maet3608/nuts-flow>`_. Please read the 
+`nuts-flow tutorial <https://maet3608.github.io/nuts-flow/tutorial/introduction.html>`_
+if you haven't yet. Some knowledge of `Keras <https://keras.io/>`_,
+and of course deep-learning, will be helpful.
 
 
 Task
@@ -68,9 +72,9 @@ where the model is wrapped in a ``KerasNetwork``.
       return KerasNetwork(model, 'weights_cifar10.hd5')
 
 
-The wrapping allows us to use the CNN as a ``nut`` within a **nuts-flow**,
+The wrapping allows using the CNN as a ``nut`` within a **nuts-flow**,
 which simplifies training. The wrapper also takes a path to a weights file 
-used for check-pointing.
+for check-pointing.
 
 .. note:: 
 
@@ -83,11 +87,11 @@ used for check-pointing.
 Loading data
 ------------
 
-In many real-world image processing applications the complete set of training images 
+In many image processing applications the complete set of training images 
 is too large to fit in memory and images would be loaded individually 
 as part of the data flow. See `read_images.py 
 <https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples/cifar/read_images.py>`_ 
-for an example that loads images sequentially from the file system.
+for an example that loads images sequentially.
 
 CIFAR-10 is small benchmark data set and fits in memory. We therefore take advantage 
 of the function ``cifar10.load_data()`` provided by
@@ -98,22 +102,24 @@ and load all images in memory but rearrange the data slightly
 
   def load_samples():
       (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-      return zip(x_train, map(int, y_train)), zip(x_test, map(int, y_test))
+      train_samples = zip(x_train, map(int, y_train))
+      test_samples = zip(x_test, map(int, y_test))
+      return train_samples, test_samples
 
-Specifically, we convert class labels from Numpy floats to integers, 
-and zip inputs and outputs to create training and test samples. 
-A single sample is then a tuple of format ``(image, label)``,
-where the image is a Numpy array of shape ``(32,32,3)``, and the label is
-an integer number between 0 and 9, indicating the class. We can verify the
-type and shape of the loaded data by running the following **nuts-flow**
+Specifically, we convert class labels from floats to integers, 
+and zip inputs ``x`` and outputs ``y`` to create lists with training and test samples.
+Sample are then tuples of format ``(image, label)``, where the image is a 
+Numpy array of shape ``(32,32,3)``, and the label is an integer between 0 and 9, 
+indicating the class. We can verify the type and shape of the samples 
+by running the following flow
 
 .. code:: Python
 
   train_samples, val_samples = load_samples()
   train_samples >> Take(3) >> PrintColType() >> Consume()
 
-which takes the first three samples and prints for each sample column 
-the data type and content information
+which takes the first three samples and prints for each sample 
+the data type and content information for the sample columns
 
 .. code:: Python  
 
@@ -126,31 +132,28 @@ the data type and content information
   0: <ndarray> shape:32x32x3 dtype:uint8 range:20-255
   1: <int> 9
 
-As described, sample column 0 contains RGB images of shape 32x32x3 with 
-values in range 0 to 255 and the class labels in column 1 are integers.
 
 .. note::
 
-  The standard format for image data in **nuts-ml** is Numpy arrays
-  of shape ``(h,w,3)`` for RGB images. Also supported are gray-scale images 
-  ``(h,w)`` and RGBA images ``(h,w,4)``.  Image readers will return images in 
-  these formats, image viewers expect these image formats, 
-  and batchers will convert to different shapes to build mini-batches if necessary.
+  The standard formats for image data in **nuts-ml** are Numpy arrays
+  of shape ``(h,w,3)`` for RGB images, ``(h,w)`` for gray-scale images
+  and ``(h,w,4)`` for RGBA image.
 
 
 Training
 --------
 
-We will introduce the code for the network training in small, 
-simplified pieces before showing the complete training example later. 
-We start by creating the network and loading the sample data
+We will introduce the code for the network training in short, 
+simplified pieces before showing the complete code later. First, let us
+create the network and load the sample data using the functions introduced
+above
 
 .. code:: Python
 
   network = create_network()
   train_samples, val_samples = load_samples()
 
-Having a network and samples we could now train the network (for one epoch) 
+Having a network and samples we can now train the network (for one epoch) 
 with the following **nuts-flow**
 
 .. code:: Python
@@ -158,10 +161,10 @@ with the following **nuts-flow**
   train_samples >> augment >> rerange >> Shuffle(100) \
                 >> build_batch >> network.train() >> Consume()
 
-Training images are *augmented* by random transformations, *re-ranged* from [0,255]
-to [0,1], and *shuffled* before mini-batches are *built* that are then fed into
-the network for *training*. The outputs of the training (losses, accuracies)  are
-*consumed*, which drives the entire flow.
+The flow *augments* the training images by random transformations,
+*re-ranges* pixel values to [0,1], *shuffles* the samples, *builds*
+mini-batches and *trains* the network. Finally, the outputs of the training 
+(losses, accuracies) are *consumed*.
 
 ``Consume`` and ``Shuffle`` are *nuts* from **nuts-flow**. Image augmentation, 
 re-ranging and batch-building are parts of **nuts-ml** that are described below.

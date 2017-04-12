@@ -13,6 +13,7 @@ Contents:
    installation
    contributions
    tutorial/introduction
+   faq
    nutsml
 
 

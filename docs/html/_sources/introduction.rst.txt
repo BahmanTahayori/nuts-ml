@@ -1,18 +1,18 @@
 Introduction
 ============
 
-Typical deep-learning code shows certain characteristics such as
+Typical deep-learning code is characterized by
 
 - data pre-processing on CPU and training on GPU
 - mix of common and task-specific pre-processing steps
-- training occurs in epochs
-- training data is processed in mini-batches
+- training in epochs
+- mini-batches of training data
 - data augmentation to increase amount of training data
 - check-pointing of network weights during training
 - logging of training progress
 
-These functions or tasks can be implemented as generalized components 
-and arranged in a pipeline.
+These functions can be implemented as generic components and 
+arranged in data processing pipelines.
 
 
 Canonical pipeline
@@ -37,58 +37,59 @@ components such as
 - *Transformer*: images are transformed, e.g. cropped or resized,
 
 - *Augmenter*: images are augmented to increase data size by random rotations,
-   flipping, changes to contrast, or others,
+  flipping, changes to contrast, or others,
 
 - *Batcher*: the transformed and augmented images are organized in mini-batches 
-   for GPU processing,
+  for GPU processing,
 
 - *Network*: a neural network is trained and evaluated on the GPU,
 
 - *Logger*: the network performance (loss, accuracy, ...) is logged or plotted.
 
-Depending on the actual task (training, testing, evaluation, ...) or data type
-(image, video, text) some of the processing steps will differ but many components 
-can be shared between applications. 
+Depending on the specific application, the mode (training, testing, evaluation, ...) 
+or data type (image, video, text) some of the processing steps will differ but 
+many components can be shared between applications. 
 
 
 Library
 -------
 
 **nuts-ml** is a library that provides common data-processing and machine learning 
-components as so called ‘nuts’. 
-**nuts-ml** is based on `nuts-flow <https://maet3608.github.io/nuts-flow/>`_,
-which itself is based on Python iterators and 
-`itertools <https://docs.python.org/2/library/itertools.html>`_
+components as so called ‘nuts’. **nuts-ml** is based on 
+`nuts-flow <https://maet3608.github.io/nuts-flow/>`_, which itself is based on 
+Python iterators and the `itertools <https://docs.python.org/2/library/itertools.html>`_
+library.
 
 .. image:: pics/architecture.png
    :align: center
 
 **nuts-flow** wraps iterators and itertool functions into *nuts* that provide a 
-``>>`` operator to enable compositions of iterators as pipelines. For instance,
-a nested itertool expression such as the following
+``>>`` operator, which enables the composition of iterators in pipelines. 
+For instance, a nested itertool expression such as the following
 
 .. code:: Python
 
-  list(islice(ifilter(lambda x: x > 5, xrange(10)), 3))
+  >>> list(islice(ifilter(lambda x: x > 5, xrange(10)), 3))  # doctest: +SKIP
+  [6, 7, 8]
 
 can be flattened and more clearly written with **nuts-flow** as
 
 .. code:: Python
 
-  Range(10) >> Filter(_ > 5) >> Take(3) >> Collect()
+  >>> Range(10) >> Filter(_ > 5) >> Take(3) >> Collect()  # doctest: +SKIP
+  [6, 7, 8]
 
 Nuts can be freely arranged to build data flows that are efficient, 
 easy to understand and easy to modify.
 **nuts-ml** adds nuts specifically for machine learning and (image) data 
-processing.  This excerpt shows the core of a **nuts-ml** pipeline
+processing. This excerpt shows the core of a **nuts-ml** pipeline
 
 .. code:: python
 
-  train_samples >> PrintProgress(train_samples) >>
-    load_image >> transform >> augment >> Shuffle(100) >>
-    build_batch >> network.train() >> Consume()
+  train_samples >> load_image >> transform >> augment >> Shuffle(100)
+                >> build_batch >> network.train() >> Consume()
 
-See the following extended example for a network training with **nuts-ml**.
+The following extended example demonstrates a network training with **nuts-ml**.
 
 
 Example

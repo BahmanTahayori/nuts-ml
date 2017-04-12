@@ -165,7 +165,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Train network</span>
 
-<span class="sd">        train_losses = samples &gt;&gt; batcher &gt;&gt; network.train() &gt;&gt; Collect()</span>
+<span class="sd">        &gt;&gt;&gt; train_losses = samples &gt;&gt; batcher &gt;&gt; network.train() &gt;&gt; Collect()  # doctest: +SKIP</span>
 
 <span class="sd">        :return: Typically returns training loss per batch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -175,7 +175,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Validate network</span>
 
-<span class="sd">        val_losses = samples &gt;&gt; batcher &gt;&gt; network.validate() &gt;&gt; Collect()</span>
+<span class="sd">        &gt;&gt;&gt; val_losses = samples &gt;&gt; batcher &gt;&gt; network.validate() &gt;&gt; Collect()  # doctest: +SKIP</span>
 
 <span class="sd">        :return: Typically returns validation loss per batch.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -185,7 +185,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get network predictions</span>
 
-<span class="sd">        predictions = samples &gt;&gt; batcher &gt;&gt; network.predict() &gt;&gt; Collect()</span>
+<span class="sd">        &gt;&gt;&gt; predictions = samples &gt;&gt; batcher &gt;&gt; network.predict() &gt;&gt; Collect()  # doctest: +SKIP</span>
 
 <span class="sd">        :param bool flatten: True: return individual predictions instead</span>
 <span class="sd">          of batch of prediction</span>
@@ -198,7 +198,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate performance of network for given metrices</span>
 
-<span class="sd">        acc, f1 = samples &gt;&gt; batcher &gt;&gt; network.evaluate([accuracy, f1_score])</span>
+<span class="sd">        &gt;&gt;&gt; acc, f1 = samples &gt;&gt; batcher &gt;&gt; network.evaluate([accuracy, f1_score])  # doctest: +SKIP</span>
 
 <span class="sd">        :param list metric: List of metrics. See EvalNut for details.</span>
 <span class="sd">        :param int|None predcol: Index of column in prediction to extract</span>

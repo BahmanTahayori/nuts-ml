@@ -108,7 +108,6 @@
 <span class="sd">        with a range of [0,255] and a dtype of uint8. Transformation should</span>
 <span class="sd">        result in images with the same properties.</span>
 
-<span class="sd">        Example</span>
 <span class="sd">        &gt;&gt;&gt; transform = TransformImage(0).by(&#39;resize&#39;, 10, 20)</span>
 
 <span class="sd">        :param int|tuple imagecols: Indices of sample columns the transformation</span>
@@ -207,7 +206,7 @@
 <span class="sd">        ...     .by(&#39;shear&#39;, 0.5, [0, 0.2])</span>
 <span class="sd">        ...     .by(&#39;rotate&#39;, 0.5, [0, 360]))</span>
 
-<span class="sd">        samples &gt;&gt; augment1 &gt;&gt; augment2 &gt;&gt; Consume()</span>
+<span class="sd">        &gt;&gt;&gt; samples &gt;&gt; augment1 &gt;&gt; augment2 &gt;&gt; Consume()  # doctest: +SKIP</span>
 
 
 <span class="sd">        :param int|tuple imagecols: Indices of sample columns that contain</span>
