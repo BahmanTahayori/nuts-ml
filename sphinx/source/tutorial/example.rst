@@ -1,6 +1,12 @@
 Example
 =======
 
+
+
+
+Task
+----
+
 `CIFAR-10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ is a classical benchmark
 problem for deep learning in image recognition. Given are 10 categories 
 (airplane, dog, ship, ...) and the task is to classify small images accordingly.
@@ -266,6 +272,10 @@ Writing
 
 Writing image data
 
+
+
+Full example code
+-----------------
 
 .. code:: Python
 

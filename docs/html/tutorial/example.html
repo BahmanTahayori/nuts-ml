@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Example &#8212; nutsml 1.0.7 documentation</title>
+    <title>Example &#8212; nutsml 1.0.8 documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.7',
+        VERSION:     '1.0.8',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -45,6 +45,8 @@
             
   <div class="section" id="example">
 <h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="task">
+<h2>Task<a class="headerlink" href="#task" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> is a classical benchmark
 problem for deep learning in image recognition. Given are 10 categories
 (airplane, dog, ship, ...) and the task is to classify small images accordingly.</p>
@@ -57,6 +59,7 @@ to train a Convolutional Neural Network (CNN) on the CIFAR-10 data. For readabil
 code will be omitted (e.g. import statements) but the complete code and more examples
 can be found under
 <a class="reference external" href="https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples/cifar/cnn_train.py">nutsml/examples</a>.</p>
+</div>
 <div class="section" id="network">
 <h2>Network<a class="headerlink" href="#network" title="Permalink to this headline">¶</a></h2>
 <p>The following network definition for the CNN is a slightly modified copy of the Keras
@@ -253,6 +256,9 @@ while images are represented as numpy arrays with dtype float32.</p>
 <div class="section" id="writing">
 <h2>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
 <p>Writing image data</p>
+</div>
+<div class="section" id="full-example-code">
+<h2>Full example code<a class="headerlink" href="#full-example-code" title="Permalink to this headline">¶</a></h2>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">train_samples</span><span class="p">,</span> <span class="n">val_samples</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">keras.metrics</span> <span class="k">import</span> <span class="n">categorical_accuracy</span>
 
@@ -309,6 +315,7 @@ while images are represented as numpy arrays with dtype float32.</p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Example</a><ul>
+<li><a class="reference internal" href="#task">Task</a></li>
 <li><a class="reference internal" href="#network">Network</a></li>
 <li><a class="reference internal" href="#loading-data">Loading data</a></li>
 <li><a class="reference internal" href="#training">Training</a><ul>
@@ -322,6 +329,7 @@ while images are represented as numpy arrays with dtype float32.</p>
 <li><a class="reference internal" href="#evaluation">Evaluation</a></li>
 <li><a class="reference internal" href="#prediction">Prediction</a></li>
 <li><a class="reference internal" href="#writing">Writing</a></li>
+<li><a class="reference internal" href="#full-example-code">Full example code</a></li>
 </ul>
 </li>
 </ul>

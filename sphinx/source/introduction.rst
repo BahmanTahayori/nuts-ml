@@ -5,14 +5,14 @@ Typical deep-learning code shows certain characteristics such as
 
 - data pre-processing on CPU and training on GPU
 - mix of common and task-specific pre-processing steps
-- training data is processed in mini-batches
 - training occurs in epochs
+- training data is processed in mini-batches
 - data augmentation to increase amount of training data
 - check-pointing of network weights during training
 - logging of training progress
 
-These functions can be implemented as generalized components and arranged
-in a pipeline.
+These functions or tasks can be implemented as generalized components 
+and arranged in a pipeline.
 
 
 Canonical pipeline
@@ -77,8 +77,10 @@ can be flattened and more clearly written with **nuts-flow** as
 
   Range(10) >> Filter(_ > 5) >> Take(3) >> Collect()
 
+Nuts can be freely arranged to build data flows that are efficient, 
+easy to understand and easy to modify.
 **nuts-ml** adds nuts specifically for machine learning and (image) data 
-processing. The following example gives a taste of a **nuts-ml** pipeline:
+processing. This excerpt shows the core of a **nuts-ml** pipeline
 
 .. code:: python
 
@@ -86,5 +88,45 @@ processing. The following example gives a taste of a **nuts-ml** pipeline:
     load_image >> transform >> augment >> Shuffle(100) >>
     build_batch >> network.train() >> Consume()
 
-Nuts can be freely arranged to build data flows that are efficient, 
-easy to understand and easy to modify.
+See the following extended example for a network training with **nuts-ml**.
+
+
+Example
+-------
+
+.. code:: Python
+
+  def train(train_samples, val_samples):
+      rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
+      build_batch = (BuildBatch(BATCH_SIZE)
+                     .by(0, 'image', 'float32')
+                     .by(1, 'one_hot', 'uint8', NUM_CLASSES))
+      p = 0.1
+      augment = (AugmentImage(0)
+                 .by('identical', 1.0)
+                 .by('brightness', p, [0.7, 1.3])
+                 .by('color', p, [0.7, 1.3])
+                 .by('shear', p, [0, 0.1])
+                 .by('fliplr', p)
+                 .by('rotate', p, [-10, 10]))
+
+      network = create_network()
+
+      for epoch in xrange(NUM_EPOCHS):
+          t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
+                           augment >> rerange >> Shuffle(100) >>
+                           build_batch >> network.train() >> Unzip())
+          print("training loss  :\t\t{:.6f}".format(np.mean(t_loss)))
+          print("training acc   :\t\t{:.1f}".format(100 * np.mean(t_acc)))
+
+          e_acc = (val_samples >> rerange >> build_batch >>
+                   network.evaluate([categorical_accuracy]))
+          print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
+
+          network.save_best(e_acc, isloss=False)
+      print('finished.')
+
+
+The complete code and more examples can be found under
+`nutsml/examples <https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples>`_ .
+See the tutorial section for a detailed explanation of the code.
