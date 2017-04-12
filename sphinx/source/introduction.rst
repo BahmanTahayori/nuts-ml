@@ -1,14 +1,30 @@
 Introduction
 ============
 
-Software for GPU-based machine learning, specifically on image data,
-has a common structure depicted by the following *canonical pipeline*
+Typical deep-learning code shows certain characteristics such as
+
+- data pre-processing on CPU and training on GPU
+- mix of common and task-specific pre-processing steps
+- training data is processed in mini-batches
+- training occurs in epochs
+- data augmentation to increase amount of training data
+- check-pointing of network weights during training
+- logging of training progress
+
+These functions can be implemented as generalized components and arranged
+in a pipeline.
+
+
+Canonical pipeline
+------------------
+
+The *canonical pipeline* for deep-learning, specifically for image data,
+is depicted below
 
 .. image:: pics/pipeline.png
 
-Since large (image) data sets often cannot be loaded into memory, data is 
-instead read in small batches or single images that are processed 
-by a pipeline of components
+Data is processed in small batches or single images by a sequence of 
+components such as
 
 - *Reader*: sample data stored in CSV files, `Pandas <http://pandas.pydata.org/>`_ 
   tables, databases or other data sources is read,
@@ -31,11 +47,15 @@ by a pipeline of components
 - *Logger*: the network performance (loss, accuracy, ...) is logged or plotted.
 
 Depending on the actual task (training, testing, evaluation, ...) or data type
-(image, video, text) some of the processing steps may differ but often 
-many components can be shared between applications. 
+(image, video, text) some of the processing steps will differ but many components 
+can be shared between applications. 
+
+
+Library
+-------
 
 **nuts-ml** is a library that provides common data-processing and machine learning 
-operations as encapsulated units, so called ‘nuts’. 
+components as so called ‘nuts’. 
 **nuts-ml** is based on `nuts-flow <https://maet3608.github.io/nuts-flow/>`_,
 which itself is based on Python iterators and 
 `itertools <https://docs.python.org/2/library/itertools.html>`_
@@ -44,7 +64,7 @@ which itself is based on Python iterators and
    :align: center
 
 **nuts-flow** wraps iterators and itertool functions into *nuts* that provide a 
-``>>`` operator to arrange compositions of iterators as pipelines. For instance,
+``>>`` operator to enable compositions of iterators as pipelines. For instance,
 a nested itertool expression such as the following
 
 .. code:: Python

@@ -45,12 +45,24 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>Software for GPU-based machine learning, specifically on image data,
-has a common structure depicted by the following <em>canonical pipeline</em></p>
+<p>Typical deep-learning code shows certain characteristics such as</p>
+<ul class="simple">
+<li>data pre-processing on CPU and training on GPU</li>
+<li>mix of common and task-specific pre-processing steps</li>
+<li>training data does not fit in memory and is processed in mini-batches</li>
+<li>data augmentation to increase amount of training data</li>
+<li>check-pointing of network weights during training</li>
+<li>logging of training progress</li>
+</ul>
+<p>These functions can be implemented as generalized components and arranged
+in a pipeline structure.</p>
+<div class="section" id="canonical-pipeline">
+<h2>Canonical pipeline<a class="headerlink" href="#canonical-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>The <em>canonical pipeline</em> for deep-learning, specifically for image data,
+is depicted below</p>
 <img alt="_images/pipeline.png" src="_images/pipeline.png" />
-<p>Since large (image) data sets often cannot be loaded into memory, data is
-instead read in small batches or single images that are processed
-by a pipeline of components</p>
+<p>Data is processed in small batches or single images by a sequence of
+components</p>
 <ul class="simple">
 <li><em>Reader</em>: sample data stored in CSV files, <a class="reference external" href="http://pandas.pydata.org/">Pandas</a>
 tables, databases or other data sources is read,</li>
@@ -72,21 +84,24 @@ if necessary,</li>
 <li><em>Logger</em>: the network performance (loss, accuracy, ...) is logged or plotted.</li>
 </ul>
 <p>Depending on the actual task (training, testing, evaluation, ...) or data type
-(image, video, text) some of the processing steps may differ but often
-many components can be shared between applications.</p>
+(image, video, text) some of the processing steps will differ but many components
+can be shared between applications.</p>
+</div>
+<div class="section" id="library">
+<h2>Library<a class="headerlink" href="#library" title="Permalink to this headline">¶</a></h2>
 <p><strong>nuts-ml</strong> is a library that provides common data-processing and machine learning
-operations as encapsulated units, so called ‘nuts’.
+components as so called ‘nuts’.
 <strong>nuts-ml</strong> is based on <a class="reference external" href="https://maet3608.github.io/nuts-flow/">nuts-flow</a>,
 which itself is based on Python iterators and
 <a class="reference external" href="https://docs.python.org/2/library/itertools.html">itertools</a></p>
 <img alt="_images/architecture.png" class="align-center" src="_images/architecture.png" />
 <p><strong>nuts-flow</strong> wraps iterators and itertool functions into <em>nuts</em> that provide a
-<code class="docutils literal"><span class="pre">&gt;&gt;</span></code> operator to arrange compositions of iterators as pipelines. For instance,
+<code class="docutils literal"><span class="pre">&gt;&gt;</span></code> operator to enable compositions of iterators as pipelines. For instance,
 a nested itertool expression such as the following</p>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">ifilter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">,</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>can be flattened and more clearly written with <strong>nuts-flow</strong> as</p>
+<p>can be <em>flattened</em> and more clearly written with <strong>nuts-flow</strong> as</p>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">Range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Filter</span><span class="p">(</span><span class="n">_</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Collect</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -100,13 +115,23 @@ processing. The following example gives a taste of a <strong>nuts-ml</strong> pi
 <p>Nuts can be freely arranged to build data flows that are efficient,
 easy to understand and easy to modify.</p>
 </div>
+</div>
 
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#canonical-pipeline">Canonical pipeline</a></li>
+<li><a class="reference internal" href="#library">Library</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>

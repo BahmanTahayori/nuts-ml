@@ -7,13 +7,14 @@ problem for deep learning in image recognition. Given are 10 categories
 
 .. image:: pics/cifar10.png
 
-The dataset consists of 60000 RGB images of size 32x32 pixels. There are 6000 images 
+The CIFAR-10 dataset consists of 60000 RGB images of size 32x32. There are 6000 images 
 per class and the dataset is split into 50000 training images and 10000 test images.
 For more details see the `Tech report  <https://www.cs.toronto.edu/~kriz/learning-features-2009-TR.pdf>`_. 
 
-Here we show how to use **nuts-flow/ml** and `Keras <https://keras.io/>`_ to
-train a network for this task. For readability we ommit the imports but
-the complete code and more examples can be found under
+In the following we will show how to use **nuts-flow/ml** and `Keras <https://keras.io/>`_ 
+to train a Convolutional Neural Network (CNN) on the CIFAR-10 data. For readability some 
+code will be omitted (e.g. import statements) but the complete code and more examples 
+can be found under
 `nutsml/examples <https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples/cifar/cnn_train.py>`_.
 
 
@@ -21,10 +22,10 @@ the complete code and more examples can be found under
 Network
 -------
 
-The following network definition of a CNN is a slightly modified copy of the Keras
+The following network definition for the CNN is a slightly modified copy of the Keras
 `cifar10_cnn.py <https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py>`_ 
-example with the notable exception of the last line, where the model is wrapped in a
-``KerasNetwork``. Note this Keras version 2.x.
+example (Keras version 2.x) with the notable exception of the last line, 
+where the model is wrapped in a ``KerasNetwork``.
 
 .. code:: Python
 
@@ -61,13 +62,20 @@ example with the notable exception of the last line, where the model is wrapped 
       return KerasNetwork(model, 'weights_cifar10.hd5')
 
 
-The wrapping will allows us to use the CNN as a ``nut`` within a **nuts-flow**.
-The ``KerasNetwork`` wrapper also takes a path to a weights file used for
-check-pointing.
+The wrapping allows us to use the CNN as a ``nut`` within a **nuts-flow**,
+which simplifies training. The wrapper also takes a path to a weights file 
+used for check-pointing.
+
+.. note:: 
+
+  Wrapping a model is convenient and wrappers for Keras and Lasagne models
+  are provided. But any deep-learning library that accepts an iterable over 
+  mini-batches for training will work with **nuts-ml**.
 
 
-Loading samples
----------------
+
+Loading data
+------------
 
 In many real-world image processing applications the complete set of training images 
 is too large to fit in memory and images would be loaded individually 
@@ -75,11 +83,10 @@ as part of the data flow. See `read_images.py
 <https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples/cifar/read_images.py>`_ 
 for an example that loads images sequentially from the file system.
 
-CIFAR-10 is small benchmark example and all images 
-fit in memory. We therefore take advantage of the data loading function 
-``cifar10.load_data()`` provided by
+CIFAR-10 is small benchmark data set and fits in memory. We therefore take advantage 
+of the function ``cifar10.load_data()`` provided by
 `Keras <https://github.com/fchollet/keras/blob/master/keras/datasets/cifar10.py>`_,
-load all images in memory, but rearrange the data slightly
+and load all images in memory but rearrange the data slightly
 
 .. code:: Python
 
@@ -89,15 +96,10 @@ load all images in memory, but rearrange the data slightly
 
 Specifically, we convert class labels from Numpy floats to integers, 
 and zip inputs and outputs to create training and test samples. 
-A single sample is then of the following format
-
-.. code:: Python
-
-  (image, label)
-
+A single sample is then a tuple of format ``(image, label)``,
 where the image is a Numpy array of shape ``(32,32,3)``, and the label is
 an integer number between 0 and 9, indicating the class. We can verify the
-type and shape of the loaded data by running the following code
+type and shape of the loaded data by running the following **nuts-flow**
 
 .. code:: Python
 
@@ -105,7 +107,7 @@ type and shape of the loaded data by running the following code
   train_samples >> Take(3) >> PrintColType() >> Consume()
 
 which takes the first three samples and prints for each sample column 
-the data type and content info
+the data type and content information
 
 .. code:: Python  
 
@@ -118,9 +120,8 @@ the data type and content info
   0: <ndarray> shape:32x32x3 dtype:uint8 range:20-255
   1: <int> 9
 
-As expected, sample column 0 contain RGB images of shape 32x32x3 with value 
-in range 0 to 255 and the class labels in column 1 are an integers.
-
+As described, sample column 0 contains RGB images of shape 32x32x3 with 
+values in range 0 to 255 and the class labels in column 1 are integers.
 
 .. note::
 
@@ -134,10 +135,9 @@ in range 0 to 255 and the class labels in column 1 are an integers.
 Training
 --------
 
-We will introduce the code for the network training in small, slightly 
+We will introduce the code for the network training in small, 
 simplified pieces before showing the complete training example later. 
-We start by creating the network and loading the sample data, 
-using the functions shown above
+We start by creating the network and loading the sample data
 
 .. code:: Python
 
@@ -149,16 +149,16 @@ with the following **nuts-flow**
 
 .. code:: Python
 
-  train_samples >> augment >> rerange >> Shuffle(100) >> 
-                   build_batch >> network.train() >> Consume()
+  train_samples >> augment >> rerange >> Shuffle(100) \
+                >> build_batch >> network.train() >> Consume()
 
 Training images are *augmented* by random transformations, *re-ranged* from [0,255]
 to [0,1], and *shuffled* before mini-batches are *built* that are then fed into
 the network for *training*. The outputs of the training (losses, accuracies)  are
 *consumed*, which drives the entire flow.
 
-``Consume`` and ``Shuffle`` are pre-defined *nuts* from **nuts-flow**. Augmentation, 
-re-ranging and batch-building are *nuts* from **nuts-ml** that are described below.
+``Consume`` and ``Shuffle`` are *nuts* from **nuts-flow**. Image augmentation, 
+re-ranging and batch-building are parts of **nuts-ml** that are described below.
 
 
 Augmentation
@@ -166,9 +166,8 @@ Augmentation
 
 Deep learning requires large data sets and a common strategy to increase the
 amount of image data is to augment the data set with randomly perturbed
-copies, e.g. slightly rotated or changed in contrast. Here we augment the 
-CIFAR-10 data set by flipping images left-right and changing
-the brightness
+copies, e.g. rotated or blurred. Here we augment the CIFAR-10 data set by 
+flipping images horizontally and changing the brightness
 
 .. code:: Python
 
@@ -208,6 +207,10 @@ We therefore transform images by *reranging*
 where again ``TransformImage`` takes as parameter the index of the image within 
 the sample and transformation are specified by invoking 
 ``by(transformation, probability, *args)``.
+
+
+TODO: Where to find available transformations/augmentations
+TODO: example add your own transformations
 
 
 Batching
