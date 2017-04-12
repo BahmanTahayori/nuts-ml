@@ -1,3 +1,8 @@
+"""
+.. module:: view_train_images
+   :synopsis: Example nuts-ml pipeline reading and viewing image data
+"""
+
 from cnn_train import load_samples, load_names
 from nutsflow import Take, Consume, MapCol
 from nutsml import ViewImageAnnotation, PrintColType

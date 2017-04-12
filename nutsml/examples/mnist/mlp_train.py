@@ -1,4 +1,7 @@
 """
+.. module:: mlp_train
+   :synopsis: Example nuts-ml pipeline for training and evaluation
+
 This is code is based on a Keras example (see here)
 https://github.com/fchollet/keras/blob/master/examples/mnist_mlp.py
 to train a Multi-layer perceptron on the MNIST data and modified to

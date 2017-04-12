@@ -1,9 +1,13 @@
 """
+.. module:: cnn_train
+   :synopsis: Example nuts-ml pipeline for viewing annotations and predictions 
+
 This is code is based on a Keras example (see here)
 https://github.com/fchollet/keras/blob/master/examples/mnist_cnn.py
 to train a Multi-layer perceptron on the MNIST data and modified to
 use nuts for the data-preprocessing.
 """
+
 
 from __future__ import print_function
 

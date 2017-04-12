@@ -1,3 +1,8 @@
+"""
+.. module:: mlp_predict
+   :synopsis: Example nuts-ml pipeline for prediction
+"""
+
 from __future__ import print_function
 
 from mlp_train import create_network

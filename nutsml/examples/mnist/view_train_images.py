@@ -1,3 +1,8 @@
+"""
+.. module:: view_train_images
+   :synopsis: Example for showing images with annotation
+"""
+
 from mlp_train import load_samples
 from nutsflow import Take, Consume
 from nutsml import ViewImageAnnotation

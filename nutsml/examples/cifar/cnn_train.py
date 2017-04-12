@@ -1,6 +1,8 @@
 """
-Example nuts-ml pipeline for CIFAR-10 training and prediction
+.. module:: mlp_view_misclassified
+   :synopsis: Example for showing misclassifed examples
 """
+
 from __future__ import print_function
 
 import cPickle

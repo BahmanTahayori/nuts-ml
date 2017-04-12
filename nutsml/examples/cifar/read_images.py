@@ -1,3 +1,8 @@
+"""
+.. module:: read_images
+   :synopsis: Example nuts-ml pipeline for reading and viewing image data
+"""
+
 from glob import glob
 from nutsflow import Consume
 from nutsml import ReadImage, ViewImage, PrintColType

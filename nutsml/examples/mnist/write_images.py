@@ -1,3 +1,8 @@
+"""
+.. module:: write_images
+   :synopsis: Example for writing of image data
+"""
+
 from keras.datasets import mnist
 from nutsflow import Take, Consume, Enumerate, Zip, Format, Get
 from nutsml import WriteImage

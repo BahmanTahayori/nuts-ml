@@ -1,3 +1,8 @@
+"""
+.. module:: write_images
+   :synopsis: Example nuts-ml pipeline for writing of images 
+"""
+
 from cnn_train import load_samples, load_names
 from nutsflow import (Take, Print, Consume, Enumerate, Zip, Format, MapCol,
                       Get)
