@@ -144,9 +144,9 @@ def group_by(elements, keyfunc):
     """
     Group elements using the given key function.
 
-    >> is_odd = lambda x: bool(x % 2)
-    >> numbers = [0, 1, 2, 3, 4]
-    >> group_by(numbers, is_odd)
+    >>> is_odd = lambda x: bool(x % 2)
+    >>> numbers = [0, 1, 2, 3, 4]
+    >>> group_by(numbers, is_odd)
     {False: [0, 2, 4], True: [1, 3]}
 
     :param iterable elements: Any iterable
@@ -158,19 +158,19 @@ def group_by(elements, keyfunc):
     groups = cl.defaultdict(list)
     for e in elements:
         groups[keyfunc(e)].append(e)
-    return groups
+    return dict(groups)
 
 
 def col_map(sample, columns, func, *args, **kwargs):
     """
     Map function to given columns of sample and keep other columns
 
-    >> sample = (1, 2, 3)
-    >> add_n = lambda x, n: x + n
-    >> col_map(sample, 1, add_n, 10)
+    >>> sample = (1, 2, 3)
+    >>> add_n = lambda x, n: x + n
+    >>> col_map(sample, 1, add_n, 10)
     (1, 12, 3)
 
-    >> col_map(sample, (0, 2), add_n, 10)
+    >>> col_map(sample, (0, 2), add_n, 10)
     (11, 2, 13)
 
     :param tuple|list sample: Sample

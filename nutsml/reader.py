@@ -139,6 +139,7 @@ class ReadPandas(NutSource):
 
         Note that samples.table contains the original Pandas dataframe and
         any Pandas operations can be performed on it.
+        
         >>> samples = ReadPandas('tests/data/pandas_table.csv')
         >>> samples.dataframe.head()
            col1  col2
@@ -180,14 +181,14 @@ class ReadPandas(NutSource):
         """
         Return true if values is NaN or None.
 
-        >> import numpy as np
-        >> ReadPandas.isnull(np.NaN)
+        >>> import numpy as np
+        >>> ReadPandas.isnull(np.NaN)
         True
 
-        >> ReadPandas.isnull(None)
+        >>> ReadPandas.isnull(None)
         True
 
-        >> ReadPandas.isnull(0)
+        >>> ReadPandas.isnull(0)
         False
 
         :param value: Value to test
@@ -216,7 +217,7 @@ class ReadPandas(NutSource):
         https://cran.rstudio.com/web/packages/dplyr/vignettes/introduction.html
         for more details about dplyr.
 
-        dplyr and Nuts use the same syntax (>>) for chaining functions and
+        dplyr and nuts-ml use the same syntax (>>) for chaining functions and
         integrate nicely with each other.
 
         :return: dplyr dataframe instead of Pandas dataframe.

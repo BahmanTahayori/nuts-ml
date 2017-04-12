@@ -121,7 +121,7 @@ class Network(object):
         """
         Train network
 
-        train_losses = samples >> batcher >> network.train() >> Collect()
+        >>> train_losses = samples >> batcher >> network.train() >> Collect()  # doctest: +SKIP
 
         :return: Typically returns training loss per batch.
         """
@@ -131,7 +131,7 @@ class Network(object):
         """
         Validate network
 
-        val_losses = samples >> batcher >> network.validate() >> Collect()
+        >>> val_losses = samples >> batcher >> network.validate() >> Collect()  # doctest: +SKIP
 
         :return: Typically returns validation loss per batch.
         """
@@ -141,7 +141,7 @@ class Network(object):
         """
         Get network predictions
 
-        predictions = samples >> batcher >> network.predict() >> Collect()
+        >>> predictions = samples >> batcher >> network.predict() >> Collect()  # doctest: +SKIP
 
         :param bool flatten: True: return individual predictions instead
           of batch of prediction
@@ -154,7 +154,7 @@ class Network(object):
         """
         Evaluate performance of network for given metrices
 
-        acc, f1 = samples >> batcher >> network.evaluate([accuracy, f1_score])
+        >>> acc, f1 = samples >> batcher >> network.evaluate([accuracy, f1_score])  # doctest: +SKIP
 
         :param list metric: List of metrics. See EvalNut for details.
         :param int|None predcol: Index of column in prediction to extract

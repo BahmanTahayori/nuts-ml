@@ -64,7 +64,6 @@ class TransformImage(NutFunction):
         with a range of [0,255] and a dtype of uint8. Transformation should
         result in images with the same properties.
 
-        Example
         >>> transform = TransformImage(0).by('resize', 10, 20)
 
         :param int|tuple imagecols: Indices of sample columns the transformation
@@ -163,7 +162,7 @@ class AugmentImage(Nut):
         ...     .by('shear', 0.5, [0, 0.2])
         ...     .by('rotate', 0.5, [0, 360]))
 
-        samples >> augment1 >> augment2 >> Consume()
+        >>> samples >> augment1 >> augment2 >> Consume()  # doctest: +SKIP
 
 
         :param int|tuple imagecols: Indices of sample columns that contain

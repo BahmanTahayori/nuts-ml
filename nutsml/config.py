@@ -40,10 +40,10 @@ def load_config(filename):
     1) user home dir
     2) current dir
     3) full path
-
-    Example file: 'tests/data/config.yaml'
-    filepath : c:/Maet
-    imagesize : [100, 200]
+    
+    |  Example file: 'tests/data/config.yaml'
+    |  filepath : c:/Maet
+    |  imagesize : [100, 200]
 
     >>> cfg = load_config('tests/data/config.yaml')
     >>> cfg.filepath

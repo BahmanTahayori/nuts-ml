@@ -73,7 +73,6 @@ class ViewImage(NutFunction):  # pragma no coverage
         See
         http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
 
-        Example
         >>> from nutsflow import Consume
         >>> from nutsml import ReadImage
         >>> imagepath = 'tests/data/img_formats/*.jpg'
