@@ -70,8 +70,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'nutsml'
-copyright = u'2016, IBM'
-author = u'IBM'
+copyright = u'2017, IBM Research Australia'
+author = u'Stefan Maetschke'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -131,16 +131,16 @@ todo_include_todos = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'alabaster'
+#html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 # html_theme = 'bizstyle'
-# html_theme = 'sphinx_rtd_theme'
 # html_theme = 'classic'
 # html_theme = 'nature'
 
 # https://pythonhosted.org/cloud_sptheme/cloud_theme.html
-# import cloud_sptheme as csp
-# html_theme = "cloud"  # There is also "redcloud"
-# html_theme_path = [csp.get_theme_dir()]
+#import cloud_sptheme as csp
+#html_theme = "cloud"  # There is also "redcloud"
+#html_theme_path = [csp.get_theme_dir()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
