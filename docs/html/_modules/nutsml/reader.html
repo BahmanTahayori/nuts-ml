@@ -182,7 +182,7 @@
 
 <span class="sd">    See: https://github.com/dodger487/dplython</span>
 
-<span class="sd">    &gt;&gt;&gt; ReadPandas().dplyr() &gt;&gt; DplyToList() &gt;&gt; Collect()</span>
+<span class="sd">    &gt;&gt;&gt; ReadPandas(fpath).dplyr() &gt;&gt; DplyToList() &gt;&gt; Collect()  # doctest: +SKIP</span>
 
 <span class="sd">    :param DplyDataframe dplyframe: Dataframe.</span>
 <span class="sd">    :return: List of dataframe rows</span>
@@ -201,6 +201,8 @@
 <span class="sd">    Typically used when classification data is organized in folders,</span>
 <span class="sd">    where the folder name represents the class label and the files in</span>
 <span class="sd">    the folder the data samples (images, documents, ...) for that class.</span>
+
+<span class="sd">    &gt;&gt;&gt; from nutsflow import Collect</span>
 
 <span class="sd">    &gt;&gt;&gt; read = ReadLabelDirs(&#39;tests/data/labeldirs&#39;, &#39;*.txt&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; samples = read &gt;&gt; Collect()</span>
@@ -233,9 +235,11 @@
 <span class="sd">    Images are returned as numpy arrays of shape (h, w, c) or (h, w) for</span>
 <span class="sd">    color images or gray scale images respectively.</span>
 <span class="sd">    See nutsml.imageutil.load_image for details.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from nutsflow import Collect</span>
 
 <span class="sd">    &gt;&gt;&gt; samples = [&#39;tests/data/img_formats/nut_color.gif&#39;]</span>
-<span class="sd">    &gt;&gt;&gt; img_samples = samples &gt;&gt; ReadImage() &gt;&gt; Collect()</span>
+<span class="sd">    &gt;&gt;&gt; img_samples = samples &gt;&gt; ReadImage(None) &gt;&gt; Collect()</span>
 
 <span class="sd">    &gt;&gt;&gt; samples = [(&#39;tests/data/img_formats/nut_color.gif&#39;, &#39;class0&#39;)]</span>
 <span class="sd">    &gt;&gt;&gt; img_samples = samples &gt;&gt; ReadImage(0) &gt;&gt; Collect()</span>

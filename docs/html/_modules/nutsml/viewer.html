@@ -180,19 +180,23 @@
 
 <span class="sd">    Print type and other information for columns in data.</span>
 
+<span class="sd">    &gt;&gt;&gt; from nutsflow import Consume</span>
+<span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; data = [(np.zeros((10, 20, 3)), 1), (&#39;text&#39;, 2), 3]</span>
 <span class="sd">    &gt;&gt;&gt; data &gt;&gt; PrintColType() &gt;&gt; Consume()</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
 <span class="sd">    0: &lt;ndarray&gt; shape:10x20x3 dtype:float64 range:0.0-0.0</span>
 <span class="sd">    1: &lt;int&gt; 1</span>
-
+<span class="sd">    &lt;BLANKLINE&gt;</span>
 <span class="sd">    0: &lt;str&gt; text</span>
 <span class="sd">    1: &lt;int&gt; 2</span>
-
+<span class="sd">    &lt;BLANKLINE&gt;</span>
 <span class="sd">    0: &lt;int&gt; 3</span>
 
 <span class="sd">    &gt;&gt;&gt; [(1, 2), (3, 4)] &gt;&gt; PrintColType(1) &gt;&gt; Consume()</span>
+<span class="sd">    &lt;BLANKLINE&gt;</span>
 <span class="sd">    1: &lt;int&gt; 2</span>
-
+<span class="sd">    &lt;BLANKLINE&gt;</span>
 <span class="sd">    1: &lt;int&gt; 4</span>
 
 <span class="sd">    :param any data: Any type of fas</span>
