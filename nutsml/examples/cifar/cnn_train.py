@@ -10,13 +10,6 @@ import cPickle
 import numpy as np
 import os.path as osp
 
-from keras.datasets import cifar10
-from keras.utils.data_utils import get_file
-from keras.metrics import categorical_accuracy
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
-from keras.layers import Convolution2D, MaxPooling2D
-
 from nutsflow import (PrintProgress, Zip, Unzip, Pick, Shuffle)
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     PlotLines)
@@ -29,11 +22,13 @@ INPUT_SHAPE = (32, 32, 3)
 
 
 def load_samples():
+    from keras.datasets import cifar10
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
     return zip(x_train, map(int, y_train)), zip(x_test, map(int, y_test))
 
 
 def load_names():
+    from keras.utils.data_utils import get_file
     dirname = 'cifar-10-batches-py'
     origin = 'http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'
     path = get_file(dirname, origin=origin, untar=True)
@@ -41,7 +36,11 @@ def load_names():
         return cPickle.load(f)['label_names']
 
 
-def create_network():
+def create_network():    
+    from keras.models import Sequential
+    from keras.layers import Dense, Dropout, Activation, Flatten
+    from keras.layers import Convolution2D, MaxPooling2D
+
     model = Sequential()
     model.add(Convolution2D(32, (3, 3), padding='same',
                             input_shape=INPUT_SHAPE))
@@ -71,6 +70,8 @@ def create_network():
 
 
 def train(train_samples, val_samples):
+    from keras.metrics import categorical_accuracy
+    
     rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE)
                    .by(0, 'image', 'float32')

@@ -12,11 +12,6 @@ from __future__ import print_function
 
 import numpy as np
 
-from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Activation
-from keras.metrics import categorical_accuracy
-
 from nutsflow import PrintProgress, Collect, Unzip
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
@@ -26,11 +21,15 @@ NUM_CLASSES = 10
 
 
 def load_samples():
+    from keras.datasets import mnist
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
     return zip(X_train, y_train), zip(X_test, y_test)
 
 
 def create_network():
+    from keras.models import Sequential
+    from keras.layers.core import Dense, Dropout, Activation
+
     model = Sequential()
     model.add(Dense(512, input_shape=(784,)))
     model.add(Activation('relu'))
@@ -48,6 +47,8 @@ def create_network():
 
 
 def train():
+    from keras.metrics import categorical_accuracy
+
     TransformImage.register('flatten', lambda img: img.flatten())
     transform = (TransformImage(0)
                  .by('rerange', 0, 255, 0, 1, 'float32')

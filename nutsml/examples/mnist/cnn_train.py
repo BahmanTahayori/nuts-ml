@@ -13,12 +13,6 @@ from __future__ import print_function
 
 import numpy as np
 
-from keras.datasets import mnist
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.layers import Conv2D, MaxPooling2D
-from keras.metrics import categorical_accuracy
-
 from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
@@ -30,6 +24,7 @@ NUM_CLASSES = 10
 
 
 def load_samples():
+    from keras.datasets import mnist
     h, w, c = INPUT_SHAPE
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train = x_train.reshape(x_train.shape[0], h, w, c)
@@ -38,6 +33,10 @@ def load_samples():
 
 
 def create_network():
+    from keras.models import Sequential
+    from keras.layers import Dense, Dropout, Flatten
+    from keras.layers import Conv2D, MaxPooling2D
+
     model = Sequential()
     model.add(Conv2D(32, (3, 3), activation='relu', input_shape=INPUT_SHAPE))
     model.add(Conv2D(64, (3, 3), activation='relu'))
@@ -54,6 +53,8 @@ def create_network():
 
 
 def train():
+    from keras.metrics import categorical_accuracy
+    
     transform = (TransformImage(0)
                  .by('rerange', 0, 255, 0, 1, 'float32'))
     build_batch = (BuildBatch(BATCH_SIZE)
