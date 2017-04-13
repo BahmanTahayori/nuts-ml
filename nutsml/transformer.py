@@ -198,7 +198,7 @@ class AugmentImage(Nut):
 
         :param iterable iterable: Samples
         :return: iterable with augmented samples
-        :rtype: iterable
+        :rtype: generator
         """
         imagecols = as_tuple(self.imagecols)
         rand = self.rand
@@ -220,8 +220,8 @@ def RegularImagePatches(iterable, imagecols, pshape, stride):
     >>> import numpy as np
     >>> img = np.reshape(np.arange(12), (3, 4))
     >>> samples = [(img, 0)]
-    >>> get_patches = RegularImagePatches(0, (2, 2), 2)
-    >>> for p in samples >> get_patches:
+    >>> getpatches = RegularImagePatches(0, (2, 2), 2)
+    >>> for p in samples >> getpatches:
     ...     print p
     (array([[0, 1],
            [4, 5]]), 0)
@@ -235,7 +235,7 @@ def RegularImagePatches(iterable, imagecols, pshape, stride):
     :param tuple shape: Shape of patch (h,w)
     :param int stride: Step size of grid patches are extracted from
     :return: Iterator over samples where images are replaced by patches.
-    :rtype: iterator
+    :rtype: generator
     """
     colset = as_set(imagecols)
     for sample in iterable:
@@ -260,8 +260,8 @@ def RandomImagePatches(iterable, imagecols, pshape, npatches):
     >>> np.random.seed(0)    # just to ensure stable doctest
     >>> img = np.reshape(np.arange(30), (5, 6))
     >>> samples = [(img, 0)]
-    >>> get_patches = RandomImagePatches(0, (2, 3), 3)
-    >>> for (p, l) in patches:
+    >>> getpatches = RandomImagePatches(0, (2, 3), 3)
+    >>> for (p, l) in samples >> getpatches:
     ...     print p, l
     [[ 7  8  9]
      [13 14 15]] 0
@@ -277,7 +277,7 @@ def RandomImagePatches(iterable, imagecols, pshape, npatches):
     :param tuple shape: Shape of patch (h,w)
     :param int npatches: Number of patches to extract (per image)
     :return: Iterator over samples where images are replaced by patches.
-    :rtype: iterator
+    :rtype: generator
     """
     imagecols = as_tuple(imagecols)
     for sample in iterable:
@@ -311,8 +311,8 @@ def ImagePatchesByMask(iterable, imagecol, maskcol, pshape, npos,
     >>> mask = np.eye(5, dtype='uint8') * 255
     >>> samples = [(img, mask)]
 
-    >>> get_patches = ImagePatchesByMask(0, 1, (3, 3), 2, 1)
-    >>> for (p, l) in patches:
+    >>> getpatches = ImagePatchesByMask(0, 1, (3, 3), 2, 1)
+    >>> for (p, l) in samples >> getpatches:
     ...     print p, l
     [[10 11 12]
      [15 16 17]
@@ -325,22 +325,22 @@ def ImagePatchesByMask(iterable, imagecol, maskcol, pshape, npos,
      [16 17 18]] 1
 
     >>> np.random.seed(0)    # just to ensure stable doctest
-    >>> get_patches = ImagePatchesByMask(0, 1, (3, 3), 1, 1, retlabel=False)
-    >>> for (p, m) in patches:
+    >>> patches = ImagePatchesByMask(0, 1, (3, 3), 1, 1, retlabel=False)
+    >>> for (p, m) in samples >> getpatches:
     ...     print p
     ...     print m
-    [[12 13 14]
-     [17 18 19]
-     [22 23 24]]
-    [[255   0   0]
-     [  0 255   0]
-     [  0   0 255]]
     [[10 11 12]
      [15 16 17]
      [20 21 22]]
-    [[  0   0 255]
-     [  0   0   0]
-     [  0   0   0]]
+    0
+    [[12 13 14]
+     [17 18 19]
+     [22 23 24]]
+    1
+    [[ 6  7  8]
+     [11 12 13]
+     [16 17 18]]
+    1
 
     :param iterable iterable: Samples with images
     :param int imagecol: Index of sample column that contain image
@@ -355,7 +355,7 @@ def ImagePatchesByMask(iterable, imagecol, maskcol, pshape, npos,
     :param bool retlabel: True return label, False return mask patch
     :return: Iterator over samples where images are replaced by image patches
         and masks are replaced by labels [0,1] or mask patches
-    :rtype: iterator
+    :rtype: generator
     """
     for sample in iterable:
         image, mask = sample[imagecol], sample[maskcol]
@@ -388,8 +388,8 @@ def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
     >>> anno = ('point', ((3, 2), (2, 3),))
     >>> samples = [(img, anno)]
 
-    >>> get_patches = ImagePatchesByAnnotation(0, 1, (3, 3), 1, 1)
-    >>> for (p, l) in patches:
+    >>> getpatches = ImagePatchesByAnnotation(0, 1, (3, 3), 1, 1)
+    >>> for (p, l) in samples >> getpatches:
     ...     print p, l
     [[12 13 14]
      [17 18 19]
@@ -397,7 +397,7 @@ def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
     [[11 12 13]
      [16 17 18]
      [21 22 23]] 1
-    [[7 8 9]
+    [[ 7  8  9]
      [12 13 14]
      [17 18 19]] 1
 
@@ -413,7 +413,7 @@ def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
     :param int neg: Mask value indicating negatives
     :return: Iterator over samples where images are replaced by image patches
         and annotations are replaced by labels [0,1]
-    :rtype: iterator
+    :rtype: generator
     """
     for sample in iterable:
         image, annotations = sample[imagecol], sample[annocol]
@@ -440,11 +440,13 @@ def ImageAnnotationToMask(iterable, imagecol, annocol):
     ('polyline', (((x, y), (x, y), ...), ...))
 
     >>> import numpy as np
+    >>> from nutsflow import Collect
+    
     >>> img = np.zeros((3, 3), dtype='uint8')
     >>> anno = ('point', ((0, 1), (2, 0)))
     >>> samples = [(img, anno)]
     >>> masks = samples >> ImageAnnotationToMask(0, 1) >> Collect()
-    >>> masks[0][1]
+    >>> print masks[0][1]
     [[  0   0 255]
      [255   0   0]
      [  0   0   0]]
@@ -453,7 +455,7 @@ def ImageAnnotationToMask(iterable, imagecol, annocol):
     :param int imagecol: Index of sample column that contain image
     :param int annocol: Index of sample column that contain annotation
     :return: Iterator over samples where annotations are replaced by masks
-    :rtype: iterator
+    :rtype: generator
     """
     for sample in iterable:
         sample = list(sample)[:]  # going to mutate sample

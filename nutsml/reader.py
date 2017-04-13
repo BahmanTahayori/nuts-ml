@@ -20,7 +20,7 @@ def DplyToList(dplyframe):
 
     See: https://github.com/dodger487/dplython
 
-    >>> ReadPandas().dplyr() >> DplyToList() >> Collect()
+    >>> ReadPandas(fpath).dplyr() >> DplyToList() >> Collect()  # doctest: +SKIP
 
     :param DplyDataframe dplyframe: Dataframe.
     :return: List of dataframe rows
@@ -39,6 +39,8 @@ def ReadLabelDirs(basedir, filepattern='*'):
     Typically used when classification data is organized in folders,
     where the folder name represents the class label and the files in
     the folder the data samples (images, documents, ...) for that class.
+
+    >>> from nutsflow import Collect
 
     >>> read = ReadLabelDirs('tests/data/labeldirs', '*.txt')
     >>> samples = read >> Collect()
@@ -71,9 +73,11 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False):
     Images are returned as numpy arrays of shape (h, w, c) or (h, w) for
     color images or gray scale images respectively.
     See nutsml.imageutil.load_image for details.
+    
+    >>> from nutsflow import Collect
 
     >>> samples = ['tests/data/img_formats/nut_color.gif']
-    >>> img_samples = samples >> ReadImage() >> Collect()
+    >>> img_samples = samples >> ReadImage(None) >> Collect()
 
     >>> samples = [('tests/data/img_formats/nut_color.gif', 'class0')]
     >>> img_samples = samples >> ReadImage(0) >> Collect()

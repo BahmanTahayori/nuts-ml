@@ -18,19 +18,23 @@ def PrintColType(data, cols=None):
 
     Print type and other information for columns in data.
 
+    >>> from nutsflow import Consume
+    
     >>> data = [(np.zeros((10, 20, 3)), 1), ('text', 2), 3]
     >>> data >> PrintColType() >> Consume()
+    <BLANKLINE>
     0: <ndarray> shape:10x20x3 dtype:float64 range:0.0-0.0
     1: <int> 1
-
+    <BLANKLINE>
     0: <str> text
     1: <int> 2
-
+    <BLANKLINE>
     0: <int> 3
 
     >>> [(1, 2), (3, 4)] >> PrintColType(1) >> Consume()
+    <BLANKLINE>
     1: <int> 2
-
+    <BLANKLINE>
     1: <int> 4
 
     :param any data: Any type of fas

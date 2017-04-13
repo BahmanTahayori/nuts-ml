@@ -72,6 +72,7 @@ def test_SplitRandom_seed():
 def test_SplitRandom_constraint():
     same_letter = lambda (c, i): c
     data = zip('aabbccddee', xrange(10))
-    train, val = data >> SplitRandom(ratio=0.6, constraint=same_letter)
-    assert train == [('c', 4), ('e', 8), ('b', 2), ('c', 5), ('b', 3), ('e', 9)]
-    assert val == [('d', 6), ('d', 7), ('a', 1), ('a', 0)]
+    train, val = data >> SplitRandom(rand=rnd.Random(0),
+                                     ratio=0.6, constraint=same_letter)
+    assert train == [('b', 3), ('c', 4), ('b', 2), ('c', 5), ('a', 0), ('a', 1)]
+    assert val == [('e', 8), ('e', 9), ('d', 7), ('d', 6)]
