@@ -54,7 +54,7 @@ def create_network():
 
 def train():
     from keras.metrics import categorical_accuracy
-    
+
     transform = (TransformImage(0)
                  .by('rerange', 0, 255, 0, 1, 'float32'))
     build_batch = (BuildBatch(BATCH_SIZE)
