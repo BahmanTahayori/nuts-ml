@@ -26,8 +26,8 @@ pipeline
 
   t_loss = (train_samples >> PrintProgress(train_samples) >>
                              augment >> rerange >> Shuffle(100) >>
-                             build_batch >> network.train() >> Collect())
-  print "training loss  :", mean(t_loss)
+                             build_batch >> network.train() >> Mean())
+  print "training loss  :", t_loss
 
 
 
@@ -123,8 +123,8 @@ Example
           t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                            augment >> rerange >> Shuffle(100) >>
                            build_batch >> network.train() >> Unzip())
-          print("training loss  :", np.mean(t_loss))
-          print("training acc   :", 100 * np.mean(t_acc))
+          print("training loss  :", t_loss >> Mean())
+          print("training acc   :", 100 * (t_acc >> Mean()))
 
           e_acc = (val_samples >> rerange >> build_batch >>
                    network.evaluate([categorical_accuracy]))

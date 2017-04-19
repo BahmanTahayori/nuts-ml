@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                ['1', '0']
+                1.0.10
               </div>
             
           
@@ -188,8 +188,8 @@ with <strong>nuts-ml</strong>. The <code class="docutils literal"><span class="p
 pipeline</p>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">t_loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">train_samples</span> <span class="o">&gt;&gt;</span> <span class="n">PrintProgress</span><span class="p">(</span><span class="n">train_samples</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
                            <span class="n">augment</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">Shuffle</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
-                           <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">train</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Collect</span><span class="p">())</span>
-<span class="nb">print</span> <span class="s2">&quot;training loss  :&quot;</span><span class="p">,</span> <span class="n">mean</span><span class="p">(</span><span class="n">t_loss</span><span class="p">)</span>
+                           <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">train</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">())</span>
+<span class="nb">print</span> <span class="s2">&quot;training loss  :&quot;</span><span class="p">,</span> <span class="n">t_loss</span>
 </pre></div>
 </div>
 <div class="section" id="canonical-pipeline">
@@ -261,8 +261,8 @@ evaluation and check-pointing.</p>
         <span class="n">t_loss</span><span class="p">,</span> <span class="n">t_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">train_samples</span> <span class="o">&gt;&gt;</span> <span class="n">PrintProgress</span><span class="p">(</span><span class="n">train_samples</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
                          <span class="n">augment</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">Shuffle</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
                          <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">train</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Unzip</span><span class="p">())</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training loss  :&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t_loss</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training acc   :&quot;</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">t_acc</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training loss  :&quot;</span><span class="p">,</span> <span class="n">t_loss</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;training acc   :&quot;</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()))</span>
 
         <span class="n">e_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">val_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span>
                  <span class="n">network</span><span class="o">.</span><span class="n">evaluate</span><span class="p">([</span><span class="n">categorical_accuracy</span><span class="p">]))</span>

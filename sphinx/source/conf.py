@@ -78,7 +78,8 @@ author = u'Stefan Maetschke'
 # built documents.
 #
 # The short X.Y version.
-version = str(nutsml.__version__.split('.')[:2])
+#version = str(nutsml.__version__.split('.')[:2])
+version = nutsml.__version__
 # The full version, including alpha/beta/rc tags.
 release = nutsml.__version__
 
