@@ -9,7 +9,7 @@ from nutsml import (TransformImage, BuildBatch, ReadLabelDirs, ReadImage,
 
 BATCH_SIZE = 128
 
-if __name__ == "__main":
+if __name__ == "__main__":
     from cnn_train import create_network
 
     transform = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')

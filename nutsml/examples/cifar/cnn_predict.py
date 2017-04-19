@@ -16,7 +16,7 @@ from nutsml import TransformImage, BuildBatch, ReadImage, ViewImageAnnotation
 
 BATCH_SIZE = 128
 
-if __name__ == "__main":
+if __name__ == "__main__":
     from cnn_train import create_network, load_names
     
     names = load_names()

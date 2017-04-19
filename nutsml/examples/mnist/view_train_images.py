@@ -6,7 +6,7 @@
 from nutsflow import Take, Consume
 from nutsml import ViewImageAnnotation
 
-if __name__ == "__main":
+if __name__ == "__main__":
     from mlp_train import load_samples
 
     train, _ = load_samples()

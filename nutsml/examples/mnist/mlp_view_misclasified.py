@@ -10,7 +10,7 @@ from nutsml import TransformImage, BuildBatch, ViewImageAnnotation
 
 BATCH_SIZE = 128
 
-if __name__ == "__main":
+if __name__ == "__main__":
     from mlp_train import create_network, load_samples
 
     TransformImage.register('flatten', lambda img: img.flatten())

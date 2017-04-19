@@ -6,9 +6,9 @@
 from nutsflow import Take, Consume, MapCol
 from nutsml import ViewImageAnnotation, PrintColType
 
-if __name__ == "__main":
+if __name__ == "__main__":
     from cnn_train import load_samples, load_names
-    
+
     train_samples, val_samples = load_samples()
     names = load_names()
 
