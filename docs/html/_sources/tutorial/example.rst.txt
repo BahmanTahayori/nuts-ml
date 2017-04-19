@@ -1,3 +1,5 @@
+.. _cifar-example:
+
 Example
 =======
 
@@ -11,9 +13,11 @@ and of course deep-learning, will be helpful.
 Task
 ----
 
-`CIFAR-10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ is a classical benchmark
-problem for deep learning in image recognition. Given are 10 categories 
-(airplane, dog, ship, ...) and the task is to classify small images accordingly.
+In this example we will implement a **nuts-ml** pipeline to classify CIFAR-10
+images. `CIFAR-10 <https://www.cs.toronto.edu/~kriz/cifar.html>`_ is a classical 
+benchmark problem for deep learning in image recognition. Given are 10 categories 
+(airplane, dog, ship, ...) and the task is to classify small images of these objects 
+accordingly.
 
 .. image:: pics/cifar10.png
 

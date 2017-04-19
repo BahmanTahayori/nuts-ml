@@ -194,7 +194,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="example">
-<h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
+<span id="cifar-example"></span><h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
 <p>Prerequisites for this tutorial are a good knowledge of Python and
 <a class="reference external" href="https://github.com/maet3608/nuts-flow">nuts-flow</a>. Please read the
 <a class="reference external" href="https://maet3608.github.io/nuts-flow/tutorial/introduction.html">nuts-flow tutorial</a>
@@ -202,9 +202,11 @@ if you haven&#8217;t. Some knowledge of <a class="reference external" href="http
 and of course deep-learning, will be helpful.</p>
 <div class="section" id="task">
 <h2>Task<a class="headerlink" href="#task" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> is a classical benchmark
-problem for deep learning in image recognition. Given are 10 categories
-(airplane, dog, ship, ...) and the task is to classify small images accordingly.</p>
+<p>In this example we will implement a <strong>nuts-ml</strong> pipeline to classify CIFAR-10
+images. <a class="reference external" href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR-10</a> is a classical
+benchmark problem for deep learning in image recognition. Given are 10 categories
+(airplane, dog, ship, ...) and the task is to classify small images of these objects
+accordingly.</p>
 <img alt="../_images/cifar10.png" src="../_images/cifar10.png" />
 <p>The CIFAR-10 dataset consists of 60000 RGB images of size 32x32. There are 6000 images
 per class and the dataset is split into 50000 training images and 10000 test images.
@@ -488,7 +490,7 @@ while images are represented as numpy arrays with dtype float32.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, IBM Research Australia.
-      Last updated on Apr 18, 2017.
+      Last updated on Apr 19, 2017.
 
     </p>
   </div> 
