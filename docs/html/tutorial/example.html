@@ -468,10 +468,10 @@ Finally we print the mean (over mini-batches) for training loss and accuracy.</p
 </div>
 <div class="section" id="validation">
 <h2>Validation<a class="headerlink" href="#validation" title="Permalink to this headline">¶</a></h2>
-<p>The performance of the network on the validation data can be computed in the
-analogous to the way the training results were computed. Important differences are
-that we are using the validation data, calling <code class="docutils literal"><span class="pre">network.validate()</span></code>,
-do not perform augmentation and there is no need to shuffle the data</p>
+<p>The performance of the network on the validation data can be computed analogous
+to the way the training results were computed. Important differences are
+that we are using the validation data, calling <code class="docutils literal"><span class="pre">network.validate()</span></code> instead of
+<a href="#id4"><span class="problematic" id="id5">``</span></a>network.train(), do not perform augmentation and there is no need to shuffle the data</p>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">):</span>
     <span class="n">v_loss</span><span class="p">,</span> <span class="n">v_acc</span> <span class="o">=</span> <span class="n">val_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Unzip</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;val loss  :&quot;</span><span class="p">,</span> <span class="n">v_loss</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">())</span>

@@ -334,10 +334,10 @@ Finally we print the mean (over mini-batches) for training loss and accuracy.
 Validation
 ----------
 
-The performance of the network on the validation data can be computed in the
-analogous to the way the training results were computed. Important differences are 
-that we are using the validation data, calling ``network.validate()``, 
-do not perform augmentation and there is no need to shuffle the data
+The performance of the network on the validation data can be computed analogous 
+to the way the training results were computed. Important differences are 
+that we are using the validation data, calling ``network.validate()`` instead of
+``network.train(), do not perform augmentation and there is no need to shuffle the data
 
 .. code:: Python
 
