@@ -1,16 +1,15 @@
 """
 .. module:: mlp_view_misclassified
-   :synopsis: Example for showing misclassifed examples
+   :synopsis: Example for showing misclassified examples
 """
 
 from __future__ import print_function
 
 import cPickle
 
-import numpy as np
 import os.path as osp
 
-from nutsflow import (PrintProgress, Zip, Unzip, Pick, Shuffle)
+from nutsflow import PrintProgress, Zip, Unzip, Pick, Shuffle, Mean
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     PlotLines)
 
@@ -36,7 +35,7 @@ def load_names():
         return cPickle.load(f)['label_names']
 
 
-def create_network():    
+def create_network():
     from keras.models import Sequential
     from keras.layers import Dense, Dropout, Activation, Flatten
     from keras.layers import Convolution2D, MaxPooling2D
@@ -71,7 +70,7 @@ def create_network():
 
 def train(train_samples, val_samples):
     from keras.metrics import categorical_accuracy
-    
+
     rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE)
                    .by(0, 'image', 'float32')
@@ -96,20 +95,20 @@ def train(train_samples, val_samples):
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                          Pick(PICK) >> augment >> rerange >> Shuffle(100) >>
                          build_batch >> network.train() >> Unzip())
-        print("training loss  :\t\t{:.6f}".format(np.mean(t_loss)))
-        print("training acc   :\t\t{:.1f}".format(100 * np.mean(t_acc)))
+        print("training loss  :\t\t{:.6f}".format(t_loss >> Mean()))
+        print("training acc   :\t\t{:.1f}".format(100 * (t_acc >> Mean())))
 
         v_loss, v_acc = (val_samples >> rerange >>
                          build_batch >> network.validate() >> Unzip())
-        print("validation loss :\t\t{:.6f}".format(np.mean(v_loss)))
-        print("validation acc  :\t\t{:.1f}".format(100 * np.mean(v_acc)))
+        print("validation loss :\t\t{:.6f}".format(v_loss >> Mean()))
+        print("validation acc  :\t\t{:.1f}".format(100 * (v_acc >> Mean())))
 
         e_acc = (val_samples >> rerange >> build_batch >>
                  network.evaluate([categorical_accuracy]))
         print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
 
         network.save_best(e_acc, isloss=False)
-        plot_eval((np.mean(t_acc), e_acc))
+        plot_eval((t_acc >> Mean(), e_acc))
     print('finished.')
 
 

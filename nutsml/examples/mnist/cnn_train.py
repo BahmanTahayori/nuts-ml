@@ -11,9 +11,7 @@ use nuts for the data-preprocessing.
 
 from __future__ import print_function
 
-import numpy as np
-
-from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick
+from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick, Mean
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
 PICK = 0.1  # Pick 10% of the data for a quick trial
@@ -75,8 +73,8 @@ def train():
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                          Pick(PICK) >> transform >> Shuffle(100) >>
                          build_batch >> network.train() >> plot >> Unzip())
-        print("training loss  : {:.6f}".format(np.mean(t_loss)))
-        print("training acc   : {:.1f}".format(100 * np.mean(t_acc)))
+        print("training loss  : {:.6f}".format(t_loss >> Mean()))
+        print("training acc   : {:.1f}".format(100 * (t_acc >> Mean())))
 
         e_acc = (val_samples >> transform >> build_batch
                  >> network.evaluate([categorical_accuracy]))
