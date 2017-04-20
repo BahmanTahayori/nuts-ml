@@ -22,14 +22,14 @@ if __name__ == "__main__":
     IsMisclassified = nut_filter(lambda (i, t, p): p != t)
 
     print('loading samples ...')
-    train_samples, val_samples = load_samples()
+    train_samples, test_samples = load_samples()
 
     print('loading network...')
     network = create_network()
     network.load_weights()
 
     print('predicting...')
-    samples = train_samples + val_samples
+    samples = train_samples + test_samples
     images, trues = samples >> Unzip()
     preds = (samples >> transform >> pred_batch >>
              network.predict() >> Map(ArgMax()))

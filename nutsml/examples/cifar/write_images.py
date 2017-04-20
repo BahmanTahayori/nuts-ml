@@ -10,7 +10,7 @@ from nutsml import WriteImage
 if __name__ == "__main__":
     from cnn_train import load_samples, load_names
 
-    train_samples, val_samples = load_samples()
+    train_samples, _ = load_samples()
     names = load_names()
 
     id2name = MapCol(1, lambda i: names[int(i)])

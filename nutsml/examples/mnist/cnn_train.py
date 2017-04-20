@@ -61,7 +61,7 @@ def train():
     plot = PlotLines((0, 1), layout=(2, 1), every_sec=1)
 
     print('loading data...')
-    train_samples, val_samples = load_samples()
+    train_samples, test_samples = load_samples()
 
     print('constructing network ...')
     network = create_network()
@@ -73,12 +73,12 @@ def train():
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                          Pick(PICK) >> transform >> Shuffle(100) >>
                          build_batch >> network.train() >> plot >> Unzip())
-        print("training loss  : {:.6f}".format(t_loss >> Mean()))
-        print("training acc   : {:.1f}".format(100 * (t_acc >> Mean())))
+        print("train loss : {:.6f}".format(t_loss >> Mean()))
+        print("train acc  : {:.1f}".format(100 * (t_acc >> Mean())))
 
-        e_acc = (val_samples >> transform >> build_batch
+        e_acc = (test_samples >> transform >> build_batch
                  >> network.evaluate([categorical_accuracy]))
-        print("evaluation acc : {:.1f}".format(100 * e_acc))
+        print("test acc   : {:.1f}".format(100 * e_acc))
 
         network.save_best(e_acc, isloss=False)
 

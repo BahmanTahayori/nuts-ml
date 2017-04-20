@@ -18,7 +18,7 @@ BATCH_SIZE = 128
 
 if __name__ == "__main__":
     from cnn_train import create_network, load_names
-    
+
     names = load_names()
 
     transform = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')

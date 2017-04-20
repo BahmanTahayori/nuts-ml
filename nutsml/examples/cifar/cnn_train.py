@@ -11,7 +11,7 @@ import os.path as osp
 
 from nutsflow import PrintProgress, Zip, Unzip, Pick, Shuffle, Mean
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
-                    PlotLines)
+                    SplitRandom, PlotLines)
 
 PICK = 0.1  # Pick 10% of the data for a quick trial
 NUM_EPOCHS = 10
@@ -68,7 +68,7 @@ def create_network():
     return KerasNetwork(model, 'weights_cifar10.hd5')
 
 
-def train(train_samples, test_samples):
+def train():
     from keras.metrics import categorical_accuracy
 
     rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
@@ -88,24 +88,28 @@ def train(train_samples, test_samples):
     print('creating network...')
     network = create_network()
 
-    print('training...', len(train_samples), len(test_samples))
+    print('loading data...')
+    train_samples, test_samples = load_samples()
+    train_samples, val_samples = train_samples >> SplitRandom(0.8)
+
+    print('training...', len(train_samples), len(val_samples), len(test_samples))
     for epoch in xrange(NUM_EPOCHS):
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                          Pick(PICK) >> augment >> rerange >> Shuffle(100) >>
                          build_batch >> network.train() >> Unzip())
-        print("training loss  :\t\t{:.6f}".format(t_loss >> Mean()))
-        print("training acc   :\t\t{:.1f}".format(100 * (t_acc >> Mean())))
+        print("train loss : {:.6f}".format(t_loss >> Mean()))
+        print("train acc  : {:.1f}".format(100 * (t_acc >> Mean())))
 
-        v_loss, v_acc = (test_samples >> rerange >>
+        v_loss, v_acc = (val_samples >> rerange >>
                          build_batch >> network.validate() >> Unzip())
-        print("validation loss :\t\t{:.6f}".format(v_loss >> Mean()))
-        print("validation acc  :\t\t{:.1f}".format(100 * (v_acc >> Mean())))
+        print("val loss   : {:.6f}".format(v_loss >> Mean()))
+        print("val acc    : {:.1f}".format(100 * (v_acc >> Mean())))
 
         e_acc = (test_samples >> rerange >> build_batch >>
                  network.evaluate([categorical_accuracy]))
-        print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
+        print("test acc   : {:.1f}".format(100 * e_acc))
 
         network.save_best(e_acc, isloss=False)
         plot_eval((t_acc >> Mean(), e_acc))
@@ -113,5 +117,4 @@ def train(train_samples, test_samples):
 
 
 if __name__ == "__main__":
-    train_samples, test_samples = load_samples()
-    train(train_samples, test_samples)
+    train()

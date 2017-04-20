@@ -14,7 +14,7 @@ def load_samples():
 
 
 if __name__ == '__main__':
-    train_samples, val_samples = load_samples()
+    train_samples, _ = load_samples()
     imagepath = 'images/*.png'
     names = Enumerate() >> Zip(train_samples >> Get(1)) >> Format('{1}/img{0}')
     train_samples >> Take(30) >> WriteImage(0, imagepath, names) >> Consume()

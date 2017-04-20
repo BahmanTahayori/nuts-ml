@@ -65,8 +65,7 @@ def PartitionByCol(iterable, col, values):
 
 
 @nut_sink
-def SplitRandom(iterable, ratio=0.7, constraint=lambda x: x,
-                rand=rnd.Random(0)):
+def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
     """
     Randomly split iterable into partitions.
     
@@ -93,7 +92,7 @@ def SplitRandom(iterable, ratio=0.7, constraint=lambda x: x,
             means 70%, 30% split.
             Alternatively a list or ratios can be provided, e.g.
             ratio=(0.6, 0.3, 0.1). Note that ratios must sum up to one.
-    :param function constraint: Function that returns key the elements of
+    :param function|None constraint: Function that returns key the elements of
         the iterable are grouped by before partitioning. Useful to ensure
         that a partition contains related elements, e.g. left and right eye
         images are not scattered across partitions.
@@ -102,7 +101,7 @@ def SplitRandom(iterable, ratio=0.7, constraint=lambda x: x,
             rand=rnd.Random(0) = 0 ensures that the same split is created
             every time SplitRandom is called. This is important when continuing
             an interrupted training session!
-            see random.Random for more info.
+            see random.
     :return: partitions of iterable with sizes according to provided ratios.
     :rtype: (list, list, ...)
     """
@@ -115,7 +114,10 @@ def SplitRandom(iterable, ratio=0.7, constraint=lambda x: x,
         ratios = (ratio, 1.0 - ratio)
     ns = [int(len(samples) * r) for r in ratios]
 
-    groups = group_by(samples, constraint).values()
+    if constraint is None:
+        groups = [[s] for s in samples]
+    else:
+        groups = group_by(samples, constraint).values()
     rand.shuffle(groups)
     groups = iter(groups)
     splits = []

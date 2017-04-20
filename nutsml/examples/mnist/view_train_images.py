@@ -9,5 +9,5 @@ from nutsml import ViewImageAnnotation
 if __name__ == "__main__":
     from mlp_train import load_samples
 
-    train, _ = load_samples()
-    (train >> Take(10) >> ViewImageAnnotation(0, 1, pause=1) >> Consume())
+    samples, _ = load_samples()
+    (samples >> Take(10) >> ViewImageAnnotation(0, 1, pause=1) >> Consume())

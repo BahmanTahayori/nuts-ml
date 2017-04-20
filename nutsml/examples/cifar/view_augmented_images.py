@@ -9,7 +9,7 @@ from nutsml import ViewImageAnnotation, AugmentImage
 if __name__ == "__main__":
     from cnn_train import load_samples
 
-    train_samples, val_samples = load_samples()
+    train_samples, _ = load_samples()
 
     p = 0.5
     augment = (AugmentImage(0)
