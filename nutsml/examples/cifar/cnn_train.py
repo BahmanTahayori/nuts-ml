@@ -14,7 +14,7 @@ from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     SplitRandom, PlotLines)
 
 PICK = 0.1  # Pick 10% of the data for a quick trial
-NUM_EPOCHS = 10
+NUM_EPOCHS = 20
 BATCH_SIZE = 32
 NUM_CLASSES = 10
 INPUT_SHAPE = (32, 32, 3)
@@ -92,28 +92,30 @@ def train():
     train_samples, test_samples = load_samples()
     train_samples, val_samples = train_samples >> SplitRandom(0.8)
 
-    print('training...', len(train_samples), len(val_samples), len(test_samples))
+    print('training...', len(train_samples), len(val_samples))
     for epoch in xrange(NUM_EPOCHS):
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                          Pick(PICK) >> augment >> rerange >> Shuffle(100) >>
                          build_batch >> network.train() >> Unzip())
-        print("train loss : {:.6f}".format(t_loss >> Mean()))
-        print("train acc  : {:.1f}".format(100 * (t_acc >> Mean())))
+        t_loss, t_acc = t_loss >> Mean(), t_acc >> Mean()
+        print("train loss : {:.6f}".format(t_loss))
+        print("train acc  : {:.1f}".format(100 * t_acc))
 
         v_loss, v_acc = (val_samples >> rerange >>
                          build_batch >> network.validate() >> Unzip())
-        print("val loss   : {:.6f}".format(v_loss >> Mean()))
-        print("val acc    : {:.1f}".format(100 * (v_acc >> Mean())))
+        v_loss, v_acc = v_acc >> Mean(), v_acc >> Mean()
+        print('val loss   : {:.6f}'.format(v_loss))
+        print('val acc    : {:.1f}'.format(100 * v_acc))
 
-        e_acc = (test_samples >> rerange >> build_batch >>
-                 network.evaluate([categorical_accuracy]))
-        print("test acc   : {:.1f}".format(100 * e_acc))
+        network.save_best(v_acc, isloss=False)
+        plot_eval((t_acc, v_acc))
 
-        network.save_best(e_acc, isloss=False)
-        plot_eval((t_acc >> Mean(), e_acc))
-    print('finished.')
+    print('testing...', len(test_samples))
+    e_acc = (test_samples >> rerange >> build_batch >>
+             network.evaluate([categorical_accuracy]))
+    print('test acc   : {:.1f}'.format(100 * e_acc))
 
 
 if __name__ == "__main__":

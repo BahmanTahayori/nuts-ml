@@ -59,7 +59,7 @@ def train():
     print('loading data...')
     train_samples, test_samples = load_samples()
 
-    print('constructing network ...')
+    print('creating network ...')
     network = create_network()
 
     print('training...', NUM_EPOCHS)
@@ -69,12 +69,12 @@ def train():
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                          transform >> build_batch >>
                          network.train() >> plot >> Unzip())
-        print("train loss : {:.6f}".format(t_loss >> Mean()))
-        print("train acc  : {:.1f}".format(100 * (t_acc >> Mean())))
+        print('train loss : {:.6f}'.format(t_loss >> Mean()))
+        print('train acc  : {:.1f}'.format(100 * (t_acc >> Mean())))
 
-        e_acc = (test_samples >> transform >> build_batch
-                 >> network.evaluate([categorical_accuracy]))
-        print("test acc   : {:.1f}".format(100 * e_acc))
+        e_acc = (test_samples >> transform >> build_batch >>
+                 network.evaluate([categorical_accuracy]))
+        print('test acc   : {:.1f}'.format(100 * e_acc))
 
         network.save_best(e_acc, isloss=False)
 
