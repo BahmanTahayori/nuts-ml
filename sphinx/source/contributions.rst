@@ -5,8 +5,13 @@ Contributions to **nuts-ml** are welcome. Please document the code following
 the examples, provide unit tests and ensure that ``pytest`` runs without
 errors. 
 
+
+Unit tests
+^^^^^^^^^^
+
 .. code::
 
+  $ cd nutsml
   $ pytest
 
   ============================= test session starts =============================
@@ -72,3 +77,18 @@ We are aiming at a code coverage of 100%. Run ``pytest --cov`` for verification.
   nutsml\writer.py           20      0   100%
   -------------------------------------------
   TOTAL                     729      0   100%
+
+
+Documentation
+^^^^^^^^^^^^^
+
+Update Sphinx/HTML documentation as follows
+
+.. code::
+
+  cd sphinx
+  make clean
+  make html
+
+  cd ..
+  ./push_docs

@@ -95,7 +95,11 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/introduction.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unit-tests">Unit tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="nutsml.html">nutsml package</a></li>
 </ul>
 
@@ -165,7 +169,10 @@
 <p>Contributions to <strong>nuts-ml</strong> are welcome. Please document the code following
 the examples, provide unit tests and ensure that <code class="docutils literal"><span class="pre">pytest</span></code> runs without
 errors.</p>
-<div class="code highlight-default"><div class="highlight"><pre><span></span>$ pytest
+<div class="section" id="unit-tests">
+<h2>Unit tests<a class="headerlink" href="#unit-tests" title="Permalink to this headline">¶</a></h2>
+<div class="code highlight-default"><div class="highlight"><pre><span></span>$ cd nutsml
+$ pytest
 
 ============================= test session starts =============================
 platform win32 -- Python 2.7.13, pytest-3.0.3, py-1.4.31, pluggy-0.4.0
@@ -230,6 +237,19 @@ TOTAL                     729      0   100%
 </pre></div>
 </div>
 </div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Update Sphinx/HTML documentation as follows</p>
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">sphinx</span>
+<span class="n">make</span> <span class="n">clean</span>
+<span class="n">make</span> <span class="n">html</span>
+
+<span class="n">cd</span> <span class="o">..</span>
+<span class="o">./</span><span class="n">push_docs</span>
+</pre></div>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -254,7 +274,7 @@ TOTAL                     729      0   100%
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, IBM Research Australia.
-      Last updated on Apr 19, 2017.
+      Last updated on Apr 20, 2017.
 
     </p>
   </div> 
