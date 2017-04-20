@@ -207,7 +207,7 @@
 <li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#module-nutsml.examples.mnist.cnn_train">nutsml.examples.mnist.cnn_train module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#module-nutsml.examples.mnist.mlp_predict">nutsml.examples.mnist.mlp_predict module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#module-nutsml.examples.mnist.mlp_train">nutsml.examples.mnist.mlp_train module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#module-nutsml.examples.mnist.mlp_view_misclasified">nutsml.examples.mnist.mlp_view_misclasified module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#nutsml-examples-mnist-mlp-view-misclasified-module">nutsml.examples.mnist.mlp_view_misclasified module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#module-nutsml.examples.mnist.read_images">nutsml.examples.mnist.read_images module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#module-nutsml.examples.mnist.view_train_images">nutsml.examples.mnist.view_train_images module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="nutsml.examples.mnist.html#module-nutsml.examples.mnist.write_images">nutsml.examples.mnist.write_images module</a></li>
@@ -637,7 +637,7 @@ sufficient to provide the values for the partitions wanted.</p>
 means 70%, 30% split.
 Alternatively a list or ratios can be provided, e.g.
 ratio=(0.6, 0.3, 0.1). Note that ratios must sum up to one.</li>
-<li><strong>constraint</strong> (<em>function</em>) &#8211; Function that returns key the elements of
+<li><strong>constraint</strong> (<em>function|None</em>) &#8211; Function that returns key the elements of
 the iterable are grouped by before partitioning. Useful to ensure
 that a partition contains related elements, e.g. left and right eye
 images are not scattered across partitions.
@@ -646,7 +646,7 @@ Note that constrains have precedence over ratios.</li>
 rand=rnd.Random(0) = 0 ensures that the same split is created
 every time SplitRandom is called. This is important when continuing
 an interrupted training session!
-see random.Random for more info.</li>
+see random.</li>
 </ul>
 </td>
 </tr>
@@ -3985,7 +3985,7 @@ Length need to be the same as samples.</li>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, IBM Research Australia.
-      Last updated on Apr 19, 2017.
+      Last updated on Apr 20, 2017.
 
     </p>
   </div> 

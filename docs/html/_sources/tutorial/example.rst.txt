@@ -1,7 +1,7 @@
 .. _cifar-example:
 
-Example
-=======
+CIFAR-10 Example
+================
 
 Prerequisites for this tutorial are a good knowledge of Python and
 `nuts-flow <https://github.com/maet3608/nuts-flow>`_. Please read the 
@@ -120,7 +120,7 @@ by running the following flow
 
 .. code:: Python
 
-  train_samples, val_samples = load_samples()
+  train_samples, test_samples = load_samples()
   train_samples >> Take(3) >> PrintColType() >> Consume()
 
 which takes the first three samples and prints for each sample 
@@ -149,7 +149,7 @@ at the images themselves
 
 .. code:: Python
 
-  train_samples, val_samples = load_samples()
+  train_samples, test_samples = load_samples()
   train_samples >> Take(3) >> PrintColType() >> ViewImage(0) >> Consume()
 
 .. image:: ../pics/viewimage_cifar10.png
@@ -165,7 +165,7 @@ sample data using the functions introduced above
 .. code:: Python
 
   network = create_network()
-  train_samples, val_samples = load_samples()
+  train_samples, test_samples = load_samples()
 
 Having a network and samples we can now train the network (for one epoch) 
 with the following **nuts-flow**
@@ -214,7 +214,7 @@ a look at the augmented images and their labels using the following flow
 
 .. code:: Python
 
-  train_samples, val_samples = load_samples()
+  train_samples, test_samples = load_samples()
   train_samples >> augment >> ViewImageAnnotation(0, 1, pause=1) >> Consume()
 
 In detail: for every sample processed by ``AugmentImage``, the image is
@@ -334,10 +334,26 @@ Finally we print the mean (over mini-batches) for training loss and accuracy.
 Validation
 ----------
 
-The performance of the network on the validation data can be computed analogous 
+The CIFAR-10 data set is divided into a training and a test set but does not come
+with a validation set per default. However, we can easily split the training
+set into a new training set and a validation set
+
+.. code:: Python
+
+  train_samples, val_samples = train_samples >> SplitRandom(0.8)
+
+The new training set will contain 80% of the original set and the validation
+set will contain the rest.
+
+.. note::
+  
+  ``SplitRandom()`` can split into more than two sets and can take constraints
+  into account.
+
+The performance of the network on the validation data can then be computed analogous 
 to the way the training results were computed. Important differences are 
 that we are using the validation data, calling ``network.validate()`` instead of
-``network.train(), do not perform augmentation and there is no need to shuffle the data
+``network.train()``, do not perform augmentation and there is no need to shuffle the data
 
 .. code:: Python
 
@@ -353,13 +369,15 @@ Evaluation
 ----------
 
 Validation accuracy averaged over mini-batches provides a reasonable estimate for the 
-prediction accuracy but is not an accurate measure of the true performance.
+prediction accuracy but is not an accurate measure of the true performance. Typically
+we want to evaluate on an independent test set and average over samples, not mini-batches.
+The CIFAR-10 data set comes with a test set, which we have mis-used for validation
 
 TODO
 
 .. code:: Python
 
-  e_acc = val_samples >> rerange >> build_batch >> network.evaluate([categorical_accuracy])
+  e_acc = test_samples >> rerange >> build_batch >> network.evaluate([categorical_accuracy])
   print("evaluation acc  :", e_acc)
 
 
@@ -385,16 +403,10 @@ TODO
 Code
 ----
 
-The complete code for the example above can be found in
-`examples/cifar/cnn_train.py <https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples/cifar/cnn_train.py>`_. 
-
-Below is the code for the training.
+Below is the complete code for the network training.
 
 
 .. code:: Python
-
-  train_samples, val_samples = load_samples()
-  network = create_network()
 
   rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
   build_batch = (BuildBatch(BATCH_SIZE)
@@ -410,24 +422,30 @@ Below is the code for the training.
              .by('rotate', p, [-10, 10]))
   plot_eval = PlotLines((0, 1), layout=(2, 1))
 
+  network = create_network()
+
+  train_samples, test_samples = load_samples()
+  train_samples, val_samples = train_samples >> SplitRandom(0.8)
+
   for epoch in xrange(NUM_EPOCHS):
       print('EPOCH:', epoch)
 
       t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                        Pick(PICK) >> augment >> rerange >> Shuffle(100) >>
                        build_batch >> network.train() >> Unzip())
-      print("training loss  :\t\t{:.6f}".format(t_loss >> Mean()))
-      print("training acc   :\t\t{:.1f}".format(100 * (t_acc >> Mean())))
+      print("train loss : {:.6f}".format(t_loss >> Mean()))
+      print("train acc  : {:.1f}".format(100 * (t_acc >> Mean())))
 
-      v_loss, v_acc = (val_samples >> rerange >>
-                       build_batch >> network.validate() >> Unzip())
-      print("validation loss :\t\t{:.6f}".format(v_loss >> Mean()))
-      print("validation acc  :\t\t{:.1f}".format(100 * (v_acc >> Mean())))
+      v_loss, v_acc = (val_samples >> rerange >> build_batch >> network.validate() >> Unzip())
+      print("val loss   : {:.6f}".format(v_loss >> Mean()))
+      print("val acc    : {:.1f}".format(100 * (v_acc >> Mean())))
 
-      e_acc = (val_samples >> rerange >> build_batch >>
-               network.evaluate([categorical_accuracy]))
-      print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
+      e_acc = (test_samples >> rerange >> build_batch >> network.evaluate([categorical_accuracy]))
+      print("test acc   : {:.1f}".format(100 * e_acc))
 
       network.save_best(e_acc, isloss=False)
       plot_eval((t_acc >> Mean(), e_acc))
 
+
+The entire code for the example above can be found in
+`examples/cifar/cnn_train.py <https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples/cifar/cnn_train.py>`_. 
