@@ -68,7 +68,7 @@ def create_network():
     return KerasNetwork(model, 'weights_cifar10.hd5')
 
 
-def train(train_samples, val_samples):
+def train(train_samples, test_samples):
     from keras.metrics import categorical_accuracy
 
     rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
@@ -88,7 +88,7 @@ def train(train_samples, val_samples):
     print('creating network...')
     network = create_network()
 
-    print('training...', len(train_samples), len(val_samples))
+    print('training...', len(train_samples), len(test_samples))
     for epoch in xrange(NUM_EPOCHS):
         print('EPOCH:', epoch)
 
@@ -98,12 +98,12 @@ def train(train_samples, val_samples):
         print("training loss  :\t\t{:.6f}".format(t_loss >> Mean()))
         print("training acc   :\t\t{:.1f}".format(100 * (t_acc >> Mean())))
 
-        v_loss, v_acc = (val_samples >> rerange >>
+        v_loss, v_acc = (test_samples >> rerange >>
                          build_batch >> network.validate() >> Unzip())
         print("validation loss :\t\t{:.6f}".format(v_loss >> Mean()))
         print("validation acc  :\t\t{:.1f}".format(100 * (v_acc >> Mean())))
 
-        e_acc = (val_samples >> rerange >> build_batch >>
+        e_acc = (test_samples >> rerange >> build_batch >>
                  network.evaluate([categorical_accuracy]))
         print("evaluation acc  :\t\t{:.1f}".format(100 * e_acc))
 
@@ -113,5 +113,5 @@ def train(train_samples, val_samples):
 
 
 if __name__ == "__main__":
-    train_samples, val_samples = load_samples()
-    train(train_samples, val_samples)
+    train_samples, test_samples = load_samples()
+    train(train_samples, test_samples)
