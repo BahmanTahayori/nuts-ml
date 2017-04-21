@@ -325,10 +325,10 @@ and print the results (loss, accuracy)
       print("train acc   :", t_acc >> Mean())
 
 ``network.train()`` takes mini-batches as input and outputs loss and accuracy
-(per mini-batch) as specified in ``create_network()``. ``Unzip()`` transforms the 
+per mini-batch as specified in ``create_network()``. ``Unzip()`` transforms the 
 outputted sequence of ``(loss, accuracy)`` tuples into a sequence of losses 
 ``t_loss`` and a sequence of accuracies ``t_acc``. 
-Finally we print the mean (over mini-batches) for training loss and accuracy.
+Finally, we print the mean (over mini-batches) for training loss and accuracy.
 
 
 Validation
@@ -343,7 +343,7 @@ set into a new training set and a validation set
   train_samples, val_samples = train_samples >> SplitRandom(0.8)
 
 The new training set will contain 80% of the original set and the validation
-set will contain the rest.
+set the remainder.
 
 .. note::
   
@@ -362,7 +362,7 @@ that we are using the validation data, calling ``network.validate()`` instead of
       print("val loss  :", v_loss >> Mean())
       print("val acc   :", v_acc >> Mean())
 
-Again, results are mean values over mini-batches per epoch.
+Again, printed results are mean values over mini-batch losses and accuracies.
 
 
 Evaluation
@@ -370,25 +370,39 @@ Evaluation
 
 Validation accuracy averaged over mini-batches provides a reasonable estimate for the 
 prediction accuracy and is, for instance, useful for early stopping, 
-but is not an accurate measure of the true performance. Typically
+but is not an accurate measure of the true classification performance. Typically
 we want to evaluate on an independent test set and average over samples, not mini-batches.
-
-``network.evaluate()`` takes a list of performance metrics and evaluates the network
-prediction performance not per mini-batch but over all samples processed
+The code below calls ``network.evaluate()`` to compute the ``categorical_accuracy`` 
+over all test samples
 
 .. code:: Python
 
-  t_acc = test_samples >> rerange >> build_batch >> network.evaluate([categorical_accuracy])
-  print("evaluation acc  :", t_acc)
+  e_acc = test_samples >> rerange >> build_batch >> network.evaluate([categorical_accuracy])
+  print("evaluation acc  :", e_acc)
 
-Note that in contrast to the training or validation accuracies computed by ``network.train()``
-or by ``network.validate()``, ``network.evaluate()`` returns a single number per metric and
+In contrast to the training or validation accuracies computed by ``network.train()``
+or ``network.validate()``, ``network.evaluate()`` returns a single number per metric and
+no averaging is required.
 
 
 Check-pointing
 --------------
 
-TODO
+A common method to enable the continuation of an interrupted training or to implement 
+early-stopping is to save the network weights, either at regular intervals (e.g.
+each epoch) or when the validation accuracy reaches a new high.
+
+
+.. code:: Python
+
+  network.save()
+
+early-stopping  
+
+.. code:: Python
+
+  v_acc = val_samples >> rerange >> build_batch >> network.validate() >> Get(1) >> Mean()
+  network.save_best(v_acc, isloss=False)
 
 
 Prediction
@@ -443,18 +457,24 @@ Below is the complete code for the network training.
       t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
                        Pick(PICK) >> augment >> rerange >> Shuffle(100) >>
                        build_batch >> network.train() >> Unzip())
-      print("train loss : {:.6f}".format(t_loss >> Mean()))
-      print("train acc  : {:.1f}".format(100 * (t_acc >> Mean())))
+      t_loss, t_acc = t_loss >> Mean(), t_acc >> Mean()
+      print("train loss : {:.6f}".format(t_loss))
+      print("train acc  : {:.1f}".format(100 * t_acc))
 
-      v_loss, v_acc = (val_samples >> rerange >> build_batch >> network.validate() >> Unzip())
-      print("val loss   : {:.6f}".format(v_loss >> Mean()))
-      print("val acc    : {:.1f}".format(100 * (v_acc >> Mean())))
+      v_loss, v_acc = (val_samples >> rerange >>
+                       build_batch >> network.validate() >> Unzip())
+      v_loss, v_acc = v_loss >> Mean(), v_acc >> Mean()
+      print('val loss   : {:.6f}'.format(v_loss))
+      print('val acc    : {:.1f}'.format(100 * v_acc))
 
-      network.save_best(e_acc, isloss=False)
-      plot_eval((t_acc >> Mean(), e_acc))       
+      network.save_best(v_acc, isloss=False)
+      plot_eval((t_acc >> Mean(), v_acc))
 
-  t_acc = (test_samples >> rerange >> build_batch >> network.evaluate([categorical_accuracy]))
-  print("test acc   : {:.1f}".format(100 * t_acc))
+  print('testing...')
+  e_acc = (test_samples >> rerange >> build_batch >>
+           network.evaluate([categorical_accuracy]))
+  print('test acc   : {:.1f}'.format(100 * e_acc))
+
 
 The entire code for the example above can be found in
 `examples/cifar/cnn_train.py <https://github.com/maet3608/nuts-ml/blob/master/nutsml/examples/cifar/cnn_train.py>`_. 

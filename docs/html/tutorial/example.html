@@ -108,6 +108,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#validation">Validation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#evaluation">Evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#check-pointing">Check-pointing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prediction">Prediction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#writing">Writing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#reading">Reading</a></li>
@@ -451,10 +452,10 @@ and print the results (loss, accuracy)</p>
 </pre></div>
 </div>
 <p><code class="docutils literal"><span class="pre">network.train()</span></code> takes mini-batches as input and outputs loss and accuracy
-(per mini-batch) as specified in <code class="docutils literal"><span class="pre">create_network()</span></code>. <code class="docutils literal"><span class="pre">Unzip()</span></code> transforms the
+per mini-batch as specified in <code class="docutils literal"><span class="pre">create_network()</span></code>. <code class="docutils literal"><span class="pre">Unzip()</span></code> transforms the
 outputted sequence of <code class="docutils literal"><span class="pre">(loss,</span> <span class="pre">accuracy)</span></code> tuples into a sequence of losses
 <code class="docutils literal"><span class="pre">t_loss</span></code> and a sequence of accuracies <code class="docutils literal"><span class="pre">t_acc</span></code>.
-Finally we print the mean (over mini-batches) for training loss and accuracy.</p>
+Finally, we print the mean (over mini-batches) for training loss and accuracy.</p>
 </div>
 </div>
 <div class="section" id="validation">
@@ -466,7 +467,7 @@ set into a new training set and a validation set</p>
 </pre></div>
 </div>
 <p>The new training set will contain 80% of the original set and the validation
-set will contain the rest.</p>
+set the remainder.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><code class="docutils literal"><span class="pre">SplitRandom()</span></code> can split into more than two sets and can take constraints
@@ -482,17 +483,35 @@ that we are using the validation data, calling <code class="docutils literal"><s
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;val acc   :&quot;</span><span class="p">,</span> <span class="n">v_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>Again, results are mean values over mini-batches per epoch.</p>
+<p>Again, printed results are mean values over mini-batch losses and accuracies.</p>
 </div>
 <div class="section" id="evaluation">
 <h2>Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this headline">¶</a></h2>
 <p>Validation accuracy averaged over mini-batches provides a reasonable estimate for the
-prediction accuracy but is not an accurate measure of the true performance. Typically
+prediction accuracy and is, for instance, useful for early stopping,
+but is not an accurate measure of the true classification performance. Typically
 we want to evaluate on an independent test set and average over samples, not mini-batches.
-The CIFAR-10 data set comes with a test set, which we have mis-used for validation</p>
-<p>TODO</p>
+The code below calls <code class="docutils literal"><span class="pre">network.evaluate()</span></code> to compute the <code class="docutils literal"><span class="pre">categorical_accuracy</span></code>
+over all test samples</p>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">e_acc</span> <span class="o">=</span> <span class="n">test_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">evaluate</span><span class="p">([</span><span class="n">categorical_accuracy</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;evaluation acc  :&quot;</span><span class="p">,</span> <span class="n">e_acc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In contrast to the training or validation accuracies computed by <code class="docutils literal"><span class="pre">network.train()</span></code>
+or <code class="docutils literal"><span class="pre">network.validate()</span></code>, <code class="docutils literal"><span class="pre">network.evaluate()</span></code> returns a single number per metric and
+no averaging is required.</p>
+</div>
+<div class="section" id="check-pointing">
+<h2>Check-pointing<a class="headerlink" href="#check-pointing" title="Permalink to this headline">¶</a></h2>
+<p>A common method to enable the continuation of an interrupted training or to implement
+early-stopping is to save the network weights, either at regular intervals (e.g.
+each epoch) or when the validation accuracy reaches a new high.</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>early-stopping</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">v_acc</span> <span class="o">=</span> <span class="n">val_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">save_best</span><span class="p">(</span><span class="n">v_acc</span><span class="p">,</span> <span class="n">isloss</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -536,18 +555,23 @@ The CIFAR-10 data set comes with a test set, which we have mis-used for validati
     <span class="n">t_loss</span><span class="p">,</span> <span class="n">t_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">train_samples</span> <span class="o">&gt;&gt;</span> <span class="n">PrintProgress</span><span class="p">(</span><span class="n">train_samples</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
                      <span class="n">Pick</span><span class="p">(</span><span class="n">PICK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">augment</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">Shuffle</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&gt;&gt;</span>
                      <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">train</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Unzip</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train loss : </span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t_loss</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train acc  : </span><span class="si">{:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">())))</span>
+    <span class="n">t_loss</span><span class="p">,</span> <span class="n">t_acc</span> <span class="o">=</span> <span class="n">t_loss</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">(),</span> <span class="n">t_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train loss : </span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t_loss</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train acc  : </span><span class="si">{:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">t_acc</span><span class="p">))</span>
 
-    <span class="n">v_loss</span><span class="p">,</span> <span class="n">v_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">val_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Unzip</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;val loss   : </span><span class="si">{:.6f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v_loss</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;val acc    : </span><span class="si">{:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">v_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">())))</span>
+    <span class="n">v_loss</span><span class="p">,</span> <span class="n">v_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">val_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span>
+                     <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Unzip</span><span class="p">())</span>
+    <span class="n">v_loss</span><span class="p">,</span> <span class="n">v_acc</span> <span class="o">=</span> <span class="n">v_loss</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">(),</span> <span class="n">v_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;val loss   : </span><span class="si">{:.6f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v_loss</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;val acc    : </span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">v_acc</span><span class="p">))</span>
 
-    <span class="n">e_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">test_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">evaluate</span><span class="p">([</span><span class="n">categorical_accuracy</span><span class="p">]))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test acc   : </span><span class="si">{:.1f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">e_acc</span><span class="p">))</span>
+    <span class="n">network</span><span class="o">.</span><span class="n">save_best</span><span class="p">(</span><span class="n">v_acc</span><span class="p">,</span> <span class="n">isloss</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plot_eval</span><span class="p">((</span><span class="n">t_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">(),</span> <span class="n">v_acc</span><span class="p">))</span>
 
-    <span class="n">network</span><span class="o">.</span><span class="n">save_best</span><span class="p">(</span><span class="n">e_acc</span><span class="p">,</span> <span class="n">isloss</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">plot_eval</span><span class="p">((</span><span class="n">t_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">(),</span> <span class="n">e_acc</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;testing...&#39;</span><span class="p">)</span>
+<span class="n">e_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">test_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span>
+         <span class="n">network</span><span class="o">.</span><span class="n">evaluate</span><span class="p">([</span><span class="n">categorical_accuracy</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;test acc   : </span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="n">e_acc</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>The entire code for the example above can be found in
@@ -578,7 +602,7 @@ The CIFAR-10 data set comes with a test set, which we have mis-used for validati
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, IBM Research Australia.
-      Last updated on Apr 20, 2017.
+      Last updated on Apr 21, 2017.
 
     </p>
   </div> 

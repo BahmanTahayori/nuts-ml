@@ -126,11 +126,8 @@ Example
       print("train loss :", t_loss >> Mean())
       print("train acc  :", 100 * (t_acc >> Mean()))
 
-      e_acc = (test_samples >> rerange >> build_batch >>
-               network.evaluate([categorical_accuracy]))
-      print("test acc   :", 100 * e_acc)
-
-      network.save_best(e_acc, isloss=False)
+  e_acc = test_samples >> rerange >> build_batch >> network.evaluate([categorical_accuracy])
+  print("test acc   :", 100 * e_acc)
 
 
 The complete code and more examples can be found under

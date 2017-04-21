@@ -264,11 +264,8 @@ evaluation and check-pointing.</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train loss :&quot;</span><span class="p">,</span> <span class="n">t_loss</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">())</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train acc  :&quot;</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_acc</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()))</span>
 
-    <span class="n">e_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">test_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span>
-             <span class="n">network</span><span class="o">.</span><span class="n">evaluate</span><span class="p">([</span><span class="n">categorical_accuracy</span><span class="p">]))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test acc   :&quot;</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">e_acc</span><span class="p">)</span>
-
-    <span class="n">network</span><span class="o">.</span><span class="n">save_best</span><span class="p">(</span><span class="n">e_acc</span><span class="p">,</span> <span class="n">isloss</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">e_acc</span> <span class="o">=</span> <span class="n">test_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">evaluate</span><span class="p">([</span><span class="n">categorical_accuracy</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test acc   :&quot;</span><span class="p">,</span> <span class="mi">100</span> <span class="o">*</span> <span class="n">e_acc</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The complete code and more examples can be found under
