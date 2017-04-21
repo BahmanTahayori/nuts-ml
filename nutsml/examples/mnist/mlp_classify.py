@@ -1,6 +1,6 @@
 """
 .. module:: mlp_predict
-   :synopsis: Example nuts-ml pipeline for prediction
+   :synopsis: Example nuts-ml pipeline for classification
 """
 
 from __future__ import print_function

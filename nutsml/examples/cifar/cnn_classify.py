@@ -1,11 +1,6 @@
 """
 .. module:: cnn_predict
-   :synopsis: Example nuts-ml pipeline for viewing annotations and predictions
-
-This is code is based on a Keras example (see here)
-https://github.com/fchollet/keras/blob/master/examples/cifar10_cnn.py
-to train a CNN on the CIFAR-10 data and modified to use nuts for the 
-data-preprocessing.
+   :synopsis: Example pipeline for viewing annotations and classification
 """
 
 from __future__ import print_function
