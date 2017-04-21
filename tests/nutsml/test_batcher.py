@@ -94,7 +94,7 @@ def test_BuildBatch():
                    .by(2, 'image', np.uint8, False)
                    .by(3, 'one_hot', 'uint8', 3))
     batches = samples >> build_batch >> Collect()
-    assert len(batches) == 2, 'Expect two batches'
+    assert len(batches) == 2
 
     batch = batches[0]
     assert len(batch) == 4, 'Expect four columns in batch'
@@ -103,6 +103,22 @@ def test_BuildBatch():
     assert np.array_equal(batch[2], nb.build_image_batch(images[:2], 'uint8'))
     assert np.array_equal(batch[3],
                           nb.build_one_hot_batch(class_ids[:2], 'uint8', 3))
+
+
+def test_BuildBatch_fmt():
+    numbers1 = [1, 2, 3]
+    numbers2 = [4, 5, 6]
+    samples = zip(numbers1, numbers2)
+    build_batch = (nb.BuildBatch(3, fmt=lambda (x, y): ((x, y, x), y))
+                   .by(0, 'number', float)
+                   .by(1, 'number', float))
+    batches = samples >> build_batch >> Collect()
+    assert len(batches) == 1
+    ((a, b, c), d) = batches[0]
+    assert list(a) == numbers1
+    assert list(b) == numbers2
+    assert list(c) == numbers1
+    assert list(d) == numbers2
 
 
 def test_BuildBatch_exceptions():

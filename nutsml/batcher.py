@@ -128,13 +128,16 @@ class BuildBatch(Nut):
     Build batches for GPU-based neural network training.
     """
 
-    def __init__(self, batchsize, prefetch=1):
+    def __init__(self, batchsize, prefetch=1, fmt=None):
         """
         iterable >> BuildBatch(batchsize, prefetch=1)
 
-        Take samples in interable, extract specified columns, convert
+        Take samples in iterable, extract specified columns, convert
         column data to numpy arrays of various types, aggregate converted
         samples into a batch.
+
+        Dat structure of output batch depends on fmt function used. If None
+        output is a list of np.arrays.
 
         >>> from nutsflow import Collect
         >>> numbers = [4.1, 3.2, 1.1]
@@ -150,13 +153,14 @@ class BuildBatch(Nut):
 
         :param int batchsize: Size of batch = number of rows in batch.
             Number of columns is determined by colspec.
-
         :param int prefetch: Number of batches to prefetch. This speeds up
            GPU based training.
+        :param function|None fmt: Function to format output.
         """
         self.batchsize = batchsize
-        self.colspecs = []
+        self.fmt = fmt    
         self.prefetch = prefetch
+        self.colspecs = []
         self.builder = {'image': build_image_batch,
                         'number': build_number_batch,
                         'vector': build_vector_batch,
@@ -196,15 +200,18 @@ class BuildBatch(Nut):
                 if not func in self.builder:
                     raise ValueError('Invalid builder: ' + func)
                 batch.append(self.builder[func](cols[col], *args, **kwargs))
-            yield batch
+            yield batch if self.fmt is None else self.fmt(batch)
 
     def __rrshift__(self, iterable):
         """
         Convert samples in iterable into mini-batches.
 
+        Structure of output depends on fmt function used. If None
+        output is a list of np.arrays
+
         :param iterable iterable: Iterable over samples.
         :return: Mini-batches
-        :rtype: list of np.array
+        :rtype: list of np.array if fmt=None
         """
         prefetch = self.prefetch
         batch_gen = self._batch_generator(iter(iterable))
