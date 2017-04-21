@@ -109,9 +109,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#validation">Validation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#evaluation">Evaluation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#check-pointing">Check-pointing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#prediction">Prediction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#writing">Writing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#reading">Reading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing">Writing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classification">Classification</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#code">Code</a></li>
 </ul>
 </li>
@@ -504,28 +504,82 @@ no averaging is required.</p>
 <div class="section" id="check-pointing">
 <h2>Check-pointing<a class="headerlink" href="#check-pointing" title="Permalink to this headline">¶</a></h2>
 <p>A common method to enable the continuation of an interrupted training or to implement
-early-stopping is to save the network weights, either at regular intervals (e.g.
-each epoch) or when the validation accuracy reaches a new high.</p>
+early-stopping is to save the network weights, either at regular intervals (e.g. at
+each epoch) or when the validation accuracy reaches a new high.
+Network weights can be easily be saved by invoking the <code class="docutils literal"><span class="pre">save()</span></code> method</p>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">network</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>early-stopping</p>
+<p>where the path to the weights file was specified when wrapping the model via
+<code class="docutils literal"><span class="pre">KerasNetwork(model,</span> <span class="pre">weightsfile)</span></code> in <code class="docutils literal"><span class="pre">create_network()</span></code>.</p>
+<p>For <em>early-stopping</em> we want to save the weights depending on the validation loss
+or accuracy. The following code shows how to compute the validation accuracy
+and uses <code class="docutils literal"><span class="pre">save_best()</span></code> to save the weights for the network with the highest
+accuracy</p>
 <div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">v_acc</span> <span class="o">=</span> <span class="n">val_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()</span>
 <span class="n">network</span><span class="o">.</span><span class="n">save_best</span><span class="p">(</span><span class="n">v_acc</span><span class="p">,</span> <span class="n">isloss</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Note that the computation of the validation accuracy is slightly different than shown
+before. Here we need only the accuracies but not the losses and therefore call <code class="docutils literal"><span class="pre">Get(1)</span></code>
+to extract them. Since the output then contains only accuracies and not tuples of
+format <code class="docutils literal"><span class="pre">(loss,</span> <span class="pre">acc)</span></code> anymore, we can directly call <code class="docutils literal"><span class="pre">Mean()</span></code> and don&#8217;t need to <code class="docutils literal"><span class="pre">Unzip</span></code>.</p>
+<p>If we want to save the network with the smallest loss instead, we can write</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">v_loss</span> <span class="o">=</span> <span class="n">val_samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">build_batch</span> <span class="o">&gt;&gt;</span> <span class="n">network</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Mean</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">save_best</span><span class="p">(</span><span class="n">v_loss</span><span class="p">,</span> <span class="n">isloss</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="prediction">
-<h2>Prediction<a class="headerlink" href="#prediction" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
-</div>
-<div class="section" id="writing">
-<h2>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
 </div>
 <div class="section" id="reading">
 <h2>Reading<a class="headerlink" href="#reading" title="Permalink to this headline">¶</a></h2>
 <p>TODO</p>
+<p>Reading images from file system</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">show_image</span> <span class="o">=</span> <span class="n">ViewImage</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pause</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;spline36&#39;</span><span class="p">)</span>
+<span class="n">glob</span><span class="p">(</span><span class="s1">&#39;images/*.png&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">ReadImage</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">show_image</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Reading from labeled directories</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">ReadLabelDirs</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="s1">&#39;*.png&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Print</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">ReadLabelDirs</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">,</span> <span class="s1">&#39;*.png&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">ReadImage</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">show_image</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing">
+<h2>Writing<a class="headerlink" href="#writing" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
+<p>Writing images to file system</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">load_names</span><span class="p">():</span>
+    <span class="kn">from</span> <span class="nn">keras.utils.data_utils</span> <span class="k">import</span> <span class="n">get_file</span>
+    <span class="n">dirname</span> <span class="o">=</span> <span class="s1">&#39;cifar-10-batches-py&#39;</span>
+    <span class="n">origin</span> <span class="o">=</span> <span class="s1">&#39;http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz&#39;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">get_file</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">untar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;batches.meta&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="s1">&#39;label_names&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="classification">
+<h2>Classification<a class="headerlink" href="#classification" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
+<p>Classify images using a trained network</p>
+<div class="code Python highlight-default"><div class="highlight"><pre><span></span><span class="n">names</span> <span class="o">=</span> <span class="n">load_names</span><span class="p">()</span>
+
+<span class="n">show_image</span> <span class="o">=</span> <span class="n">ViewImageAnnotation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pause</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                 <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;spline36&#39;</span><span class="p">)</span>
+<span class="n">pred_batch</span> <span class="o">=</span> <span class="n">BuildBatch</span><span class="p">(</span><span class="n">BATCH_SIZE</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;image&#39;</span><span class="p">,</span> <span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+<span class="n">network</span> <span class="o">=</span> <span class="n">create_network</span><span class="p">()</span>
+<span class="n">network</span><span class="o">.</span><span class="n">load_weights</span><span class="p">()</span>
+
+<span class="n">samples</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="s1">&#39;images/*.png&#39;</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Print</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">ReadImage</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Collect</span><span class="p">()</span>
+
+<span class="n">predictions</span> <span class="o">=</span> <span class="p">(</span><span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">rerange</span> <span class="o">&gt;&gt;</span> <span class="n">pred_batch</span> <span class="o">&gt;&gt;</span>
+               <span class="n">network</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">Map</span><span class="p">(</span><span class="n">ArgMax</span><span class="p">())</span> <span class="o">&gt;&gt;</span> <span class="n">Map</span><span class="p">(</span><span class="n">names</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">))</span>
+<span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">Get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">Zip</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">show_image</span> <span class="o">&gt;&gt;</span> <span class="n">Consume</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="code">
 <h2>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>

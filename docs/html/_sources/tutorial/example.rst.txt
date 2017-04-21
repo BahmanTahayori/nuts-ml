@@ -389,32 +389,38 @@ Check-pointing
 --------------
 
 A common method to enable the continuation of an interrupted training or to implement 
-early-stopping is to save the network weights, either at regular intervals (e.g.
+early-stopping is to save the network weights, either at regular intervals (e.g. at
 each epoch) or when the validation accuracy reaches a new high.
-
+Network weights can be easily be saved by invoking the ``save()`` method
 
 .. code:: Python
 
   network.save()
 
-early-stopping  
+where the path to the weights file was specified when wrapping the model via
+``KerasNetwork(model, weightsfile)`` in ``create_network()``.
+
+For *early-stopping* we want to save the weights depending on the validation loss
+or accuracy. The following code shows how to compute the validation accuracy 
+and uses ``save_best()`` to save the weights for the network with the highest 
+accuracy 
 
 .. code:: Python
 
   v_acc = val_samples >> rerange >> build_batch >> network.validate() >> Get(1) >> Mean()
   network.save_best(v_acc, isloss=False)
 
+Note that the computation of the validation accuracy is slightly different than shown
+before. Here we need only the accuracies but not the losses and therefore call ``Get(1)``
+to extract them. Since the output then contains only accuracies and not tuples of
+format ``(loss, acc)`` anymore, we can directly call ``Mean()`` and don't need to ``Unzip``.
 
-Prediction
-----------
+If we want to save the network with the smallest loss instead, we can write 
 
-TODO
+.. code:: Python
 
-
-Writing
--------
-
-TODO
+  v_loss = val_samples >> rerange >> build_batch >> network.validate() >> Get(0) >> Mean()
+  network.save_best(v_loss, isloss=True)
 
 
 Reading
@@ -422,13 +428,85 @@ Reading
 
 TODO
 
+Reading images from file system
+
+.. code:: Python
+
+  show_image = ViewImage(0, pause=1, figsize=(2, 2), interpolation='spline36')
+  glob('images/*.png') >> ReadImage(None) >> show_image >> Consume()
+
+
+Reading from labeled directories
+
+.. code:: Python
+
+  (ReadLabelDirs('images', '*.png') >> Print() >> Consume())
+
+.. code:: Python
+
+  (ReadLabelDirs('images', '*.png') >> ReadImage(0) >> show_image >> Consume())
+
+
+Writing
+-------
+
+TODO
+
+Writing images to file system
+
+.. code:: Python
+
+  def load_names():
+      from keras.utils.data_utils import get_file
+      dirname = 'cifar-10-batches-py'
+      origin = 'http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'
+      path = get_file(dirname, origin=origin, untar=True)
+      with open(osp.join(path, 'batches.meta'), 'rb') as f:
+          return cPickle.load(f)['label_names']
+
+.. code:: Python
+  train_samples, _ = load_samples()
+  names = load_names()
+
+  id2name = MapCol(1, lambda i: names[int(i)])
+  fnames = (Enumerate() >> Zip(train_samples >> Get(1)) >> id2name >>
+            Format('{0}_{1}') >> Print())
+  imagepath = 'images/img*.png'
+  train_samples >> Take(10) >> WriteImage(0, imagepath, fnames) >> Consume()
+
+
+
+Classification
+--------------
+
+TODO
+
+Classify images using a trained network
+
+.. code:: Python
+
+  names = load_names()
+
+  show_image = ViewImageAnnotation(0, 1, pause=1, figsize=(3, 3),
+                                   interpolation='spline36')
+  pred_batch = BuildBatch(BATCH_SIZE).by(0, 'image', 'float32')
+
+  network = create_network()
+  network.load_weights()
+
+  samples = glob('images/*.png') >> Print() >> ReadImage(None) >> Collect()
+
+  predictions = (samples >> rerange >> pred_batch >>
+                 network.predict() >> Map(ArgMax()) >> Map(names.__getitem__))
+  samples >> Get(0) >> Zip(predictions) >> show_image >> Consume()
+
+
 
 
 Code
 ----
 
 Below is the complete code for the network training.
-
 
 .. code:: Python
 
