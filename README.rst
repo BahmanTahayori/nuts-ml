@@ -1,5 +1,5 @@
 
-.. image:: pics/nutsml_logo.gif
+.. image:: https://github.com/maet3608/nuts-ml/blob/master/pics/nutsml_logo.gif
    :align: center
 
 - `Introduction <https://maet3608.github.io/nuts-ml/introduction.html>`_
