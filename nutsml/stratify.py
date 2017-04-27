@@ -25,7 +25,7 @@ def Stratify(iterable, labelcol, mode='downrnd', rand=rnd.Random()):
 
     :param iterable over tuples iterable: Iterable of tuples where column
        labelcol contains a sample label that is used for stratification
-    :param int labelcol: Column of tuple/samples that contains label
+    :param int labelcol: Column of tuple/samples that contains the label
     :param string mode:
        'downrnd' : randomly down-sample
        'up' : up-sample
