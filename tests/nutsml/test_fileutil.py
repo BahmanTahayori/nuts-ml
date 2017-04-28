@@ -47,6 +47,7 @@ def test_create_temp_filepath():
 
 def test_delete_file():
     path = 'data/' + fu.create_filename(ext='txt')
+    fu.create_folders('data')
     fu.delete_file(path)  # file does not exist. Should be fine.
     with open(path, 'w') as f:
         f.write('foo')
