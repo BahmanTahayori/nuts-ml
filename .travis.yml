@@ -18,6 +18,6 @@ install:
 script:
   - "echo 'backend : Agg' > matplotlibrc"
   - py.test
-  - coverage run --source=nutsml --omit="*/nutsml/examples/*" setup.py test 
+  - coverage run --source=nutsml --omit="nutsml/examples/*" setup.py test 
 after_success:
   - coveralls  
