@@ -28,9 +28,6 @@ class PlotLines(NutFunction):  # pragma no coverage
         """
         iterable >> PlotLines(ycols) >> Consume()
 
-       
-        >>> import matplotlib
-        >>> matplotlib.use('Agg')  # Force matplotlib to not use any display
         >>> import os
         >>> import numpy as np
         >>> from nutsflow import Consume

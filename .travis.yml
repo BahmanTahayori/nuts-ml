@@ -15,7 +15,8 @@ before_install:
   - pip install coveralls
 install: 
   - pip install nutsml
-script: 
+script:
+  - "echo 'backend : Agg' > matplotlibrc"
   - py.test
 after_success:
   - coveralls  
