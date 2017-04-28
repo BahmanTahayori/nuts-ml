@@ -25,5 +25,7 @@ trains a network on image data and prints training loss and accuracy
 **nuts-ml** is based on `nuts-flow <https://github.com/maet3608/nuts-flow>`_,
 which is described `here <https://maet3608.github.io/nuts-flow/>`_.
 
+.. image:: https://coveralls.io/repos/github/maet3608/nuts-ml/badge.svg?branch=master
+:target: https://coveralls.io/github/maet3608/nuts-ml?branch=master
 
 
