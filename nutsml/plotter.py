@@ -29,6 +29,7 @@ class PlotLines(NutFunction):  # pragma no coverage
         iterable >> PlotLines(ycols) >> Consume()
 
         >>> import os
+        >>> os.environ['DISPLAY'] = ':0.0'   # don't require display for test
         >>> import numpy as np
         >>> from nutsflow import Consume
 
