@@ -1,5 +1,8 @@
 Overview
 ========
 
-Augment images using :class:`AugmentImage <nutsml.transformer.AugmentImage>`
-and the :func:`by <nutsml.transformer.AugmentImage.by>` method.
+- :class:`AugmentImage <nutsml.transformer.AugmentImage>` :
+  augment images using random transformations, e.g. rotation.
+
+- :class:`TransformImage <nutsml.transformer.TransformImage>` :
+  transform images, e.g. translate, rotate.
