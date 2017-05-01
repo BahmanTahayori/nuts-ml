@@ -46,6 +46,7 @@ class TransformImage(NutFunction):
         'crop_center': ni.crop_center,
         'normalize_histo': ni.normalize_histo,
         'resize': ni.resize,
+        'translate': ni.translate,
         'rotate': ni.rotate,
         'contrast': ni.change_contrast,
         'sharpness': ni.change_sharpness,

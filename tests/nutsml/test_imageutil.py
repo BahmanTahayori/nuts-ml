@@ -257,6 +257,18 @@ def test_change_color(testdatadirs):
     nt.assert_allclose(expected, enhanced)
 
 
+def test_translate(testdatadirs):
+    imagedir, _, _, processeddir = testdatadirs
+
+    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
+    enhanced = ni.translate(img_arr, 50, 100)
+    imagepath = processeddir + 'nut_color_translated.bmp'
+    if CREATE_DATA:
+        ni.save_image(imagepath, enhanced)
+    expected = ni.load_image(imagepath)
+    nt.assert_allclose(expected, enhanced)
+
+
 def test_rotate(testdatadirs):
     imagedir, _, _, processeddir = testdatadirs
 

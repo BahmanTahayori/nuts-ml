@@ -368,6 +368,26 @@ def change_color(image, color=1.0):
     return enhance(image, ie.Color, color)
 
 
+def translate(image, dx, dy):
+    """
+    Shift image horizontally and vertically
+
+    >>> image = np.eye(3, dtype='uint8') * 255
+    >>> translate(image, 2, 1)
+    array([[  0,   0,   0],
+           [  0,   0, 255],
+           [  0,   0,   0]], dtype=uint8)
+
+    :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'.
+    :param dx: horizontal translation in pixels
+    :param dy: vertical translation in picels
+    :return: translated image
+    :rtype:  numpy array with range [0,255] and dtype 'uint8'
+    """
+    transmat = skt.AffineTransform(translation=(-dx, -dy))
+    return skt.warp(image, transmat, preserve_range=True).astype('uint8')
+
+
 def rotate(image, angle=0):
     """
     Rotate image.
