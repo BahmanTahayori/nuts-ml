@@ -7,6 +7,7 @@ import numpy as np
 import PIL as pil
 import skimage.exposure as ske
 import skimage.transform as skt
+import skimage.color as skc
 import skimage.util.shape as sks
 import skimage.io as sio
 import matplotlib.patches as plp
@@ -366,6 +367,48 @@ def change_color(image, color=1.0):
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
     return enhance(image, ie.Color, color)
+
+
+def gray2rgb(image):
+    """
+    Grayscale scale image to RGB image
+    
+    >>> image = np.eye(3, dtype='uint8') * 255
+    >>> gray2rgb(image)
+    array([[[255, 255, 255],
+            [  0,   0,   0],
+            [  0,   0,   0]],
+    <BLANKLINE>
+           [[  0,   0,   0],
+            [255, 255, 255],
+            [  0,   0,   0]],
+    <BLANKLINE>
+           [[  0,   0,   0],
+            [  0,   0,   0],
+            [255, 255, 255]]], dtype=uint8)
+
+    :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'. 
+    :return: RGB image
+    :rtype:  numpy array with range [0,255] and dtype 'uint8'
+    """
+    return skc.gray2rgb(image)
+
+
+def rgb2gray(image):
+    """
+    RGB scale image to grayscale image
+
+    >>> image = np.eye(3, dtype='uint8') * 255
+    >>> rgb2gray(image)
+    array([[255,   0,   0],
+           [  0, 255,   0],
+           [  0,   0, 255]], dtype=uint8)
+
+    :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'. 
+    :return: grayscale image
+    :rtype:  numpy array with range [0,255] and dtype 'uint8'
+    """
+    return floatimg2uint8(skc.rgb2gray(image))
 
 
 def translate(image, dx, dy):

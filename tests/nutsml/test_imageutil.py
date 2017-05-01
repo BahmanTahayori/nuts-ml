@@ -2,6 +2,7 @@
 .. module:: test_imageutil
    :synopsis: Unit tests for imageutil module
 """
+from __future__ import print_function
 
 import pytest
 import os
@@ -21,7 +22,7 @@ CREATE_DATA = True
 
 
 @pytest.fixture(scope="function")
-def testdatadirs():
+def datadirs():
     imagedir = 'tests/data/img/'
     formatsdir = 'tests/data/img_formats/'
     arraysdir = 'tests/data/img_arrays/'
@@ -30,9 +31,16 @@ def testdatadirs():
     return imagedir, formatsdir, arraysdir, processeddir
 
 
-def test_load_image(testdatadirs):
+def assert_equal_image(imagepath, image):
+    if CREATE_DATA:
+        ni.save_image(imagepath, image)
+    expected = ni.load_image(imagepath)
+    nt.assert_allclose(expected, image)
+
+
+def test_load_image(datadirs):
     h, w = 213, 320
-    _, formatsdir, arraydir, _ = testdatadirs
+    _, formatsdir, arraydir, _ = datadirs
     pathpattern = formatsdir + '*'
 
     for filepath in glob(pathpattern):
@@ -57,8 +65,8 @@ def test_load_image(testdatadirs):
         nt.assert_allclose(img, arr)
 
 
-def test_save_image(testdatadirs):
-    _, formatsdir, _, _ = testdatadirs
+def test_save_image(datadirs):
+    _, formatsdir, _, _ = datadirs
     formats = ['gif', 'png', 'jpg', 'bmp', 'tif', 'npy']
     for format in formats:
         inpath = formatsdir + 'nut_color.' + format
@@ -188,17 +196,12 @@ def test_crop_center():
     assert str(ex.value).startswith('Image too small for crop')
 
 
-def test_normalize_histo(testdatadirs):
-    imagedir, _, arraydir, processeddir = testdatadirs
-
+def test_normalize_histo(datadirs):
+    imagedir, _, arraydir, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    normalized = ni.normalize_histo(img_arr)
-
+    new_img = ni.normalize_histo(img_arr)
     imagepath = processeddir + 'nut_color_normalize_histo.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, normalized)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, normalized)
+    assert_equal_image(imagepath, new_img)
 
 
 def test_enhance():
@@ -209,88 +212,84 @@ def test_enhance():
     assert enhanced.dtype == np.uint8
 
 
-def test_contrast(testdatadirs):
-    imagedir, _, _, processeddir = testdatadirs
-
+def test_contrast(datadirs):
+    imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    enhanced = ni.change_contrast(img_arr, 0.5)
+    new_img = ni.change_contrast(img_arr, 0.5)
     imagepath = processeddir + 'nut_color_contrast.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, enhanced)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, enhanced)
+    assert_equal_image(imagepath, new_img)
 
 
-def test_brightness(testdatadirs):
-    imagedir, _, _, processeddir = testdatadirs
-
+def test_brightness(datadirs):
+    imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    enhanced = ni.change_brightness(img_arr, 0.5)
+    new_img = ni.change_brightness(img_arr, 0.5)
     imagepath = processeddir + 'nut_color_brightness.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, enhanced)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, enhanced)
+    assert_equal_image(imagepath, new_img)
 
 
-def test_sharpness(testdatadirs):
-    imagedir, _, _, processeddir = testdatadirs
-
+def test_sharpness(datadirs):
+    imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    enhanced = ni.change_sharpness(img_arr, 2.0)
+    new_img = ni.change_sharpness(img_arr, 2.0)
     imagepath = processeddir + 'nut_color_sharpness.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, enhanced)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, enhanced)
+    assert_equal_image(imagepath, new_img)
 
 
-def test_change_color(testdatadirs):
-    imagedir, _, _, processeddir = testdatadirs
-
+def test_change_color(datadirs):
+    imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    enhanced = ni.change_color(img_arr, 2.0)
+    new_img = ni.change_color(img_arr, 2.0)
     imagepath = processeddir + 'nut_color_color.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, enhanced)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, enhanced)
+    assert_equal_image(imagepath, new_img)
 
 
-def test_translate(testdatadirs):
-    imagedir, _, _, processeddir = testdatadirs
+def test_gray2rgb(datadirs):
+    imagedir, _, _, processeddir = datadirs
+    img_arr = ni.load_image(imagedir + 'nut_grayscale.bmp')
+    new_img = ni.gray2rgb(img_arr)
+    imagepath = processeddir + 'nut_grayscale_2rgb.bmp'
+    assert_equal_image(imagepath, new_img)
 
+
+def test_rgb2gray(datadirs):
+    imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    enhanced = ni.translate(img_arr, 50, 100)
+    new_img = ni.rgb2gray(img_arr)
+    imagepath = processeddir + 'nut_color_2gray.bmp'
+    assert_equal_image(imagepath, new_img)
+
+
+def test_translate(datadirs):
+    imagedir, _, _, processeddir = datadirs
+    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
+    new_img = ni.translate(img_arr, 50, 100)
     imagepath = processeddir + 'nut_color_translated.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, enhanced)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, enhanced)
+    assert_equal_image(imagepath, new_img)
 
 
-def test_rotate(testdatadirs):
-    imagedir, _, _, processeddir = testdatadirs
-
+def test_translate(datadirs):
+    imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    enhanced = ni.rotate(img_arr, 45)
+    new_img = ni.translate(img_arr, 50, 100)
+    imagepath = processeddir + 'nut_color_translated.bmp'
+    assert_equal_image(imagepath, new_img)
+
+
+def test_rotate(datadirs):
+    imagedir, _, _, processeddir = datadirs
+    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
+    new_img = ni.rotate(img_arr, 45)
     imagepath = processeddir + 'nut_color_rotated.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, enhanced)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, enhanced)
+    assert_equal_image(imagepath, new_img)
 
 
-def test_shear(testdatadirs):
-    imagedir, _, _, processeddir = testdatadirs
-
+def test_shear(datadirs):
+    imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    enhanced = ni.shear(img_arr, 0.5)
+    new_img = ni.shear(img_arr, 0.5)
     imagepath = processeddir + 'nut_color_sheared.bmp'
-    if CREATE_DATA:
-        ni.save_image(imagepath, enhanced)
-    expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, enhanced)
+    assert_equal_image(imagepath, new_img)
 
 
 def test_mask_where():
