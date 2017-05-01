@@ -50,7 +50,8 @@ is recommended.
    :maxdepth: 1
 
    introduction
-   installation   
+   installation
+   overview   
    tutorial/introduction
    faq
    contributions
