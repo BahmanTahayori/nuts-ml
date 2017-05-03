@@ -163,11 +163,90 @@
             
   <div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>Click on a nut name for more details.</p>
+<p><strong>Network wrapping</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.network.KerasNetwork" title="nutsml.network.KerasNetwork"><code class="xref py py-class docutils literal"><span class="pre">KerasNetwork</span></code></a> :
+wrapper for Keras networks.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.network.LasagneNetwork" title="nutsml.network.LasagneNetwork"><code class="xref py py-class docutils literal"><span class="pre">LasagneNetwork</span></code></a> :
+wrapper for Lasagne networks.</li>
+</ul>
+<p><strong>Data reading</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.reader.DplyToList" title="nutsml.reader.DplyToList"><code class="xref py py-class docutils literal"><span class="pre">DplyToList</span></code></a> :
+convert DplyDataframe to list.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.reader.ReadImage" title="nutsml.reader.ReadImage"><code class="xref py py-class docutils literal"><span class="pre">ReadImage</span></code></a> :
+load image as numpy array from file system.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.reader.ReadLabelDirs" title="nutsml.reader.ReadLabelDirs"><code class="xref py py-class docutils literal"><span class="pre">ReadLabelDirs</span></code></a> :
+read file paths from label directories.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.reader.ReadPandas" title="nutsml.reader.ReadPandas"><code class="xref py py-class docutils literal"><span class="pre">ReadPandas</span></code></a> :
+read data as Pandas table from file system.</li>
+</ul>
+<p><strong>Data writing</strong></p>
+<ul class="simple">
+<li><code class="xref py py-class docutils literal"><span class="pre">WriteImage</span></code> :
+write images to file system.</li>
+</ul>
+<p><strong>Data viewing</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.viewer.PrintColType" title="nutsml.viewer.PrintColType"><code class="xref py py-class docutils literal"><span class="pre">PrintColType</span></code></a> :
+print type and other information for sample columns.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.viewer.ViewImage" title="nutsml.viewer.ViewImage"><code class="xref py py-class docutils literal"><span class="pre">ViewImage</span></code></a> :
+display image in window.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.viewer.ViewImageAnnotation" title="nutsml.viewer.ViewImageAnnotation"><code class="xref py py-class docutils literal"><span class="pre">ViewImageAnnotation</span></code></a> :
+display image and annotation in window.</li>
+</ul>
+<p><strong>Sample processing</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.common.CheckNaN" title="nutsml.common.CheckNaN"><code class="xref py py-class docutils literal"><span class="pre">CheckNaN</span></code></a> :
+raise exception if data contains NaNs.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.common.PartitionByCol" title="nutsml.common.PartitionByCol"><code class="xref py py-class docutils literal"><span class="pre">PartitionByCol</span></code></a> :
+partition samples depending on column value.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.common.SplitRandom" title="nutsml.common.SplitRandom"><code class="xref py py-class docutils literal"><span class="pre">SplitRandom</span></code></a> :
+randomly split iterable into partitions, e.g. training, validation, test.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.stratify.Stratify" title="nutsml.stratify.Stratify"><code class="xref py py-class docutils literal"><span class="pre">Stratify</span></code></a> :
+stratifies samples by down-sampling or up-sampling.</li>
+</ul>
+<p><strong>Transforming &amp; Augmenting</strong></p>
 <ul class="simple">
 <li><a class="reference internal" href="nutsml.html#nutsml.transformer.AugmentImage" title="nutsml.transformer.AugmentImage"><code class="xref py py-class docutils literal"><span class="pre">AugmentImage</span></code></a> :
 augment images using random transformations, e.g. rotation.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.transformer.ImageAnnotationToMask" title="nutsml.transformer.ImageAnnotationToMask"><code class="xref py py-class docutils literal"><span class="pre">ImageAnnotationToMask</span></code></a> :
+return bit mask for geometric image annotation.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.transformer.ImageChannelMean" title="nutsml.transformer.ImageChannelMean"><code class="xref py py-class docutils literal"><span class="pre">ImageChannelMean</span></code></a> :
+compute per-channel means over images and subtract from images.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.transformer.ImageMean" title="nutsml.transformer.ImageMean"><code class="xref py py-class docutils literal"><span class="pre">ImageMean</span></code></a> :
+compute mean over images and subtract from images.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.transformer.ImagePatchesByAnnotation" title="nutsml.transformer.ImagePatchesByAnnotation"><code class="xref py py-class docutils literal"><span class="pre">ImagePatchesByAnnotation</span></code></a> :
+randomly sample patches from image based on geometric annotation.</li>
+<li><code class="xref py py-class docutils literal"><span class="pre">ImagePatchesByMask</span></code> :
+randomly sample patches from image based on annotation mask.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.transformer.RandomImagePatches" title="nutsml.transformer.RandomImagePatches"><code class="xref py py-class docutils literal"><span class="pre">RandomImagePatches</span></code></a> :
+extract patches at random locations from images.</li>
+<li><a class="reference internal" href="nutsml.html#nutsml.transformer.RegularImagePatches" title="nutsml.transformer.RegularImagePatches"><code class="xref py py-class docutils literal"><span class="pre">RegularImagePatches</span></code></a> :
+extract patches in a regular grid from images.</li>
 <li><a class="reference internal" href="nutsml.html#nutsml.transformer.TransformImage" title="nutsml.transformer.TransformImage"><code class="xref py py-class docutils literal"><span class="pre">TransformImage</span></code></a> :
-transform images, e.g. translate, rotate.</li>
+transform images, e.g. crop, translate, rotate.</li>
+</ul>
+<p><strong>Boosting</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.booster.Boost" title="nutsml.booster.Boost"><code class="xref py py-class docutils literal"><span class="pre">Boost</span></code></a> :
+boost samples with high softmax probability for incorrect class.</li>
+</ul>
+<p><strong>Batching</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.batcher.BuildBatch" title="nutsml.batcher.BuildBatch"><code class="xref py py-class docutils literal"><span class="pre">BuildBatch</span></code></a> :
+build batches for GPU-based training.</li>
+</ul>
+<p><strong>Plotting</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.plotter.PlotLines" title="nutsml.plotter.PlotLines"><code class="xref py py-class docutils literal"><span class="pre">PlotLines</span></code></a> :
+plot lines for selected data columns, e.g. accuracy, loss.</li>
+</ul>
+<p><strong>Logging</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="nutsml.html#nutsml.logger.LogCols" title="nutsml.logger.LogCols"><code class="xref py py-class docutils literal"><span class="pre">LogCols</span></code></a> :
+log sample columns to file.</li>
 </ul>
 </div>
 
@@ -194,7 +273,7 @@ transform images, e.g. translate, rotate.</li>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, IBM Research Australia.
-      Last updated on May 01, 2017.
+      Last updated on May 03, 2017.
 
     </p>
   </div> 

@@ -42,7 +42,7 @@ def CheckNaN(data):
 @nut_sink
 def PartitionByCol(iterable, col, values):
     """
-    Partition samples in interable depending on column value.
+    Partition samples in iterables depending on column value.
 
     >>> samples = [(1,1), (2,0), (2,4), (1,3), (3,0)]
     >>> ones, twos = samples >> PartitionByCol(0, [1, 2])

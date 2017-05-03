@@ -14,7 +14,7 @@ def Boost(iterable, batcher, network, targetcol=-1):
     """
     iterable >> Boost(batcher, network, targetcol=-1)
 
-    Boost samples with high softmax probability for incorrect class
+    Boost samples with high softmax probability for incorrect class.
     Expects one-hot encoded targets and softmax predictions for output.
 
     network = Network()

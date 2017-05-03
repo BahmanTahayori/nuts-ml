@@ -482,7 +482,7 @@ alpha channel is fine (w,h,4).</li>
 <em class="property">class </em><code class="descname">Boost</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/booster.html#Boost"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.booster.Boost" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">nutsflow.base.Nut</span></code></p>
 <p>iterable &gt;&gt; Boost(batcher, network, targetcol=-1)</p>
-<p>Boost samples with high softmax probability for incorrect class
+<p>Boost samples with high softmax probability for incorrect class.
 Expects one-hot encoded targets and softmax predictions for output.</p>
 <p>network = Network()
 build_batch = BuildBatch(BATCHSIZE, colspec)
@@ -569,7 +569,7 @@ e.g. samples &gt;&gt; network.train() &gt;&gt; CheckNan() &gt;&gt; log &gt;&gt; 
 <dt id="nutsml.common.PartitionByCol">
 <em class="property">class </em><code class="descname">PartitionByCol</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nutsml/common.html#PartitionByCol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nutsml.common.PartitionByCol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">nutsflow.base.NutSink</span></code></p>
-<p>Partition samples in interable depending on column value.</p>
+<p>Partition samples in iterables depending on column value.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samples</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">)]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ones</span><span class="p">,</span> <span class="n">twos</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">&gt;&gt;</span> <span class="n">PartitionByCol</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ones</span>
@@ -4081,7 +4081,7 @@ Length need to be the same as samples.</li>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, IBM Research Australia.
-      Last updated on May 01, 2017.
+      Last updated on May 03, 2017.
 
     </p>
   </div> 
