@@ -99,6 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#what-is-the-default-image-representation-in-nuts-ml">What is the default image representation in nuts-ml?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-image-formats-can-nuts-ml-read">What image formats can nuts-ml read?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-to-flatten-a-batch-of-predictions">How to flatten a batch of predictions?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#only-length-1-arrays-can-be-converted-to-python-scalars">Only length-1 arrays can be converted to Python scalars</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributions.html">Contributions</a></li>
@@ -197,6 +198,17 @@ of labels, how can it be flattened into a flow of labels?</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="only-length-1-arrays-can-be-converted-to-python-scalars">
+<h2>Only length-1 arrays can be converted to Python scalars<a class="headerlink" href="#only-length-1-arrays-can-be-converted-to-python-scalars" title="Permalink to this headline">¶</a></h2>
+<p>If you see the following error message when running
+<code class="docutils literal"><span class="pre">network.evaluate()</span></code> you need to upgrade to Keras 2.x
+and the latests <code class="docutils literal"><span class="pre">nuts-ml</span></code> version.</p>
+<div class="code highlight-default"><div class="highlight"><pre><span></span><span class="ow">in</span> <span class="n">compute_metric</span>
+<span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="s1">&#39;eval&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">result</span><span class="p">)</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">only</span> <span class="n">length</span><span class="o">-</span><span class="mi">1</span> <span class="n">arrays</span> <span class="n">can</span> <span class="n">be</span> <span class="n">converted</span> <span class="n">to</span> <span class="n">Python</span> <span class="n">scalars</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -222,7 +234,7 @@ of labels, how can it be flattened into a flow of labels?</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2017, IBM Research Australia.
-      Last updated on May 03, 2017.
+      Last updated on May 05, 2017.
 
     </p>
   </div> 
