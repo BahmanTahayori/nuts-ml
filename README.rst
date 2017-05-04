@@ -1,27 +1,3 @@
-.. image:: https://badge.fury.io/py/nutsml.svg
-   :target: https://badge.fury.io/py/nutsml
-
-.. image:: https://img.shields.io/pypi/pyversions/nutsml.svg
-   :target: https://pypi.python.org/pypi/nutsml/
-
-.. image:: https://travis-ci.org/maet3608/nuts-ml.svg?branch=master
-   :target: https://travis-ci.org/maet3608/nuts-ml
-
-.. image:: https://coveralls.io/repos/github/maet3608/nuts-ml/badge.svg?branch=master
-   :target: https://coveralls.io/github/maet3608/nuts-ml?branch=master
-
-.. image:: https://img.shields.io/github/issues/maet3608/nuts-ml.svg
-   :target: https://github.com/maet3608/nuts-ml/issues
-
-.. image:: https://img.shields.io/badge/license-Apache%202-blue.svg
-   :target: https://github.com/maet3608/nuts-ml/blob/master/LICENSE
-
-.. image:: https://img.shields.io/pypi/dm/nutsml.svg
-   :target: https://pypi.python.org/pypi/nutsml/
-
-.. image:: https://img.shields.io/github/downloads/maet3608/nuts-ml/total.svg
-   :target: https://github.com/maet3608/nuts-ml
-
 
 .. image:: pics/nutsml_logo.gif
    :align: center
@@ -50,13 +26,31 @@ trains a network on image data and prints training loss and accuracy
 **nuts-ml** is based on `nuts-flow <https://github.com/maet3608/nuts-flow>`_,
 which is described `here <https://maet3608.github.io/nuts-flow/>`_.
 
-.. image:: https://badge.fury.io/py/nutsflow.svg
-    :target: https://badge.fury.io/py/nutsml
+.. image:: https://badge.fury.io/py/nutsml.svg
+   :target: https://badge.fury.io/py/nutsml
+
+.. image:: https://img.shields.io/pypi/pyversions/nutsml.svg
+   :target: https://pypi.python.org/pypi/nutsml/
 
 .. image:: https://travis-ci.org/maet3608/nuts-ml.svg?branch=master
    :target: https://travis-ci.org/maet3608/nuts-ml
 
 .. image:: https://coveralls.io/repos/github/maet3608/nuts-ml/badge.svg?branch=master
    :target: https://coveralls.io/github/maet3608/nuts-ml?branch=master
+
+.. image:: https://img.shields.io/github/issues/maet3608/nuts-ml.svg
+   :target: https://github.com/maet3608/nuts-ml/issues
+
+.. image:: https://img.shields.io/badge/license-Apache%202-blue.svg
+   :target: https://github.com/maet3608/nuts-ml/blob/master/LICENSE
+
+.. image:: https://img.shields.io/pypi/dm/nutsml.svg
+   :target: https://pypi.python.org/pypi/nutsml/
+
+.. image:: https://img.shields.io/github/downloads/maet3608/nuts-ml/total.svg
+   :target: https://github.com/maet3608/nuts-ml
+
+
+
 
 
