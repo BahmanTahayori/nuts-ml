@@ -13,7 +13,7 @@ from __future__ import print_function
 from nutsflow import PrintProgress, Collect, Unzip, Mean
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
-NUM_EPOCHS = 3
+NUM_EPOCHS = 20
 BATCH_SIZE = 128
 NUM_CLASSES = 10
 

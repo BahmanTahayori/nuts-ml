@@ -14,7 +14,7 @@ from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick, Mean
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
 PICK = 0.1  # Pick 10% of the data for a quick trial
-NUM_EPOCHS = 5
+NUM_EPOCHS = 10
 INPUT_SHAPE = (28, 28, 1)
 BATCH_SIZE = 128
 NUM_CLASSES = 10
