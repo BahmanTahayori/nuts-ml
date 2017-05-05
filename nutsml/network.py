@@ -13,19 +13,20 @@ from nutsflow import (nut_processor, nut_sink, nut_function, Collect, Map,
 
 
 @nut_processor
-def TrainValNut(batches, func):
+def TrainValNut(batches, func, **kwargs):
     """
-    batches >> TrainValNut(func)
+    batches >> TrainValNut(func, **kwargs)
 
     Create nut to train or validate a network.
 
     :param iterable over batches batches: Batches to train/validate.
     :param function func: Training or validation function of network.
+    :param kwargs kwargs: Keyword arguments passed on to function.
     :return: Result(s) of training/validation function, e.g. loss, accuracy, ...
     :rtype: float or array/tuple of floats
     """
     for batch in batches:
-        yield func(*batch)
+        yield func(*batch, **kwargs)
 
 
 @nut_processor
@@ -239,11 +240,11 @@ class LasagneNetwork(Network):  # pragma no cover
                 name = '{}_{}'.format(l_num, p_num)
                 yield name, param
 
-    def train(self):
-        return TrainValNut(self.train_fn)
+    def train(self, **kwargs):
+        return TrainValNut(self.train_fn, **kwargs)
 
-    def validate(self):
-        return TrainValNut(self.val_fn)
+    def validate(self, **kwargs):
+        return TrainValNut(self.val_fn, **kwargs)
 
     def predict(self, flatten=True):
         return PredictNut(self.pred_fn, flatten)
@@ -282,11 +283,11 @@ class KerasNetwork(Network):  # pragma no cover
         Network.__init__(self, weightspath)
         self.model = model
 
-    def train(self):
-        return TrainValNut(self.model.train_on_batch)
+    def train(self, **kwargs):
+        return TrainValNut(self.model.train_on_batch, **kwargs)
 
-    def validate(self):
-        return TrainValNut(self.model.test_on_batch)
+    def validate(self, **kwargs):
+        return TrainValNut(self.model.test_on_batch, **kwargs)
 
     def predict(self, flatten=True):
         return PredictNut(self.model.predict_on_batch, flatten)

@@ -51,3 +51,14 @@ and the latests ``nuts-ml`` version.
   in compute_metric    
   return float(result.eval() if hasattr(result, 'eval') else result)
   TypeError: only length-1 arrays can be converted to Python scalars  
+  
+  
+How to use class weights for imbalanced classes in Keras
+--------------------------------------------------------
+
+.. code:: Python
+
+  class_weight = {0:1, 1:50} 
+
+  for epoch in xrange(EPOCHS):              
+    t_loss = samples >> build_batch >> network.train(class_weight) >> Mean()
