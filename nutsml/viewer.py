@@ -69,10 +69,13 @@ class ViewImage(NutFunction):  # pragma no coverage
         """
         iterable >> ViewImage(imgcols, layout=(1, None), figsize=None, **plotargs)
 
-        Images must be numpy arrays in one of the following formats:
-        MxN - luminance (grayscale, float array only)
-        MxNx3 - RGB (float or uint8 array)
-        MxNx4 - RGBA (float or uint8 array)
+        |  Images should be numpy arrays in one of the following formats:
+        |  MxN - luminance (grayscale, float array only)
+        |  MxNx3 - RGB (float or uint8 array)
+        |  MxNx4 - RGBA (float or uint8 array)
+
+        Shapes with single-dimension axis are supported but not encouraged,
+        e.g. MxNx1 will be converted to MxN.
 
         See
         http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
@@ -121,7 +124,8 @@ class ViewImage(NutFunction):  # pragma no coverage
         """
         for imgcol, ax in zip(self.imgcols, self.axes):
             ax.clear()
-            ax.imshow(data[imgcol], **self.imargs)
+            img = np.squeeze(data[imgcol])  # remove single-dim axis, e.g. MxNx1
+            ax.imshow(img, **self.imargs)
             ax.figure.canvas.draw()
         plt.waitforbuttonpress(timeout=self.pause)  # or plt.pause(self.pause)
         return data
@@ -138,13 +142,15 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         iterable >> ViewImageAnnotation(imgcol, annocols, figsize=None,
                                         pause, interpolation, **annoargs)
 
-        Images must be numpy arrays in one of the following formats:
-        MxN - luminance (grayscale, float array only)
-        MxNx3 - RGB (float or uint8 array)
-        MxNx4 - RGBA (float or uint8 array)
-        See
-        http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
+        |  Images must be numpy arrays in one of the following formats:
+        |  MxN - luminance (grayscale, float array only)
+        |  MxNx3 - RGB (float or uint8 array)
+        |  MxNx4 - RGBA (float or uint8 array)
+        |  See
+        |  http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
 
+        Shapes with single-dimension axis are supported but not encouraged,
+        e.g. MxNx1 will be converted to MxN.
 
         :param int imgcol: Index of data column that contains the image
         :param int|tuple annocols: Index or tuple of indices specifying the data
@@ -183,7 +189,7 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         :return: unchanged input data
         :rtype: tuple
         """
-        img = data[self.imgcol]
+        img = np.squeeze(data[self.imgcol])
         ax = self.axes
         ax.clear()
         ax.imshow(img, interpolation=self.interpolation)
