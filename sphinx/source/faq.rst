@@ -58,7 +58,17 @@ How to use class weights for imbalanced classes in Keras
 
 .. code:: Python
 
-  class_weight = {0:1, 1:50} 
+  class_weights = {0:1, 1:50} 
 
   for epoch in xrange(EPOCHS):              
-    t_loss = samples >> build_batch >> network.train(class_weight) >> Mean()
+    t_loss = samples >> build_batch >> network.train(class_weights) >> Mean()
+    
+If the samples are an iterable (and not an iterator that is consumed) the
+class weights can also be computed directly. For instance, assuming that
+the class labels are in the second column (index = 1) of the sample,
+the following code can be used
+
+.. code:: Python
+
+  class_weight = samples >> Get(1) >> CountValues()
+    
