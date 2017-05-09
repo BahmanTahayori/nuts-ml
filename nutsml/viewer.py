@@ -3,6 +3,8 @@
    :synopsis: Viewing of sample data
 """
 
+from __future__ import print_function
+
 import numpy as np
 import nutsml.imageutil as iu
 
@@ -11,49 +13,61 @@ from nutsflow import NutFunction, nut_function, as_tuple, as_set
 from matplotlib import pyplot as plt
 
 
-@nut_function
-def PrintColType(data, cols=None):
-    """
-    iterable >> PrintColType()
+class PrintColType(NutFunction):
+    def __init__(self, cols=None):
+        """
+        iterable >> PrintColType()
 
-    Print type and other information for columns in data.
+        Print type and other information for columns in data.
 
-    >>> from nutsflow import Consume
-    
-    >>> data = [(np.zeros((10, 20, 3)), 1), ('text', 2), 3]
-    >>> data >> PrintColType() >> Consume()
-    <BLANKLINE>
-    0: <ndarray> shape:10x20x3 dtype:float64 range:0.0-0.0
-    1: <int> 1
-    <BLANKLINE>
-    0: <str> text
-    1: <int> 2
-    <BLANKLINE>
-    0: <int> 3
+        >>> from nutsflow import Consume
 
-    >>> [(1, 2), (3, 4)] >> PrintColType(1) >> Consume()
-    <BLANKLINE>
-    1: <int> 2
-    <BLANKLINE>
-    1: <int> 4
+        >>> data = [(np.zeros((10, 20, 3)), 1), ('text', 2), 3]
+        >>> data >> PrintColType() >> Consume()
+        item 0: <tuple>
+          0: <ndarray> shape:10x20x3 dtype:float64 range:0.0..0.0
+          1: <int> 1
+        item 1: <tuple>
+          0: <str> text
+          1: <int> 2
+        item 2: <int>
+          0: <int> 3
 
-    :param any data: Any type of fas
-    :param int|tuple|None cols: Indices of columnbs to show info for.
-        None means all columns. Can be a single index or a tuple of indices.
-    :return: input data unchanged
-    :rtype: same as data
-    """
-    cols = None if cols is None else as_tuple(cols)
-    print   # empty line
-    for i, e in enumerate(as_tuple(data)):
-        if cols is None or i in cols:
-            print '{}: <{}>'.format(i, type(e).__name__),
-            if isinstance(e, np.ndarray):
-                text = 'shape:{} dtype:{} range:{}-{}'
-                print text.format(shapestr(e), e.dtype, np.min(e), np.max(e))
-            else:
-                print '{}'.format(str(e))
-    return data
+        >>> [(1, 2), (3, 4)] >> PrintColType(1) >> Consume()
+        item 0: <tuple>
+          1: <int> 2
+        item 1: <tuple>
+          1: <int> 4
+
+        :param int|tuple|None cols: Indices of columnbs to show info for.
+            None means all columns. Can be a single index or a tuple of indices.
+        :return: input data unchanged
+        :rtype: same as data
+        """
+        self.cols = cols
+        self.cnt = -1
+
+    def __call__(self, data):
+        """
+        Print data info.
+
+        :param any data: Any type of iterable 
+        :return: data unchanged
+        :rtype: same as data
+        """
+        cols = None if self.cols is None else as_tuple(self.cols)
+        self.cnt += 1
+        print('item {}: <{}>'.format(self.cnt, type(data).__name__))
+        for i, e in enumerate(as_tuple(data)):
+            if cols is None or i in cols:
+                print('  {}: <{}>'.format(i, type(e).__name__), end=' ')
+                if isinstance(e, np.ndarray):
+                    text = 'shape:{} dtype:{} range:{}..{}'
+                    print(
+                        text.format(shapestr(e), e.dtype, np.min(e), np.max(e)))
+                else:
+                    print('{}'.format(str(e)))
+        return data
 
 
 # TODO: Fix deprecation warning
@@ -202,7 +216,7 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
             else:
                 fs = ax.get_window_extent().height / 18
                 p = img.shape[0] / 6
-                x, y = p / 2,  p * labelcol
+                x, y = p / 2, p * labelcol
                 labelcol += 1
                 aa = self.annoargs
                 ax.text(x, y, str(annos),
