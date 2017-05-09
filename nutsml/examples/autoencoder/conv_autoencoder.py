@@ -17,7 +17,7 @@ from keras.datasets import mnist
 from nutsflow import *
 from nutsml import *
 
-NUM_EPOCHS = 20
+NUM_EPOCHS = 10
 BATCH_SIZE = 128
 INPUT_SHAPE = (28, 28, 1)
 
@@ -104,10 +104,11 @@ def predict():
 def show_images():
     print('showing images...')
     train_samples, test_samples = load_samples()
-    train_samples >> PrintColType() >> ViewImage(0, pause=1) >> Consume()
+    (train_samples >> Take(10) >> PrintColType() >> ViewImage(0, pause=1) >>
+     Consume())
 
 
 if __name__ == "__main__":
-    #show_images()
-    #train()
+    show_images()
+    train()
     predict()
