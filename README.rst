@@ -35,7 +35,7 @@ which is described `here <https://maet3608.github.io/nuts-flow/>`_.
 .. image:: https://travis-ci.org/maet3608/nuts-ml.svg?branch=master
    :target: https://travis-ci.org/maet3608/nuts-ml
 
-.. image:: https://coveralls.io/repos/github/maet3608/nuts-ml/badge.svg?branch=master
+.. image:: https://coveralls.io/repos/github/maet3608/nuts-ml/badge.png?branch=master
    :target: https://coveralls.io/github/maet3608/nuts-ml?branch=master
 
 .. image:: https://img.shields.io/github/issues/maet3608/nuts-ml.svg
