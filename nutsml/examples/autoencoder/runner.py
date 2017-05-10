@@ -85,6 +85,6 @@ def show_images():
 
 
 if __name__ == "__main__":
-    #show_images()
-    #train()
+    show_images()
+    train()
     predict()
