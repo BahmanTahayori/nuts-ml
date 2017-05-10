@@ -8,7 +8,7 @@ import itertools as itt
 import matplotlib.pyplot as plt
 
 from nutsflow import NutFunction
-from nutsflow.common import as_tuple
+from nutsflow.common import as_tuple, as_list
 
 
 # TODO: markers, axis labels, titles, legend, ...
@@ -46,8 +46,12 @@ class PlotLines(NutFunction):  # pragma no coverage
         >>> data >> PlotLines(ycols=(1,2), filepath=fp) >> Consume()
         >>> os.remove(fp)
 
-        :param int|tuple ycols: Index or tuple of indices of the data columns
-            that contain the y-data for the plot.
+        >>> ysin >> PlotLines(ycols=None, filepath=fp) >> Consume()
+        >>> os.remove(fp)
+
+        :param int|tuple|None ycols: Index or tuple of indices of the 
+            data columns that contain the y-data for the plot.
+            If None data is used directly.
         :param int|tuple|function|iterable xcols: Index or tuple of indices of
             the data columns that contain the x-data for the plot.
             Alternatively an iterator or a function can be provided that
@@ -66,9 +70,9 @@ class PlotLines(NutFunction):  # pragma no coverage
                plot will not appear on the screen.
         :return: Returns input unaltered
         :rtype: any
-        """
+        """        
+        self.ycols = [-1] if ycols is None else as_tuple(ycols)
         self.xcols = xcols
-        self.ycols = as_tuple(ycols)
         self.filepath = filepath
         self.figsize = figsize
         self.cnt = 0
@@ -103,6 +107,11 @@ class PlotLines(NutFunction):  # pragma no coverage
 
     def _add_data(self, data):
         """Add data point to data buffer"""
+        if hasattr(data, 'ndim'):  # is it a numpy array?
+            data = data.tolist() if data.ndim else [data.item()]
+        else:
+            data = as_list(data)
+
         if hasattr(self.xcols, '__iter__'):
             x = next(self.xcols)
             for i, _ in enumerate(self.ycols):
@@ -114,8 +123,9 @@ class PlotLines(NutFunction):  # pragma no coverage
         else:
             for i, xcol in enumerate(as_tuple(self.xcols)):
                 self.xdata[i].append(data[xcol])
+                
         for i, ycol in enumerate(self.ycols):
-            self.ydata[i].append(data[ycol])
+            self.ydata[i].append(data if ycol < 0 else data[ycol])
 
     def __call__(self, data):
         """Plot data"""
@@ -124,7 +134,7 @@ class PlotLines(NutFunction):  # pragma no coverage
 
         self.cnt = 0  # reset counter
         self.time = time.clock()  # reset timer
-        self._add_data(as_tuple(data))
+        self._add_data(data)
 
         for i, ax in enumerate(self.axes):
             ax.clear()
