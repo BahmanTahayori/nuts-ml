@@ -46,7 +46,7 @@ class PlotLines(NutFunction):  # pragma no coverage
         >>> data >> PlotLines(ycols=(1,2), filepath=fp) >> Consume()
         >>> os.remove(fp)
 
-        >>> ysin >> PlotLines(ycols=None, filepath=fp) >> Consume()
+        >>> ysin.tolist() >> PlotLines(ycols=None, filepath=fp) >> Consume()
         >>> os.remove(fp)
 
         :param int|tuple|None ycols: Index or tuple of indices of the 
@@ -70,8 +70,8 @@ class PlotLines(NutFunction):  # pragma no coverage
                plot will not appear on the screen.
         :return: Returns input unaltered
         :rtype: any
-        """        
-        self.ycols = [-1] if ycols is None else as_tuple(ycols)
+        """
+        self.ycols = [-1] if ycols is None else as_list(ycols)
         self.xcols = xcols
         self.filepath = filepath
         self.figsize = figsize
@@ -123,7 +123,7 @@ class PlotLines(NutFunction):  # pragma no coverage
         else:
             for i, xcol in enumerate(as_tuple(self.xcols)):
                 self.xdata[i].append(data[xcol])
-                
+
         for i, ycol in enumerate(self.ycols):
             self.ydata[i].append(data if ycol < 0 else data[ycol])
 
