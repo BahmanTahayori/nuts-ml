@@ -62,6 +62,10 @@ def test_ReadImage():
     img_samples = samples >> ReadImage(None, as_grey=False) >> Collect()
     assert img_samples[0][0].shape == (213, 320, 3)
 
+    samples = ['tests/data/img_formats/nut_color.jpg']
+    img_samples = samples >> ReadImage(None, dtype=float) >> Collect()
+    assert img_samples[0][0].dtype == float
+
 
 def test_ReadPandas_isnull():
     assert not ReadPandas.isnull(1.0)
