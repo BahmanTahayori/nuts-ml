@@ -150,6 +150,9 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
     Display images and annotation in window.
     """
 
+    TEXTPROP = {'edgecolor': 'k', 'backgroundcolor': (1, 1, 1, 0.5)}
+    SHAPEPROP = {'edgecolor': 'y', 'facecolor': 'none', 'linewidth': 1}
+
     def __init__(self, imgcol, annocols, figsize=None,
                  pause=0.0001, interpolation=None, **annoargs):
         """
@@ -186,14 +189,17 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         self.annocols = as_set(annocols)
         self.pause = pause
         self.interpolation = interpolation
-        self.annoargs = self._getargs(annoargs)
+        self.annoargs = annoargs
 
-    def _getargs(self, kwargs):
-        """Return default values for annotation drawing if not provided."""
-        defargs = {'edgecolor': 'k', 'backgroundcolor': (1, 1, 1, 0.5),
-                   'facecolor': 'none', 'linewidth': 1}
-        defargs.update(kwargs)
-        return defargs
+    def _shapeprops(self):
+        """Return shape properties from kwargs or default value."""
+        aa = ViewImageAnnotation.SHAPEPROP.copy()
+        aa.update(self.annoargs)
+        return aa
+
+    def _textprop(self, key):
+        """Return text property from kwargs or default value."""
+        return self.annoargs.get(key, ViewImageAnnotation.TEXTPROP[key])
 
     def __call__(self, data):
         """
@@ -211,17 +217,16 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         for acol in self.annocols:
             annos = data[acol]
             if hasattr(annos, '__iter__'):
-                for anno in iu.annotation2pltpatch(annos, **self.annoargs):
+                for anno in iu.annotation2pltpatch(annos, **self._shapeprops()):
                     ax.add_patch(anno)
             else:
-                fs = ax.get_window_extent().height / 18
+                fs = ax.get_window_extent().height / 22
                 p = img.shape[0] / 6
                 x, y = p / 2, p * labelcol
                 labelcol += 1
-                aa = self.annoargs
                 ax.text(x, y, str(annos),
-                        color=aa['edgecolor'],
-                        backgroundcolor=aa['backgroundcolor'],
+                        color=self._textprop('edgecolor'),
+                        backgroundcolor=self._textprop('backgroundcolor'),
                         size=fs, family='monospace')
         ax.figure.canvas.draw()
         plt.waitforbuttonpress(timeout=self.pause)  # or plt.pause(self.pause)
