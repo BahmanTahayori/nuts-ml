@@ -84,9 +84,30 @@ class TransformImage(NutFunction):
 
     def by(self, name, *args, **kwargs):
         """
-        Specify and add tranformation to be performed.
+        Specify and add transformations to be performed.
 
         >>> transform = TransformImage(0).by('resize', 10, 20).by('fliplr')
+
+        | Available transformations:
+        | :func:`identical <nutsml.imageutil.identical>`
+        | :func:`rerange <nutsml.imageutil.rerange>`
+           (old_min, old_max, new_min, new_max, dtype)
+        | :func:`crop <nutsml.imageutil.crop>` (x1, y1, x2, y2)
+        | :func:`crop_center <nutsml.imageutil.crop_center>`  (w, h)
+        | :func:`normalize_histo <nutsml.imageutil.normalize_histo>`  (gamma)
+        | :func:`rgb2gray <nutsml.imageutil.rgb2gray>`
+        | :func:`gray2rgb <nutsml.imageutil.gray2rgb>`
+        | :func:`resize <nutsml.imageutil.resize>`  (w, h)
+        | :func:`translate <nutsml.imageutil.translate>` (dx, dy)
+        | :func:`rotate <nutsml.imageutil.rotate>` (angle)
+        | :func:`contrast <nutsml.imageutil.contrast>` (contrast)
+        | :func:`sharpness <nutsml.imageutil.sharpness>` (sharpness)
+        | :func:`brightness <nutsml.imageutil.brightness>` (brightness)
+        | :func:`color <nutsml.imageutil.color>` (color)
+        | :func:`fliplr <nutsml.imageutil.fliplr>`
+        | :func:`flipud <nutsml.imageutil.flipud>`
+        | :func:`shear <nutsml.imageutil.shear>` (shear_factor)
+
 
         :param string name: Name of the transformation to apply, e.g. 'resize'
         :param args args: Arguments for the transformation, e.g. width and
@@ -148,6 +169,10 @@ class AugmentImage(Nut):
         ...     .by('fliplr', 0.5)
         ...     .by('flipud', 0.5)
         ...     .by('rotate', 0.5, [0, 360]))
+
+
+        See :func:`nutsml.transformer.AugmentImage.by` for full list of 
+        available augmentations.
 
         Note that each augmentation is applied independently. This is in
         contrast to transformations which are applied in sequence and
