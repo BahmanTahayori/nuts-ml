@@ -8,7 +8,7 @@ import numpy as np
 from nutsflow import NutFunction, as_tuple
 
 
-class LogCols(NutFunction):
+class LogToFile(NutFunction):
     """
     Log columns of data to file.
     """
@@ -22,22 +22,22 @@ class LogCols(NutFunction):
         >>> filepath = 'tests/data/temp_logfile.csv'
         >>> data = [[1, 2], [3, 4]]
 
-        >>> with LogCols(filepath) as log_cols:
-        ...     data >> log_cols >> Consume()
+        >>> with LogToFile(filepath) as logtofile:
+        ...     data >> logtofile >> Consume()
         >>> print open(filepath).read()
         1,2
         3,4
         <BLANKLINE>
 
-        >>> log_cols = LogCols(filepath, cols=(1, 0), colnames=['a', 'b'])
-        >>> data >> log_cols >> Consume()
+        >>> logtofile = LogToFile(filepath, cols=(1, 0), colnames=['a', 'b'])
+        >>> data >> logtofile >> Consume()
         >>> print open(filepath).read()
         a,b
         2,1
         4,3
         <BLANKLINE>
-        >>> log_cols.close()
-        >>> log_cols.delete()
+        >>> logtofile.close()
+        >>> logtofile.delete()
 
         :param strin filepath: Path to file to write log to.
         :param int|tuple|None cols: Indices of columns of input data to write.
