@@ -40,7 +40,7 @@ class LogToFile(NutFunction):
         >>> logtofile.close()
         >>> logtofile.delete()
 
-        :param strin filepath: Path to file to write log to.
+        :param string filepath: Path to file to write log to.
         :param int|tuple|None cols: Indices of columns of input data to write.
                 None: write all columns
                 int: only write the single given column
