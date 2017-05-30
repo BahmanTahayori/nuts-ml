@@ -49,6 +49,12 @@ class FakeNetwork(Network):
     def predict(self, flatten=True):
         return PredictNut(self.model.predict, flatten)
 
+    def evaluate(self, metrics, predcol=None, targetcol=-1):
+        def compute(metric, targets, preds):
+            return metric(targets, preds)
+
+        return EvalNut(self, metrics, compute, predcol, targetcol)
+
     def save_weights(self):
         self.model.save_weights(self.filepath)
 
@@ -76,7 +82,8 @@ def test_EvalNut():
     network = FakeNetwork(model, 'dummy_filepath')
 
     acc = lambda X, y: np.sum(X == y)
-    nut = EvalNut(network, [acc])
+    compute = lambda m, t, p: m(t, p)
+    nut = EvalNut(network, [acc], compute)
 
     batches = [((1, 2), (1, 2)), ((5, 6), (5, 6))]
     assert batches >> nut == 4
@@ -84,9 +91,9 @@ def test_EvalNut():
     assert batches >> nut == 3
 
     batches = [(((0, 1), (0, 2)), (0, 2)), (((5, 5), (6, 6)), (6, 6))]
-    nut = EvalNut(network, [acc], predcol=1)
+    nut = EvalNut(network, [acc], compute, predcol=1)
     assert batches >> nut == 4
-    nut = EvalNut(network, [acc], predcol=0)
+    nut = EvalNut(network, [acc], compute, predcol=0)
     assert batches >> nut == 1
 
 

@@ -9,7 +9,7 @@
 import numpy as np
 
 from nutsflow import (nut_processor, nut_sink, nut_function, Collect, Map,
-                      Flatten)
+                      Flatten, Get)
 
 
 @nut_processor
@@ -53,7 +53,7 @@ def PredictNut(batches, func, flatten=True):
 
 
 @nut_sink
-def EvalNut(batches, network, metrics, predcol=None, targetcol=-1):
+def EvalNut(batches, network, metrics, compute, predcol=None, targetcol=-1):
     """
     batches >> EvalNut(network, metrics)
 
@@ -67,6 +67,9 @@ def EvalNut(batches, network, metrics, predcol=None, targetcol=-1):
            Each metric function must take vectors with true and
            predicted  classes/probabilities and must compute the
            metric over the entire input (not per sample/mini-batch).
+    :param function compute: Function of the form f(metric, targets, preds)
+           that computes the given metric (e.g. mean accuracy) for the given
+           targets and predictions.
     :param int|None predcol: Index of column in prediction to extract
            for evaluation. If None a single prediction output is
            expected.
@@ -81,23 +84,12 @@ def EvalNut(batches, network, metrics, predcol=None, targetcol=-1):
         targets.extend(target)
         return p_batch
 
-    def compute_metric(metric, targets, preds):
-        result = metric(targets, preds)
-        # call eval() on result if Theano function 
-        result = result.eval() if hasattr(result, 'eval') else result
-        # Since Keras 2.x some metrics return vector instead of value: bug?
-        # compute mean or convert to float directly 
-        return float(np.mean(result) if hasattr(result, '__iter__') else result)
-
-    @nut_function
-    def Extract(x, col):
-        return x if col is None else x[col]
-
     preds = (batches >> Map(accumulate) >> network.predict(flatten=False) >>
-             Extract(predcol) >> Flatten() >> Collect())
+             Get(predcol) >> Flatten() >> Collect())
+
     targets, preds = np.vstack(targets), np.vstack(preds)
     targets = targets.astype(np.float)
-    results = tuple(compute_metric(m, targets, preds) for m in metrics)
+    results = tuple(compute(m, targets, preds) for m in metrics)
     return results if len(results) > 1 else results[0]
 
 
@@ -165,7 +157,7 @@ class Network(object):
         :return: Result for each metric as a tuple or a single float if
            there is only one metric.
         """
-        return EvalNut(self, metrics, predcol, targetcol)
+        raise NotImplementedError('Implement predict()!')
 
     def save_best(self, score, isloss=True):
         """
@@ -249,6 +241,13 @@ class LasagneNetwork(Network):  # pragma no cover
     def predict(self, flatten=True):
         return PredictNut(self.pred_fn, flatten)
 
+    def evaluate(self, metrics, predcol=None, targetcol=-1):
+        def compute(metric, targets, preds):
+            result = metric(targets, preds)
+            return result.eval() if hasattr(result, 'eval') else result
+
+        return EvalNut(self, metrics, compute, predcol, targetcol)
+
     def save_weights(self):
         weights = {name: p.get_value() for name, p in
                    LasagneNetwork._get_named_params(self.out_layer)}
@@ -291,6 +290,18 @@ class KerasNetwork(Network):  # pragma no cover
 
     def predict(self, flatten=True):
         return PredictNut(self.model.predict_on_batch, flatten)
+
+    def evaluate(self, metrics, predcol=None, targetcol=-1):
+        from keras import backend as K
+
+        def compute(metric, targets, preds):
+            result = metric(K.variable(targets), K.variable(preds))
+            is_theano = hasattr(result, 'eval')
+            result = result.eval() if is_theano else result
+            is_vector = hasattr(result, '__iter__')
+            return float(np.mean(result) if is_vector else result)
+
+        return EvalNut(self, metrics, compute, predcol, targetcol)
 
     def save_weights(self):
         self.model.save_weights(self.filepath)
