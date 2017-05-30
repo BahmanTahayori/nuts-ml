@@ -4,7 +4,7 @@ from nutsml.batcher import BuildBatch
 from nutsml.booster import Boost
 from nutsml.config import load_config
 from nutsml.stratify import Stratify
-from nutsml.logger import LogToFile
+from nutsml.logger import LogToFile, LogCols
 from nutsml.network import Network, KerasNetwork, LasagneNetwork
 from nutsml.plotter import PlotLines
 from nutsml.reader import DplyToList, ReadImage, ReadLabelDirs, ReadPandas

@@ -5,6 +5,7 @@
 
 import os
 import numpy as np
+from warnings import warn
 from nutsflow import NutFunction, as_tuple
 
 
@@ -100,3 +101,10 @@ class LogToFile(NutFunction):
     def __exit__(self, *args):
         """Implementation of context manager API"""
         self.close()
+
+
+class LogCols(LogToFile):
+    def __init__(self, filepath, cols=None, colnames=None, reset=True,
+                 delimiter=','):
+        LogToFile.__init__(self, filepath, cols, colnames, reset, delimiter)
+        warn('LogCols is deprecated. Use LogToFile!', DeprecationWarning)

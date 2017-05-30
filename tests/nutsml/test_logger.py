@@ -22,7 +22,7 @@ def filepath():
     return filepath
 
 
-def test_Logger(filepath):
+def test_LogToFile(filepath):
     data = [[1, 2], [3, 4]]
 
     with LogToFile(filepath) as logtofile:
@@ -43,7 +43,7 @@ def test_Logger(filepath):
     assert open(filepath).read() == 'a,b\n2,1\n4,3\n'
 
 
-def test_Logger_reset(filepath):
+def test_LogToFile_reset(filepath):
     data = [[1, 2], [3, 4]]
 
     with LogToFile(filepath, cols=0, reset=True) as logtofile:
@@ -55,7 +55,7 @@ def test_Logger_reset(filepath):
     assert open(filepath).read() == '1\n3\n2\n4\n'
 
 
-def test_Logger_numpy(filepath):
+def test_LogToFile_numpy(filepath):
     data = [np.array([1, 2]), np.array([3, 4])]
     with LogToFile(filepath) as logtofile:
         assert data >> logtofile >> Collect() == data
@@ -67,9 +67,9 @@ def test_Logger_numpy(filepath):
     assert open(filepath).read() == '1\n2\n'
 
 
-def test_Logger_delete(filepath):
+def test_LogToFile_delete(filepath):
     data = [[1, 2], [3, 4]]
-
+    
     logtofile = LogToFile(filepath)
     assert data >> logtofile >> Collect() == data
     assert os.path.exists(filepath)
