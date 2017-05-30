@@ -296,8 +296,9 @@ class KerasNetwork(Network):  # pragma no cover
 
         def compute(metric, targets, preds):
             result = metric(K.variable(targets), K.variable(preds))
-            is_theano = hasattr(result, 'eval')
-            result = result.eval() if is_theano else result
+            is_theano = K.backend() == 'theano'
+            sess = None if is_theano else K.get_session()
+            result = result.eval() if is_theano else result.eval(session=sess)
             is_vector = hasattr(result, '__iter__')
             return float(np.mean(result) if is_vector else result)
 
