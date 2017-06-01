@@ -3,6 +3,7 @@
    :synopsis: Example for writing of image data
 """
 
+from builtins import zip
 from nutsflow import Take, Consume, Enumerate, Zip, Format, Get
 from nutsml import WriteImage
 
@@ -10,7 +11,7 @@ from nutsml import WriteImage
 def load_samples():
     from keras.datasets import mnist
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
-    return zip(X_train, y_train), zip(X_test, y_test)
+    return list(zip(X_train, y_train)), list(zip(X_test, y_test))
 
 
 if __name__ == '__main__':

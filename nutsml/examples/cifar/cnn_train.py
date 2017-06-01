@@ -5,7 +5,12 @@
 
 from __future__ import print_function
 
-import cPickle
+from future import standard_library
+standard_library.install_aliases()
+from builtins import zip
+from builtins import map
+from builtins import range
+import pickle
 
 import os.path as osp
 
@@ -23,7 +28,7 @@ INPUT_SHAPE = (32, 32, 3)
 def load_samples():
     from keras.datasets import cifar10
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-    return zip(x_train, map(int, y_train)), zip(x_test, map(int, y_test))
+    return list(zip(x_train, list(map(int, y_train)))), list(zip(x_test, list(map(int, y_test))))
 
 
 def load_names():
@@ -32,7 +37,7 @@ def load_names():
     origin = 'http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz'
     path = get_file(dirname, origin=origin, untar=True)
     with open(osp.join(path, 'batches.meta'), 'rb') as f:
-        return cPickle.load(f)['label_names']
+        return pickle.load(f)['label_names']
 
 
 def create_network():
@@ -93,7 +98,7 @@ def train():
     train_samples, val_samples = train_samples >> SplitRandom(0.8)
 
     print('training...', len(train_samples), len(val_samples))
-    for epoch in xrange(NUM_EPOCHS):
+    for epoch in range(NUM_EPOCHS):
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>

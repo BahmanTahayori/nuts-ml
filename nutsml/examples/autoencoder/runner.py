@@ -7,6 +7,8 @@ the original image, the decoded images and the difference.
 
 from __future__ import print_function
 
+from builtins import zip
+from builtins import range
 import numpy as np
 
 from nutsflow import *
@@ -28,7 +30,7 @@ def load_samples():
     h, w, c = INPUT_SHAPE
     x_train = np.reshape(x_train, (len(x_train), h, w, c))
     x_test = np.reshape(x_test, (len(x_test), h, w, c))
-    return zip(x_train, x_train), zip(x_test, x_test)
+    return list(zip(x_train, x_train)), list(zip(x_test, x_test))
 
 
 def train():
@@ -43,7 +45,7 @@ def train():
     train_samples, test_samples = load_samples()
 
     print('training...', len(train_samples), len(test_samples))
-    for epoch in xrange(NUM_EPOCHS):
+    for epoch in range(NUM_EPOCHS):
         print('EPOCH:', epoch)
 
         t_loss = (train_samples >> PrintProgress(train_samples) >> rerange >>

@@ -10,6 +10,8 @@ use nuts for the data-preprocessing.
 
 from __future__ import print_function
 
+from builtins import zip
+from builtins import range
 from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick, Mean
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
@@ -26,7 +28,7 @@ def load_samples():
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
     x_train = x_train.reshape(x_train.shape[0], h, w, c)
     x_test = x_test.reshape(x_test.shape[0], h, w, c)
-    return zip(x_train, y_train), zip(x_test, y_test)
+    return list(zip(x_train, y_train)), list(zip(x_test, y_test))
 
 
 def create_network():
@@ -66,7 +68,7 @@ def train():
     network = create_network()
 
     print('training...', NUM_EPOCHS)
-    for epoch in xrange(NUM_EPOCHS):
+    for epoch in range(NUM_EPOCHS):
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
