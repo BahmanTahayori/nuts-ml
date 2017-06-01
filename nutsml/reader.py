@@ -2,13 +2,14 @@
 .. module:: reader
    :synopsis: Reading of sample data and images
 """
+from __future__ import absolute_import
 
 import os
 
 import pandas as pd
 
 from glob import glob
-from imageutil import load_image
+from .imageutil import load_image
 from nutsflow import NutSource, nut_function, nut_source, as_set
 from dplython import DplyFrame
 

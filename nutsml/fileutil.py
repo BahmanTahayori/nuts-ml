@@ -45,7 +45,7 @@ def create_temp_filepath(prefix='', ext='', relative=True):
     return rel_path if relative else op.abspath(rel_path)
 
 
-def create_folders(path, mode=0777):
+def create_folders(path, mode=0o777):
     """
     Create folder(s). Don't fail if already existing.
 

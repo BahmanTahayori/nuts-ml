@@ -2,6 +2,7 @@
 .. module:: imageutil
    :synopsis: Basic image processing utilities
 """
+from __future__ import absolute_import
 
 import numpy as np
 import PIL as pil
@@ -12,7 +13,7 @@ import skimage.util.shape as sks
 import skimage.io as sio
 import matplotlib.patches as plp
 
-from datautil import shapestr, isnan
+from .datautil import shapestr, isnan
 from PIL import ImageEnhance as ie
 from skimage.draw import circle, polygon
 from skimage.color import rgb2gray

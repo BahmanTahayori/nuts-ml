@@ -4,11 +4,12 @@
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 
 import numpy as np
 import nutsml.imageutil as iu
 
-from datautil import shapestr
+from .datautil import shapestr
 from nutsflow import NutFunction, nut_function, as_tuple, as_set
 from matplotlib import pyplot as plt
 

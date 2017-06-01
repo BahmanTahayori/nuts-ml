@@ -72,7 +72,7 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
     """
 
     groups, labelcnts = group_samples(samples, labelcol)
-    _, max_cnts = max(labelcnts.iteritems(), key=lambda (l, c): c)
+    _, max_cnts = max(labelcnts.iteritems(), key=lambda l_c: l_c[1])
     stratified = []
     for label, samples in groups.iteritems():
         extended = samples * (max_cnts / len(samples) + 1)
@@ -111,7 +111,7 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None)):
     :rtype: list of samples
     """
     groups, labelcnts = group_samples(samples, labelcol)
-    _, min_cnts = min(labelcnts.iteritems(), key=lambda (l, c): c)
+    _, min_cnts = min(labelcnts.iteritems(), key=lambda l_c1: l_c1[1])
     return [s for e in groups.values() for s in rand.sample(e, min_cnts)]
 
 

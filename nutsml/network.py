@@ -5,6 +5,7 @@
               For instance, with a wrapped network one can write:
               samples >> build_batch >> network.train() >> log_loss >> Consume()
 """
+from __future__ import print_function
 
 import numpy as np
 
@@ -260,8 +261,8 @@ class LasagneNetwork(Network):  # pragma no cover
 
     def print_layers(self):
         for layer in LasagneNetwork._weight_layers(self.out_layer):
-            print '_' * 80
-            print layer.__class__.__name__
+            print('_' * 80)
+            print(layer.__class__.__name__)
 
 
 class KerasNetwork(Network):  # pragma no cover

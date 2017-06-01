@@ -2,11 +2,12 @@
 .. module:: writer
    :synopsis: Writing of sample and image data
 """
+from __future__ import absolute_import
 import os
 
 import skimage.io as sio
 
-from fileutil import create_folders
+from .fileutil import create_folders
 from nutsflow.base import NutFunction
 from nutsflow.source import Enumerate
 

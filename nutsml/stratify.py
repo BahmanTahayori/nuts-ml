@@ -2,11 +2,12 @@
 .. module:: stratify
    :synopsis: Stratification of sample sets
 """
+from __future__ import absolute_import
 
 import random as rnd
 
 from nutsflow import nut_processor
-from datautil import upsample, random_downsample
+from .datautil import upsample, random_downsample
 
 
 @nut_processor
