@@ -531,10 +531,10 @@ def polyline2coords(points):
     Return row and column coordinates for a polyline.
 
     >>> rr, cc = polyline2coords([(0, 0), (2, 2), (2, 4)])
-    >>> rr
-    array([0, 1, 2, 2, 3, 4], dtype=int64)
-    >>> cc
-    array([0, 1, 2, 2, 2, 2], dtype=int64)
+    >>> list(rr)
+    [0, 1, 2, 2, 3, 4]
+    >>> list(cc)
+    [0, 1, 2, 2, 2, 2]
 
     :param list of tuple points: Polyline in format [(x1,y1), (x2,y2), ...] 
     :return: tuple with row and column coordinates in numpy arrays
