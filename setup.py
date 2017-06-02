@@ -40,13 +40,15 @@ class PyTest(TestCommand):
 setup(
     name='nutsml',
     version=nutsml.__version__,
-    url='https://github.com/maet3608/nuts-ml',
+    url='https://maet3608.github.io/nuts-ml',
+    download_url='https://github.com/maet3608/nuts-ml',
     license='Apache Software License (http://www.apache.org/licenses/LICENSE-2.0)',
     author='Stefan Maetschke',
     author_email='stefan.maetschke@gmail.com',
     description='Flow-based data pre-processing for Machine Learning',
     install_requires=[
         'future >= 0.16.0',
+        'six >= 1.10.0',
         'nutsflow >= 1.0.15',
         'pyyaml >= 3.12',
         'xlrd >= 1.0.0',
