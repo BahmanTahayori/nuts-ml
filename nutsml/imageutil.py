@@ -542,8 +542,8 @@ def polyline2coords(points):
     """
     coords = []
     for i in range(len(points) - 1):
-        (x1, y1), (x2, y2) = points[i], points[i + 1]
-        coords.append(skd.line(y1, x1, y2, x2))
+        xy = map(int, points[i] + points[i + 1])
+        coords.append(skd.line(xy[1], xy[0], xy[3], xy[2]))
     return map(np.hstack, zip(*coords))
 
 

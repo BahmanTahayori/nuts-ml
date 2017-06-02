@@ -404,7 +404,7 @@ def test_sample_pn_patches():
 
 
 def test_polyline2coords():
-    rr, cc = ni.polyline2coords([(0, 0), (2, 2), (2, 4)])
+    rr, cc = ni.polyline2coords([(0, 0), (2.1, 2.0), (2, 4)])
     nt.assert_allclose(rr, [0, 1, 2, 2, 3, 4])
     nt.assert_allclose(cc, [0, 1, 2, 2, 2, 2])
 
