@@ -403,6 +403,12 @@ def test_sample_pn_patches():
     nt.assert_allclose(mask_patch, [[0, 0], [0, 255]])
 
 
+def test_polyline2coords():
+    rr, cc = ni.polyline2coords([(0, 0), (2, 2), (2, 4)])
+    nt.assert_allclose(rr, [0, 1, 2, 2, 3, 4])
+    nt.assert_allclose(cc, [0, 1, 2, 2, 2, 2])
+
+
 def test_annotation2coords():
     img = np.zeros((5, 5), dtype='uint8')
 
@@ -431,6 +437,11 @@ def test_annotation2coords():
     rr, cc = list(ni.annotation2coords(img, anno))[0]
     nt.assert_allclose(rr, [2, 2, 3, 3])
     nt.assert_allclose(cc, [1, 2, 1, 2])
+
+    anno = ('polyline', (((0, 0), (2, 2), (2, 4)),))
+    rr, cc = list(ni.annotation2coords(img, anno))[0]
+    nt.assert_allclose(rr, [0, 1, 2, 2, 3, 4])
+    nt.assert_allclose(cc, [0, 1, 2, 2, 2, 2])
 
     with pytest.raises(ValueError) as ex:
         anno = ('point', ((10, 10),))
@@ -462,6 +473,10 @@ def test_annotation2pltpatch():
     assert isinstance(pltpatches[0], plp.Rectangle)
 
     anno = ('polyline', (((1, 2), (3, 2), (3, 4), (1, 4), (1, 2)),))
+    pltpatches = list(ni.annotation2pltpatch(anno))
+    assert isinstance(pltpatches[0], plp.Polygon)
+
+    anno = ('polyline', (((0, 0), (2, 2), (2, 4)),))
     pltpatches = list(ni.annotation2pltpatch(anno))
     assert isinstance(pltpatches[0], plp.Polygon)
 

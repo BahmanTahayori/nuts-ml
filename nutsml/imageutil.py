@@ -3,6 +3,7 @@
    :synopsis: Basic image processing utilities
 """
 from __future__ import absolute_import
+from builtins import range
 
 import numpy as np
 import PIL as pil
@@ -10,12 +11,12 @@ import skimage.exposure as ske
 import skimage.transform as skt
 import skimage.color as skc
 import skimage.util.shape as sks
-import skimage.io as sio
+import skimage.io as ski
+import skimage.draw as skd
 import matplotlib.patches as plp
 
 from .datautil import shapestr, isnan
 from PIL import ImageEnhance as ie
-from skimage.draw import circle, polygon
 from skimage.color import rgb2gray
 from warnings import warn
 
@@ -46,7 +47,7 @@ def load_image(filepath, as_grey=False, dtype='uint8', no_alpha=True):
     else:
         # img_num=0 due to 
         # https://github.com/scikit-image/scikit-image/issues/2406
-        arr = sio.imread(filepath, as_grey=as_grey, img_num=0).astype(dtype)
+        arr = ski.imread(filepath, as_grey=as_grey, img_num=0).astype(dtype)
     if arr.ndim == 3 and arr.shape[2] == 4 and no_alpha:
         arr = arr[..., :3]  # cut off alpha channel
     return arr
@@ -66,7 +67,7 @@ def save_image(filepath, image):
     if filepath.endswith('.npy'):  # image as numpy array
         np.save(filepath, image, allow_pickle=False)
     else:
-        sio.imsave(filepath, image)
+        ski.imsave(filepath, image)
 
 
 def arr_to_pil(image):
@@ -525,6 +526,27 @@ def flipud(image):
     return np.flipud(image)
 
 
+def polyline2coords(points):
+    """
+    Return row and column coordinates for a polyline.
+
+    >>> rr, cc = polyline2coords([(0, 0), (2, 2), (2, 4)])
+    >>> rr
+    array([0, 1, 2, 2, 3, 4], dtype=int64)
+    >>> cc
+    array([0, 1, 2, 2, 2, 2], dtype=int64)
+
+    :param list of tuple points: Polyline in format [(x1,y1), (x2,y2), ...] 
+    :return: tuple with row and column coordinates in numpy arrays
+    :rtype: tuple of numpy array
+    """
+    coords = []
+    for i in range(len(points) - 1):
+        (x1, y1), (x2, y2) = points[i], points[i + 1]
+        coords.append(skd.line(y1, x1, y2, x2))
+    return map(np.hstack, zip(*coords))
+
+
 def mask_where(mask, value):
     """
     Return x,y coordinates where mask has specified value
@@ -826,15 +848,18 @@ def annotation2coords(image, annotation):
             else:
                 rr, cc = np.array([]), np.array([])
         elif kind == 'circle':
-            rr, cc = circle(geo[1], geo[0], geo[2], shape)
+            rr, cc = skd.circle(geo[1], geo[0], geo[2], shape)
         elif kind == 'rect':
             x, y, w, h = geo
             xs = [x, x + w, x + w, x, x]
             ys = [y, y, y + h, y + h, y]
-            rr, cc = polygon(ys, xs, shape)
+            rr, cc = skd.polygon(ys, xs, shape)
         elif kind == 'polyline':
-            xs, ys = zip(*geo)
-            rr, cc = polygon(ys, xs, shape)
+            if geo[0] == geo[-1]:  # closed polyline => draw fill polygon
+                xs, ys = zip(*geo)
+                rr, cc = skd.polygon(ys, xs, shape)
+            else:
+                rr, cc = polyline2coords(geo)
         else:
             raise ValueError('Invalid kind of annotation: ' + kind)
         if not rr.size or not cc.size:
