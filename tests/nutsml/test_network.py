@@ -147,6 +147,10 @@ def test_Network_exceptions():
     with pytest.raises(NotImplementedError) as ex:
         network.predict()
     assert str(ex.value) == 'Implement predict()!'
+    
+    with pytest.raises(NotImplementedError) as ex:
+        network.evaluate([])
+    assert str(ex.value) == 'Implement evaluate()!'
 
     with pytest.raises(NotImplementedError) as ex:
         network.save_weights()

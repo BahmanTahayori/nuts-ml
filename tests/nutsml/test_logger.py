@@ -8,7 +8,7 @@ import os
 import numpy as np
 
 from nutsflow import Collect
-from nutsml import LogToFile
+from nutsml import LogToFile, LogCols
 
 
 @pytest.fixture('function')
@@ -20,6 +20,15 @@ def filepath():
             os.remove(filepath)
 
     return filepath
+
+
+# LogCols is deprecated.
+def test_LogCols(filepath):
+    data = [[1, 2], [3, 4]]
+
+    with LogCols(filepath) as logcols:
+        assert data >> logcols >> Collect() == data
+    assert open(filepath).read() == '1,2\n3,4\n'
 
 
 def test_LogToFile(filepath):
@@ -69,7 +78,7 @@ def test_LogToFile_numpy(filepath):
 
 def test_LogToFile_delete(filepath):
     data = [[1, 2], [3, 4]]
-    
+
     logtofile = LogToFile(filepath)
     assert data >> logtofile >> Collect() == data
     assert os.path.exists(filepath)

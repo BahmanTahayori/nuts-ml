@@ -158,7 +158,7 @@ class Network(object):
         :return: Result for each metric as a tuple or a single float if
            there is only one metric.
         """
-        raise NotImplementedError('Implement predict()!')
+        raise NotImplementedError('Implement evaluate()!')
 
     def save_best(self, score, isloss=True):
         """
