@@ -23,7 +23,8 @@ before_install:
   - pip install scipy
   - pip install pillow
   - pip install scikit-image
-  - pip install pandas 
+  - pip install pandas
+  - pip install nutsflow
 install: 
   - pip install nutsml
 script:
