@@ -6,10 +6,10 @@
 import pytest
 
 import pandas as pd
+import dplython as dp
 import numpy as np
 import numpy.testing as nt
 
-#from dplython import DplyFrame, select, X
 from nutsflow import Collect
 from nutsml import DplyToList, ReadImage, ReadLabelDirs, ReadPandas
 # 
