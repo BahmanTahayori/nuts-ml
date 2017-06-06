@@ -48,7 +48,7 @@ setup(
     description='Flow-based data pre-processing for Machine Learning',
     install_requires=[
         'six >= 1.10.0',
-        'nutsflow >= 1.0.16',
+        'nutsflow >= 1.0.18',
         'pyyaml >= 3.12',
         'xlrd >= 1.0.0',
         'dplython >= 0.0.7',
