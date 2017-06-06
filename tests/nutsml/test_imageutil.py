@@ -31,7 +31,7 @@ def datadirs():
     return imagedir, formatsdir, arraysdir, processeddir
 
 
-def assert_equal_image(imagepath, image, rtol=1e-02, atol=1e-02):
+def assert_equal_image(imagepath, image, rtol=1e-03, atol=1e-03):
     if CREATE_DATA:
         ni.save_image(imagepath, image)
     expected = ni.load_image(imagepath)
@@ -281,7 +281,7 @@ def test_rotate(datadirs):
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
     new_img = ni.rotate(img_arr, 45)
     imagepath = processeddir + 'nut_color_rotated.bmp'
-    assert_equal_image(imagepath, new_img)
+    assert_equal_image(imagepath, new_img, rtol=0.1, atol=0.1)
 
 
 def test_shear(datadirs):
