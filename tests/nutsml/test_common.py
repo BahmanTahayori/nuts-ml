@@ -7,6 +7,7 @@ import pytest
 import numpy as np
 import random as rnd
 
+from six.moves import zip, range
 from nutsflow import Consume, Collect
 from nutsml import SplitRandom, CheckNaN, PartitionByCol
 
@@ -44,34 +45,34 @@ def test_PartitionByCol():
 
 
 def test_SplitRandom_split():
-    train, val = xrange(1000) >> SplitRandom(ratio=0.7)
+    train, val = range(1000) >> SplitRandom(ratio=0.7)
     assert len(train) == 700
     assert len(val) == 300
     assert not set(train).intersection(val)
 
 
 def test_SplitRandom_ratios():
-    train, val, test = xrange(1000) >> SplitRandom(ratio=(0.6, 0.3, 0.1))
+    train, val, test = range(1000) >> SplitRandom(ratio=(0.6, 0.3, 0.1))
     assert len(train) == 600
     assert len(val) == 300
     assert len(test) == 100
 
     with pytest.raises(ValueError) as ex:
-        xrange(1000) >> SplitRandom(ratio=(0.6, 0.7))
+        range(1000) >> SplitRandom(ratio=(0.6, 0.7))
     assert str(ex.value).startswith('Ratios must sum up to one')
 
 
 def test_SplitRandom_seed():
-    split1 = xrange(10) >> SplitRandom(rand=rnd.Random(0))
-    split2 = xrange(10) >> SplitRandom(rand=rnd.Random(0))
-    split3 = xrange(10) >> SplitRandom(rand=rnd.Random(1))
+    split1 = range(10) >> SplitRandom(rand=rnd.Random(0))
+    split2 = range(10) >> SplitRandom(rand=rnd.Random(0))
+    split3 = range(10) >> SplitRandom(rand=rnd.Random(1))
     assert split1 == split2
     assert split1 != split3
 
 
 def test_SplitRandom_constraint():
     same_letter = lambda t: t[0]
-    data = zip('aabbccddee', xrange(10))
+    data = zip('aabbccddee', range(10))
     train, val = data >> SplitRandom(rand=rnd.Random(0),
                                      ratio=0.6, constraint=same_letter)
     assert train == [('b', 3), ('c', 4), ('b', 2), ('c', 5), ('a', 0), ('a', 1)]
