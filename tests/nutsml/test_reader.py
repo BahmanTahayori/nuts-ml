@@ -12,21 +12,21 @@ import numpy.testing as nt
 
 from nutsflow import Collect
 from nutsml import DplyToList, ReadImage, ReadLabelDirs, ReadPandas
-# 
-# 
-# def test_DplyToList():
-#     empty_dplyframe = DplyFrame(pd.DataFrame())
-#     assert empty_dplyframe >> DplyToList() >> Collect() == []
-# 
-#     pandasframe = pd.DataFrame(data={'c1': [1, 2, 3], 'c2': [4, 5, 6]})
-#     dplyframe = DplyFrame(pandasframe)
-#     assert dplyframe >> DplyToList() >> Collect() == [[1, 4], [2, 5], [3, 6]]
-# 
-#     with pytest.raises(ValueError) as ex:
-#         [1] >> DplyToList() >> Collect()
-#     assert str(ex.value) == 'Expect Dplyr dataframe!'
-# 
-# 
+
+
+def test_DplyToList():
+    empty_dplyframe = dp.DplyFrame(pd.DataFrame())
+    assert empty_dplyframe >> DplyToList() >> Collect() == []
+
+    pandasframe = pd.DataFrame(data={'c1': [1, 2, 3], 'c2': [4, 5, 6]})
+    dplyframe = dp.DplyFrame(pandasframe)
+    assert dplyframe >> DplyToList() >> Collect() == [[1, 4], [2, 5], [3, 6]]
+
+    with pytest.raises(ValueError) as ex:
+        [1] >> DplyToList() >> Collect()
+    assert str(ex.value) == 'Expect Dplyr dataframe!'
+
+
 def test_ReadLabelDirs():
     read = ReadLabelDirs('tests/data/labeldirs', '*.txt')
     samples = read >> Collect()
@@ -74,10 +74,11 @@ def test_ReadPandas_isnull():
     assert ReadPandas.isnull(np.NaN)
 
 
-# def test_ReadPandas_dply():
-#     filepath = 'tests/data/pandas_table.csv'
-#     samples = ReadPandas(filepath).dply() >> select(X.col1) >> DplyToList()
-#     nt.assert_equal(samples, [[1], [2], [3]])
+def test_ReadPandas_dply():
+    filepath = 'tests/data/pandas_table.csv'
+    samples = (ReadPandas(filepath).dply() >>
+               dp.select(dp.X.col1) >> DplyToList())
+    nt.assert_equal(samples, [[1], [2], [3]])
 
 
 def test_ReadPandas_pkl():
