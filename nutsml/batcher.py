@@ -158,7 +158,7 @@ class BuildBatch(Nut):
         :param function|None fmt: Function to format output.
         """
         self.batchsize = batchsize
-        self.fmt = fmt    
+        self.fmt = fmt
         self.prefetch = prefetch
         self.colspecs = []
         self.builder = {'image': build_image_batch,
@@ -193,7 +193,7 @@ class BuildBatch(Nut):
             batchsamples = list(take(iterable, self.batchsize))
             if not batchsamples:
                 break
-            cols = zip(*batchsamples)  # flip rows to cols
+            cols = list(zip(*batchsamples))  # flip rows to cols
             batch = []  # columns of batch
             for colspec in self.colspecs:
                 col, func, args, kwargs = colspec
