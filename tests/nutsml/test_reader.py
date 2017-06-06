@@ -74,10 +74,10 @@ def test_ReadPandas_isnull():
     assert ReadPandas.isnull(np.NaN)
 
 
-def test_ReadPandas_dply():
-    filepath = 'tests/data/pandas_table.csv'
-    samples = ReadPandas(filepath).dply() >> select(X.col1) >> DplyToList()
-    nt.assert_equal(samples, [[1], [2], [3]])
+# def test_ReadPandas_dply():
+#     filepath = 'tests/data/pandas_table.csv'
+#     samples = ReadPandas(filepath).dply() >> select(X.col1) >> DplyToList()
+#     nt.assert_equal(samples, [[1], [2], [3]])
 
 
 def test_ReadPandas_pkl():
