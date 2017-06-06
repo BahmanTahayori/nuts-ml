@@ -28,7 +28,8 @@ def test_LogCols(filepath):
 
     with LogCols(filepath) as logcols:
         assert data >> logcols >> Collect() == data
-    assert open(filepath).read() == '1,2\n3,4\n'
+    with open(filepath) as f:
+        assert f.read() == '1,2\n3,4\n'
 
 
 def test_LogToFile(filepath):
