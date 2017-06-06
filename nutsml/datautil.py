@@ -58,7 +58,7 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
     >>> from __future__ import print_function
     >>> import random as rnd
     >>> samples = [('pos1', 1), ('pos2', 1), ('neg1', 0)]
-    >>> for i in range(3):
+    >>> for i in range(3):  # doctest: +SKIP
     ...     print(upsample(samples, 1, rand=rnd.Random(i)))
     [('neg1', 0), ('neg1', 0), ('pos1', 1), ('pos2', 1)]
     [('pos2', 1), ('neg1', 0), ('pos1', 1), ('neg1', 0)]
@@ -95,11 +95,11 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None)):
     the default (rand=rnd.Random(None)). Do NOT use rnd.Random(0) since this
     will generate the same subsample every time.
 
-    >>> from __future__ import print_function  # doctest: +SKIP
+    >>> from __future__ import print_function  
     >>> import random as rnd  
     >>> samples = [('pos1', 1), ('pos2', 1), ('pos3', 1),
     ...            ('neg1', 0), ('neg2', 0)]
-    >>> for i in range(3):
+    >>> for i in range(3):  # doctest: +SKIP
     ...     print(random_downsample(samples, 1, rand=rnd.Random(i)))
     [('neg2', 0), ('neg1', 0), ('pos2', 1), ('pos1', 1)]
     [('neg1', 0), ('neg2', 0), ('pos3', 1), ('pos1', 1)]

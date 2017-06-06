@@ -68,24 +68,24 @@ def PartitionByCol(iterable, col, values):
 def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
     """
     Randomly split iterable into partitions.
-    
-    >>> fix=rnd.Random(0)  # fixed random numbers for testing. Don't do this.
 
-    >>> train, val = xrange(10) >> SplitRandom(rand=fix, ratio=0.7)
-    >>> train, val
-    ([9, 5, 1, 4, 0, 7, 2], [8, 6, 3])
+    >>> fix=rnd.Random(0)  # fixed random numbers for testing
 
-    >>> train, val, test = xrange(10) >> SplitRandom(rand=fix, ratio=(0.6, 0.3, 0.1))
-    >>> train, val, test
-    ([0, 3, 4, 5, 6, 1], [8, 2, 7], [9])
+    >>> train, val = range(10) >> SplitRandom(rand=fix, ratio=0.7)
+    >>> sorted(train), sorted(val)
+    ([0, 1, 2, 4, 5, 7, 9], [3, 6, 8])
 
-    >>> data = zip('aabbccddee', xrange(10))
+    >>> train, val, test = range(10) >> SplitRandom(rand=fix, ratio=(0.6, 0.3, 0.1))
+    >>> sorted(train), sorted(val), sorted(test)
+    ([0, 1, 3, 4, 5, 6], [2, 7, 8], [9])
+
+    >>> data = zip('aabbccddee', range(10))
     >>> same_letter = lambda (c,i): c
     >>> train, val = data >> SplitRandom(rand=fix, ratio=0.6, constraint=same_letter)
-    >>> train
-    [('e', 9), ('c', 5), ('e', 8), ('a', 1), ('a', 0), ('c', 4)]
-    >>> val
-    [('b', 3), ('d', 6), ('b', 2), ('d', 7)]
+    >>> sorted(train)
+    [('a', 0), ('a', 1), ('c', 4), ('c', 5), ('e', 8), ('e', 9)]
+    >>> sorted(val)
+    [('b', 2), ('b', 3), ('d', 6), ('d', 7)]
 
     :param iterable iterable: Iterable over anything. Will be consumed!
     :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7

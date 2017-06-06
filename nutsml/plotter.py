@@ -7,6 +7,7 @@ import time
 import itertools as itt
 import matplotlib.pyplot as plt
 
+from six.moves import range
 from nutsflow import NutFunction
 from nutsflow.common import as_tuple, as_list
 
@@ -84,7 +85,7 @@ class PlotLines(NutFunction):  # pragma no coverage
         if c is None:
             c = n
         self.figure = plt.figure(figsize=figsize)
-        self.axes = [self.figure.add_subplot(r, c, i + 1) for i in xrange(n)]
+        self.axes = [self.figure.add_subplot(r, c, i + 1) for i in range(n)]
         self.reset()
 
     def __delta_sec(self):

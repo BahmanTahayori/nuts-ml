@@ -830,9 +830,9 @@ def annotation2coords(image, annotation):
     >>> img = np.zeros((5, 5), dtype='uint8')
     >>> anno = ('point', ((1, 1), (1, 2)))
     >>> for rr, cc in annotation2coords(img, anno):
-    ...     print(rr, cc)
-    (array([1]), array([1]))
-    (array([2]), array([1]))
+    ...     print(list(rr), list(cc))
+    ([1], [1])
+    ([2], [1])
 
     :param ndarray image: Image
     :param annotation annotation: Annotation of an image region such as

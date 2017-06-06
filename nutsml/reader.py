@@ -41,12 +41,13 @@ def ReadLabelDirs(basedir, filepattern='*'):
     where the folder name represents the class label and the files in
     the folder the data samples (images, documents, ...) for that class.
 
+    >>> from __future__ import print_function
     >>> from nutsflow import Collect
 
     >>> read = ReadLabelDirs('tests/data/labeldirs', '*.txt')
     >>> samples = read >> Collect()
     >>> for sample in samples:
-    ...     print sample
+    ...     print(sample)
     ...
     ('tests/data/labeldirs/0/test0.txt', '0')
     ('tests/data/labeldirs/1/test1.txt', '1')

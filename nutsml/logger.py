@@ -19,20 +19,21 @@ class LogToFile(NutFunction):
         """
         Construct logger.
 
+        >>> from __future__ import print_function
         >>> from nutsflow import Consume
         >>> filepath = 'tests/data/temp_logfile.csv'
         >>> data = [[1, 2], [3, 4]]
 
         >>> with LogToFile(filepath) as logtofile:
         ...     data >> logtofile >> Consume()
-        >>> print open(filepath).read()
+        >>> print(open(filepath).read())
         1,2
         3,4
         <BLANKLINE>
 
         >>> logtofile = LogToFile(filepath, cols=(1, 0), colnames=['a', 'b'])
         >>> data >> logtofile >> Consume()
-        >>> print open(filepath).read()
+        >>> print(open(filepath).read())
         a,b
         2,1
         4,3

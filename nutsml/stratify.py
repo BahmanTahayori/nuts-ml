@@ -6,7 +6,7 @@ from __future__ import absolute_import
 
 import random as rnd
 
-from nutsflow import nut_processor
+from nutsflow import nut_processor, Sort
 from .datautil import upsample, random_downsample
 
 
@@ -21,7 +21,7 @@ def Stratify(iterable, labelcol, mode='downrnd', rand=rnd.Random()):
 
     >>> from nutsflow import Collect
     >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    >>> samples >> Stratify(1) >> Collect()
+    >>> samples >> Stratify(1) >> Sort()
     [('neg', 0), ('pos', 1)]
 
     :param iterable over tuples iterable: Iterable of tuples where column
