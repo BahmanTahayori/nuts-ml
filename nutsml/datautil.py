@@ -76,7 +76,7 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
     _, max_cnts = max(iteritems(labelcnts), key=lambda l_c: l_c[1])
     stratified = []
     for label, samples in iteritems(groups):
-        extended = samples * (max_cnts / len(samples) + 1)
+        extended = samples * int((max_cnts / len(samples) + 1))
         stratified.extend(extended[:max_cnts])
     rand.shuffle(stratified)
     return stratified

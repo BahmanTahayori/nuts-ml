@@ -44,7 +44,7 @@ def test_random_upsample(sampleset):
 
 def test_random_downsample(sampleset):
     samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    stratified = util.random_downsample(samples, 1, rand=rnd.Random(0))
+    stratified = sorted(util.random_downsample(samples, 1, rand=rnd.Random(0)))
     assert stratified == [('neg', 0), ('pos', 1)]
 
     stratified1 = util.random_downsample(sampleset, 0, rand=rnd.Random())
