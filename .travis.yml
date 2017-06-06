@@ -14,16 +14,6 @@ before_install:
   - pip install --upgrade pip
   - pip install pytest pytest-cov
   - pip install coveralls
-  - pip install six
-  - pip install pyyaml
-  - pip install xlrd
-  - pip install dplython
-  - pip install numpy
-  - pip install matplotlib
-  - pip install scipy
-  - pip install pillow
-  - pip install scikit-image
-  - pip install pandas
   - pip install nutsflow
 install: 
   - pip install nutsml
