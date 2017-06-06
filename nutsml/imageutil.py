@@ -3,7 +3,6 @@
    :synopsis: Basic image processing utilities
 """
 from __future__ import absolute_import
-from builtins import range
 
 import numpy as np
 import PIL as pil
@@ -15,6 +14,7 @@ import skimage.io as ski
 import skimage.draw as skd
 import matplotlib.patches as plp
 
+from six.moves import range, map
 from .datautil import shapestr, isnan
 from PIL import ImageEnhance as ie
 from skimage.color import rgb2gray
@@ -542,9 +542,9 @@ def polyline2coords(points):
     """
     coords = []
     for i in range(len(points) - 1):
-        xy = map(int, points[i] + points[i + 1])
+        xy = list(map(int, points[i] + points[i + 1]))
         coords.append(skd.line(xy[1], xy[0], xy[3], xy[2]))
-    return map(np.hstack, zip(*coords))
+    return [np.hstack(c) for c in zip(*coords)]
 
 
 def mask_where(mask, value):
@@ -640,8 +640,8 @@ def patch_iter(image, shape=(3, 3), stride=1):
     rows, cols = views.shape[:2]
 
     def patch_gen():
-        for r in xrange(rows):
-            for c in xrange(cols):
+        for r in range(rows):
+            for c in range(cols):
                 yield views[r, c] if is_gray else views[r, c, 0]
 
     return patch_gen()
