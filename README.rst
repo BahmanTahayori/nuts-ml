@@ -44,9 +44,6 @@ which is described `here <https://maet3608.github.io/nuts-flow/>`_.
 .. image:: https://img.shields.io/badge/license-Apache%202-blue.svg
    :target: https://github.com/maet3608/nuts-ml/blob/master/LICENSE
 
-.. image:: https://img.shields.io/pypi/dm/nutsml.svg
-   :target: https://pypi.python.org/pypi/nutsml/
-
 .. image:: https://img.shields.io/github/downloads/maet3608/nuts-ml/total.svg
    :target: https://github.com/maet3608/nuts-ml
 
