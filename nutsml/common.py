@@ -117,7 +117,7 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
     if constraint is None:
         groups = [[s] for s in samples]
     else:
-        groups = group_by(samples, constraint).values()
+        groups = list(group_by(samples, constraint).values())
     rand.shuffle(groups)
     groups = iter(groups)
     splits = []
