@@ -14,8 +14,8 @@ import nutsml.datautil as util
 @pytest.fixture(scope="function")
 def sampleset():
     """Return list with 50 positive and 10 negative samples"""
-    pos = [(0, i) for i in xrange(50)]
-    neg = [(1, i) for i in xrange(10)]
+    pos = [(0, i) for i in range(50)]
+    neg = [(1, i) for i in range(10)]
     return pos + neg
 
 
