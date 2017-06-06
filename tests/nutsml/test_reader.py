@@ -5,6 +5,9 @@
 
 import pytest
 
+import sys
+
+
 import pandas as pd
 import numpy as np
 import numpy.testing as nt
@@ -13,7 +16,7 @@ from dplython import DplyFrame, select, X
 from nutsflow import Collect
 from nutsml import DplyToList, ReadImage, ReadLabelDirs, ReadPandas
 
-
+@pytest.mark.skipif(sys.version_info[0] > 2, reason='skip python3k')
 def test_DplyToList():
     empty_dplyframe = DplyFrame(pd.DataFrame())
     assert empty_dplyframe >> DplyToList() >> Collect() == []
@@ -26,7 +29,7 @@ def test_DplyToList():
         [1] >> DplyToList() >> Collect()
     assert str(ex.value) == 'Expect Dplyr dataframe!'
 
-
+@pytest.mark.skipif(sys.version_info[0] > 2, reason='skip python3k')
 def test_ReadLabelDirs():
     read = ReadLabelDirs('tests/data/labeldirs', '*.txt')
     samples = read >> Collect()
@@ -34,7 +37,7 @@ def test_ReadLabelDirs():
                        ('tests/data/labeldirs/1/test1.txt', '1'),
                        ('tests/data/labeldirs/1/test11.txt', '1')]
 
-
+@pytest.mark.skipif(sys.version_info[0] > 2, reason='skip python3k')
 def test_ReadImage():
     arr0 = np.load('tests/data/img_arrays/nut_color.jpg.npy')
     arr1 = np.load('tests/data/img_arrays/nut_grayscale.jpg.npy')
@@ -66,20 +69,20 @@ def test_ReadImage():
     img_samples = samples >> ReadImage(None, dtype=float) >> Collect()
     assert img_samples[0][0].dtype == float
 
-
+@pytest.mark.skipif(sys.version_info[0] > 2, reason='skip python3k')
 def test_ReadPandas_isnull():
     assert not ReadPandas.isnull(1.0)
     assert not ReadPandas.isnull(0)
     assert ReadPandas.isnull(None)
     assert ReadPandas.isnull(np.NaN)
 
-
+@pytest.mark.skipif(sys.version_info[0] > 2, reason='skip python3k')
 def test_ReadPandas_dply():
     filepath = 'tests/data/pandas_table.csv'
     samples = ReadPandas(filepath).dply() >> select(X.col1) >> DplyToList()
     nt.assert_equal(samples, [[1], [2], [3]])
 
-
+@pytest.mark.skipif(sys.version_info[0] > 2, reason='skip python3k')
 def test_ReadPandas_pkl():
     # create pickle version of table from CSV table
     df = pd.read_csv('tests/data/pandas_table.csv')
