@@ -4,7 +4,7 @@
 """
 
 from nutsflow import Take, Consume
-from nutsml import ViewImage, PrintColType
+from nutsml import ViewImage
 
 if __name__ == "__main__":
     from cnn_train import load_samples

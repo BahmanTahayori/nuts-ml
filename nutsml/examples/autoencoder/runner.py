@@ -7,10 +7,9 @@ the original image, the decoded images and the difference.
 
 from __future__ import print_function
 
-from builtins import zip
-from builtins import range
 import numpy as np
 
+from six.moves import zip, range
 from nutsflow import *
 from nutsml import *
 

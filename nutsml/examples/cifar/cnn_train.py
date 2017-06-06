@@ -5,15 +5,11 @@
 
 from __future__ import print_function
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import zip
-from builtins import map
-from builtins import range
 import pickle
 
 import os.path as osp
 
+from six import zip, map, range
 from nutsflow import PrintProgress, Zip, Unzip, Pick, Shuffle, Mean
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     SplitRandom, PlotLines)
@@ -28,7 +24,7 @@ INPUT_SHAPE = (32, 32, 3)
 def load_samples():
     from keras.datasets import cifar10
     (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-    return list(zip(x_train, list(map(int, y_train)))), list(zip(x_test, list(map(int, y_test))))
+    return list(zip(x_train, map(int, y_train))), list(zip(x_test, map(int, y_test)))
 
 
 def load_names():

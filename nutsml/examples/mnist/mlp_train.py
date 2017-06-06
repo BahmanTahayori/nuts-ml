@@ -10,8 +10,7 @@ use nuts for the data-preprocessing.
 
 from __future__ import print_function
 
-from builtins import zip
-from builtins import range
+from six import zip, range
 from nutsflow import PrintProgress, Collect, Unzip, Mean
 from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
 
