@@ -31,11 +31,11 @@ def datadirs():
     return imagedir, formatsdir, arraysdir, processeddir
 
 
-def assert_equal_image(imagepath, image):
+def assert_equal_image(imagepath, image, rtol=1e-03, atol=0):
     if CREATE_DATA:
         ni.save_image(imagepath, image)
     expected = ni.load_image(imagepath)
-    nt.assert_allclose(expected, image)
+    nt.assert_allclose(expected, image, rtol=rtol, atol=atol)
 
 
 def test_load_image(datadirs):
