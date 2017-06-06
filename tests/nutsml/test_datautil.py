@@ -31,7 +31,7 @@ def test_shapestr():
 
 def test_random_upsample(sampleset):
     samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    stratified = util.upsample(samples, 1, rand=rnd.Random(0))
+    stratified = sorted(util.upsample(samples, 1, rand=rnd.Random(0)))
     assert stratified == [('neg', 0), ('neg', 0), ('pos', 1), ('pos', 1)]
 
     stratified1 = util.upsample(sampleset, 0, rand=rnd.Random())
