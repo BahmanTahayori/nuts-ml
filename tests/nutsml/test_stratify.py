@@ -17,10 +17,10 @@ def test_Stratify():
     stratified = samples >> stratify >> Sort()
     assert stratified == [('neg', 0), ('neg', 0), ('pos', 1), ('pos', 1)]
 
-    samples = [('pos1', 1), ('pos2', 1), ('pos3', 1), ('neg1', 0), ('neg2', 0)]
+    samples = [('pos', 1), ('pos', 1), ('pos', 1), ('neg1', 0), ('neg2', 0)]
     stratify = Stratify(1, mode='downrnd', rand=rnd.Random(0))
     stratified = samples >> stratify >> Sort()
-    assert stratified == [('neg1', 0), ('neg2', 0), ('pos1', 1), ('pos2', 1)]
+    assert stratified == [('neg1', 0), ('neg2', 0), ('pos', 1), ('pos', 1)]
 
     with pytest.raises(ValueError) as ex:
         samples >> Stratify(1, mode='invalid') >> Collect()
