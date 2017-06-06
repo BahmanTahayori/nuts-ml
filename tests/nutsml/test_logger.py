@@ -36,20 +36,24 @@ def test_LogToFile(filepath):
 
     with LogToFile(filepath) as logtofile:
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == '1,2\n3,4\n'
+    with open(filepath) as f:
+        assert f.read() == '1,2\n3,4\n'
 
     with LogToFile(filepath, delimiter='; ') as logtofile:
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == '1; 2\n3; 4\n'
+    with open(filepath) as f:
+        assert f.read() == '1; 2\n3; 4\n'
 
     with LogToFile(filepath, cols=0, reset=True) as logtofile:
         assert data >> logtofile >> Collect() == data
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == '1\n3\n1\n3\n'
+    with open(filepath) as f:
+        assert f.read() == '1\n3\n1\n3\n'
 
     with LogToFile(filepath, cols=(1, 0), colnames=('a', 'b')) as logtofile:
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == 'a,b\n2,1\n4,3\n'
+    with open(filepath) as f:
+        assert f.read() == 'a,b\n2,1\n4,3\n'
 
 
 def test_LogToFile_reset(filepath):
@@ -57,23 +61,27 @@ def test_LogToFile_reset(filepath):
 
     with LogToFile(filepath, cols=0, reset=True) as logtofile:
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == '1\n3\n'
+    with open(filepath) as f:
+        assert f.read() == '1\n3\n'
 
     with LogToFile(filepath, cols=1, reset=False) as logtofile:
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == '1\n3\n2\n4\n'
+    with open(filepath) as f:
+        assert f.read() == '1\n3\n2\n4\n'
 
 
 def test_LogToFile_numpy(filepath):
     data = [np.array([1, 2]), np.array([3, 4])]
     with LogToFile(filepath) as logtofile:
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == '1,2\n3,4\n'
+    with open(filepath) as f:
+        assert f.read() == '1,2\n3,4\n'
 
     data = [np.array(1), np.array(2)]
     with LogToFile(filepath) as logtofile:
         assert data >> logtofile >> Collect() == data
-    assert open(filepath).read() == '1\n2\n'
+    with open(filepath) as f:
+        assert f.read() == '1\n2\n'
 
 
 def test_LogToFile_delete(filepath):
