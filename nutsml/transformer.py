@@ -2,6 +2,7 @@
 .. module:: transformer
    :synopsis: Data and image transformations
 """
+from __future__ import print_function
 
 import numpy as np
 import os.path as path
@@ -245,7 +246,6 @@ def RegularImagePatches(iterable, imagecols, pshape, stride):
 
     Extract patches in a regular grid from images.
 
-    >>> from __future__ import print_function
     >>> import numpy as np
     >>> img = np.reshape(np.arange(12), (3, 4))
     >>> samples = [(img, 0)]
@@ -285,7 +285,6 @@ def RandomImagePatches(iterable, imagecols, pshape, npatches):
 
     Extract patches at random locations from images.
 
-    >>> from __future__ import print_function
     >>> import numpy as np
     >>> np.random.seed(0)    # just to ensure stable doctest
     >>> img = np.reshape(np.arange(30), (5, 6))
@@ -293,9 +292,9 @@ def RandomImagePatches(iterable, imagecols, pshape, npatches):
     >>> getpatches = RandomImagePatches(0, (2, 3), 3)
     >>> for (p, l) in samples >> getpatches:
     ...     print(p.tolist(), l)
-    ([[7, 8, 9], [13, 14, 15]], 0)
-    ([[8, 9, 10], [14, 15, 16]], 0)
-    ([[8, 9, 10], [14, 15, 16]], 0)
+    [[7, 8, 9], [13, 14, 15]] 0
+    [[8, 9, 10], [14, 15, 16]] 0
+    [[8, 9, 10], [14, 15, 16]] 0
 
     :param iterable iterable: Samples with images
     :param int|tuple imagecols: Indices of sample columns that contain
@@ -332,7 +331,7 @@ def ImagePatchesByMask(iterable, imagecol, maskcol, pshape, npos,
     mask (corresponding to the input image) and is negative for value 'neg'
     The mask must be of same size as image.
 
-    >>> from __future__ import print_function
+    >>> 
     >>> import numpy as np
     >>> np.random.seed(0)    # just to ensure stable doctest
     >>> img = np.reshape(np.arange(25), (5, 5))
@@ -342,17 +341,17 @@ def ImagePatchesByMask(iterable, imagecol, maskcol, pshape, npos,
     >>> getpatches = ImagePatchesByMask(0, 1, (3, 3), 2, 1)
     >>> for (p, l) in samples >> getpatches:
     ...     print(p.tolist(), l)
-    ([[10, 11, 12], [15, 16, 17], [20, 21, 22]], 0)
-    ([[12, 13, 14], [17, 18, 19], [22, 23, 24]], 1)
-    ([[6, 7, 8], [11, 12, 13], [16, 17, 18]], 1)
+    [[10, 11, 12], [15, 16, 17], [20, 21, 22]] 0
+    [[12, 13, 14], [17, 18, 19], [22, 23, 24]] 1
+    [[6, 7, 8], [11, 12, 13], [16, 17, 18]] 1
 
     >>> np.random.seed(0)    # just to ensure stable doctest
     >>> patches = ImagePatchesByMask(0, 1, (3, 3), 1, 1, retlabel=False)
     >>> for (p, m) in samples >> getpatches:
     ...     print(p.tolist(), l)
-    ([[10, 11, 12], [15, 16, 17], [20, 21, 22]], 1)
-    ([[12, 13, 14], [17, 18, 19], [22, 23, 24]], 1)
-    ([[6, 7, 8], [11, 12, 13], [16, 17, 18]], 1)
+    [[10, 11, 12], [15, 16, 17], [20, 21, 22]] 1
+    [[12, 13, 14], [17, 18, 19], [22, 23, 24]] 1
+    [[6, 7, 8], [11, 12, 13], [16, 17, 18]] 1
 
     :param iterable iterable: Samples with images
     :param int imagecol: Index of sample column that contain image
@@ -394,7 +393,6 @@ def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
     A patch is positive if its center point is within the annotated region
     and is negative otherwise
 
-    >>> from __future__ import print_function
     >>> import numpy as np
     >>> np.random.seed(0)    # just to ensure stable doctest
     >>> img = np.reshape(np.arange(25), (5, 5))
@@ -404,9 +402,9 @@ def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
     >>> getpatches = ImagePatchesByAnnotation(0, 1, (3, 3), 1, 1)
     >>> for (p, l) in samples >> getpatches:
     ...     print(p.tolist(), l)
-    ([[12, 13, 14], [17, 18, 19], [22, 23, 24]], 0)
-    ([[11, 12, 13], [16, 17, 18], [21, 22, 23]], 1)
-    ([[7, 8, 9], [12, 13, 14], [17, 18, 19]], 1)
+    [[12, 13, 14], [17, 18, 19], [22, 23, 24]] 0
+    [[11, 12, 13], [16, 17, 18], [21, 22, 23]] 1
+    [[7, 8, 9], [12, 13, 14], [17, 18, 19]] 1
 
     :param iterable iterable: Samples with images
     :param int imagecol: Index of sample column that contain image
@@ -446,7 +444,6 @@ def ImageAnnotationToMask(iterable, imagecol, annocol):
     ('rect', ((x, y, w, h), ...))
     ('polyline', (((x, y), (x, y), ...), ...))
 
-    >>> from __future__ import print_function
     >>> import numpy as np
     >>> from nutsflow import Collect
 
