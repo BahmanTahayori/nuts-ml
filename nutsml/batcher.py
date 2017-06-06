@@ -51,7 +51,7 @@ def build_vector_batch(vectors, dtype):
     """
     Return batch of vectors.
 
-    >>> from datautil import shapestr
+    >>> from nutsml.datautil import shapestr
     >>> vectors = [np.array([1,2,3]), np.array([2, 3, 4])]
     >>> batch = build_vector_batch(vectors, 'uint8')
     >>> shapestr(batch)
@@ -81,7 +81,7 @@ def build_image_batch(images, dtype, channelfirst=False):
     (n, c, h, w) or (n, h, w, c) depending on channelfirst, where n is
     the number of images in the batch.
 
-    >>> from datautil import shapestr
+    >>> from nutsml.datautil import shapestr
     >>> images = [np.zeros((2, 3)), np.ones((2, 3))]
     >>> batch = build_image_batch(images, 'uint8', True)
     >>> shapestr(batch)

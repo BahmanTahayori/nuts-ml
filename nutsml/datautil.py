@@ -55,10 +55,11 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
     sequence of randomly stratified samples. Usually it is sufficient to use
     the default (rand=rnd.Random(None)).
 
+    >>> from __future__ import print_function
     >>> import random as rnd
     >>> samples = [('pos1', 1), ('pos2', 1), ('neg1', 0)]
-    >>> for i in xrange(3):
-    ...     print upsample(samples, 1, rand=rnd.Random(i))
+    >>> for i in range(3):
+    ...     print(upsample(samples, 1, rand=rnd.Random(i)))
     [('neg1', 0), ('neg1', 0), ('pos1', 1), ('pos2', 1)]
     [('pos2', 1), ('neg1', 0), ('pos1', 1), ('neg1', 0)]
     [('neg1', 0), ('neg1', 0), ('pos1', 1), ('pos2', 1)]
@@ -94,11 +95,12 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None)):
     the default (rand=rnd.Random(None)). Do NOT use rnd.Random(0) since this
     will generate the same subsample every time.
 
-    >>> import random as rnd
+    >>> from __future__ import print_function  # doctest: +SKIP
+    >>> import random as rnd  
     >>> samples = [('pos1', 1), ('pos2', 1), ('pos3', 1),
     ...            ('neg1', 0), ('neg2', 0)]
-    >>> for i in xrange(3):
-    ...     print random_downsample(samples, 1, rand=rnd.Random(i))
+    >>> for i in range(3):
+    ...     print(random_downsample(samples, 1, rand=rnd.Random(i)))
     [('neg2', 0), ('neg1', 0), ('pos2', 1), ('pos1', 1)]
     [('neg1', 0), ('neg2', 0), ('pos3', 1), ('pos1', 1)]
     [('neg2', 0), ('neg1', 0), ('pos1', 1), ('pos3', 1)]
@@ -120,9 +122,9 @@ def group_samples(samples, labelcol):
     """
     Return samples grouped by label and label counts.
 
-    >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]
+    >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]  
     >>> groups, labelcnts = group_samples(samples, 1)
-    >>> groups
+    >>> groups  # doctest: +SKIP
     {0: [('neg', 0)], 1: [('pos', 1), ('pos', 1)]}
 
     >>> labelcnts
@@ -186,6 +188,3 @@ def col_map(sample, columns, func, *args, **kwargs):
     f, a, kw = func, args, kwargs
     enum_iter = enumerate(sample)
     return tuple(f(e, *a, **kw) if i in colset else e for i, e in enum_iter)
-
-
-

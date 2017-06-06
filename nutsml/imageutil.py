@@ -614,10 +614,11 @@ def patch_iter(image, shape=(3, 3), stride=1):
     starting in the left upper corner and then row-wise.
     Image can be gray-scale (no third channel dim) or color.
 
+    >>> from __future__ import print_function
     >>> import numpy as np
     >>> img = np.reshape(np.arange(12), (3, 4))
     >>> for p in patch_iter(img, (2, 2), 2):
-    ...     print p
+    ...     print(p)
     [[0 1]
      [4 5]]
     [[2 3]
@@ -771,14 +772,15 @@ def sample_pn_patches(image, mask, pshape, npos, nneg, pos=255, neg=0):
     image and mask and that a patch a the same position is extracted from
     the image and the mask.
 
+    >>> from __future__ import print_function
     >>> np.random.seed(0)   # just to ensure consistent doctest
     >>> mask = np.zeros((3, 4), dtype='uint8')
     >>> img = np.reshape(np.arange(12, dtype='uint8'), (3, 4))
     >>> mask[1, 2] = 255
     >>> for ip, mp, l in sample_pn_patches(img, mask, (2, 2), 1, 1):
-    ...     print ip
-    ...     print mp
-    ...     print l
+    ...     print(ip)
+    ...     print(mp)
+    ...     print(l)
     [[0 1]
      [4 5]]
     [[0 0]
@@ -823,13 +825,14 @@ def annotation2coords(image, annotation):
     Annotation regions can exceed the image dimensions and will be clipped.
     Note that annotation is in x,y order while output is r,c (row, col).
 
+    >>> from __future__ import print_function
     >>> import numpy as np
     >>> img = np.zeros((5, 5), dtype='uint8')
     >>> anno = ('point', ((1, 1), (1, 2)))
     >>> for rr, cc in annotation2coords(img, anno):
-    ...     print rr, cc
-    [1] [1]
-    [2] [1]
+    ...     print(rr, cc)
+    (array([1]), array([1]))
+    (array([2]), array([1]))
 
     :param ndarray image: Image
     :param annotation annotation: Annotation of an image region such as
