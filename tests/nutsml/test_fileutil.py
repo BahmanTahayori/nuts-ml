@@ -33,7 +33,7 @@ def test_create_filename():
 
 def test_create_filename_is_unique():
     # Create set of 100 file names and verify that they are unique.
-    nameset = {fu.create_filename() for _ in xrange(100)}
+    nameset = {fu.create_filename() for _ in range(100)}
     assert len(nameset) == 100
 
 
