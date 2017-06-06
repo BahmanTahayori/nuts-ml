@@ -88,7 +88,7 @@ def test_BuildBatch():
     class_ids = [1, 2, 1]
     samples = zip(numbers, vectors, images, class_ids)
 
-    build_batch = (nb.BuildBatch(2)
+    build_batch = (nb.BuildBatch(2, prefetch=0)
                    .by(0, 'number', float)
                    .by(1, 'vector', np.uint8)
                    .by(2, 'image', np.uint8, False)
@@ -109,7 +109,8 @@ def test_BuildBatch_fmt():
     numbers1 = [1, 2, 3]
     numbers2 = [4, 5, 6]
     samples = zip(numbers1, numbers2)
-    build_batch = (nb.BuildBatch(3, fmt=lambda t: ((t[0], t[1], t[0]), t[1]))
+    build_batch = (nb.BuildBatch(3, prefetch=0,
+                                 fmt=lambda t: ((t[0], t[1], t[0]), t[1]))
                    .by(0, 'number', float)
                    .by(1, 'number', float))
     batches = samples >> build_batch >> Collect()
