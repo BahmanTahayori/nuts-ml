@@ -43,7 +43,7 @@ def test_Boost():
     positives = [(2, 1), (3, 1), (4, 1)]
     samples = negatives + positives
 
-    build_batch = (BuildBatch(3)
+    build_batch = (BuildBatch(3, prefetch=0)
                    .by(0, 'number', 'uint8')
                    .by(1, 'one_hot', 'uint8', 2))
 
