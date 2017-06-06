@@ -39,16 +39,14 @@ class PlotLines(NutFunction):  # pragma no coverage
         >>> data = zip(xs, ysin, ycos)
 
         >>> data >> PlotLines(1, 0, filepath=fp) >> Consume()
-        >>> os.remove(fp)
 
         >>> list(ycos) >> PlotLines(0, filepath=fp) >> Consume()
-        >>> os.remove(fp)
 
         >>> data >> PlotLines(ycols=(1,2), filepath=fp) >> Consume()
-        >>> os.remove(fp)
 
         >>> ysin.tolist() >> PlotLines(ycols=None, filepath=fp) >> Consume()
-        >>> os.remove(fp)
+
+        >>> if os.path.exists(fp): os.remove(fp)
 
         :param int|tuple|None ycols: Index or tuple of indices of the 
             data columns that contain the y-data for the plot.
