@@ -38,6 +38,18 @@ def test_build_vector_batch():
     assert str(ex.value).startswith('No vectors ')
 
 
+def test_build_tensor_batch():
+    tensors = [np.zeros((2, 3, 2)), np.ones((2, 3, 2))]
+    batch = nb.build_tensor_batch(tensors, 'uint8')
+    expected = np.vstack(tensors)
+    assert batch.dtype == np.uint8
+    assert np.array_equal(batch, expected)
+
+    with pytest.raises(ValueError) as ex:
+        nb.build_tensor_batch([], 'uint8')
+    assert str(ex.value).startswith('No tensors ')
+
+
 def test_build_image_batch():
     images = [np.zeros((10, 5)), np.ones((10, 5))]
     batch = nb.build_image_batch(images, 'uint8', channelfirst=True)

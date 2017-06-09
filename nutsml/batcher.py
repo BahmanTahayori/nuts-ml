@@ -61,7 +61,7 @@ def build_vector_batch(vectors, dtype):
     array([[1, 2, 3],
            [2, 3, 4]], dtype=uint8)
 
-    :param iterable row_vectors: Numpy row vectors
+    :param iterable vectors: Numpy row vectors
     :param numpy data type dtype: Data type of batch, e.g. 'uint8'
     :return: vstack of vectors
     :rtype: numpy.array
@@ -69,6 +69,43 @@ def build_vector_batch(vectors, dtype):
     if not len(vectors):
         raise ValueError('No vectors to build batch!')
     return np.vstack(vectors).astype(dtype)
+
+
+def build_tensor_batch(tensors, dtype):
+    """
+    Return batch of tensors.
+
+    >>> from nutsml.datautil import shapestr
+    >>> tensors = [np.zeros((2, 3, 2)), np.ones((2, 3, 2))]
+    >>> batch = build_tensor_batch(tensors, 'uint8')
+    >>> shapestr(batch)
+    '4x3x2'
+
+    >>> print(batch)
+    [[[0 0]
+      [0 0]
+      [0 0]]
+    <BLANKLINE>
+     [[0 0]
+      [0 0]
+      [0 0]]
+    <BLANKLINE>
+     [[1 1]
+      [1 1]
+      [1 1]]
+    <BLANKLINE>
+     [[1 1]
+      [1 1]
+      [1 1]]]
+
+    :param iterable tensors: Numpy tensors
+    :param numpy data type dtype: Data type of batch, e.g. 'uint8'
+    :return: vstack of tensors
+    :rtype: numpy.array
+    """
+    if not len(tensors):
+        raise ValueError('No tensors to build batch!')
+    return np.vstack(tensors).astype(dtype)
 
 
 def build_image_batch(images, dtype, channelfirst=False):
@@ -164,6 +201,7 @@ class BuildBatch(Nut):
         self.builder = {'image': build_image_batch,
                         'number': build_number_batch,
                         'vector': build_vector_batch,
+                        'tensor': build_tensor_batch,
                         'one_hot': build_one_hot_batch}
 
     def by(self, col, name, *args, **kwargs):
@@ -178,6 +216,7 @@ class BuildBatch(Nut):
             'image': nutsflow.batcher.build_image_batch
             'number': nutsflow.batcher.build_number_batch
             'vector': nutsflow.batcher.build_vector_batch
+            'tensor': nutsflow.batcher.build_tensor_batch
             'one_hot': nutsflow.batcher.build_one_hot_batch
         :param args args: Arguments for column function, e.g. dtype
         :param kwargs kwargs: Keyword arguments for column function
