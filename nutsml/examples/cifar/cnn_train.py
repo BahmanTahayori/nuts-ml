@@ -9,7 +9,7 @@ import pickle
 
 import os.path as osp
 
-from six import zip, map, range
+from six.moves import zip, map, range
 from nutsflow import PrintProgress, Zip, Unzip, Pick, Shuffle, Mean
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
                     SplitRandom, PlotLines)
