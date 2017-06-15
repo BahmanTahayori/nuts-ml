@@ -28,7 +28,7 @@ class WriteImage(NutFunction):
         Folders on output file path are created if missing.
 
         >>> from nutsml import ReadImage
-        >>> from nutsflow import Collect, Get, Consume
+        >>> from nutsflow import Collect, Get, Consume, Unzip
         >>> samples = [('nut_color', 1), ('nut_grayscale', 2)]
         >>> inpath = 'tests/data/img_formats/*.bmp'
         >>> img_samples = samples >> ReadImage(0, inpath) >> Collect()
@@ -37,7 +37,13 @@ class WriteImage(NutFunction):
         >>> names = samples >> Get(0) >> Collect()
         >>> img_samples >> WriteImage(0, imagepath, names) >> Consume()
 
-        :param int column: Column in sample that contains image.
+        >>> imagepath = 'tests/data/test_*.bmp'
+        >>> names = samples >> Get(0) >> Collect()
+        >>> images = img_samples >> Get(0)
+        >>> images >> WriteImage(None, imagepath, names) >> Consume()
+
+        :param int|None column: Column in sample that contains image or
+              take sample itself if column is None.
         :param str|function pathfunc: Filepath with wildcard '*',
             which is replaced by the name provided names e.g.
             'tests/data/img_formats/*.jpg' for names = ['nut_grayscale']
@@ -62,5 +68,6 @@ class WriteImage(NutFunction):
         else:
             raise ValueError('Expect path or function: ' + str(self.pathfunc))
         create_folders(os.path.split(filepath)[0])
-        sio.imsave(filepath, sample[self.column])
+        img = sample if self.column is None else sample[self.column]
+        sio.imsave(filepath, img)
         return sample

@@ -35,6 +35,13 @@ def test_ImageWriter():
         os.path.exists(filepath)
         os.remove(filepath)
 
+    pathfunc = lambda sample, name: 'tests/data/test_{}.jpg'.format(name)
+    img_samples >> Get(0) >> WriteImage(None, pathfunc) >> Consume()
+    for i, sample in enumerate(img_samples):
+        filepath = 'tests/data/test_{}.jpg'.format(i)
+        os.path.exists(filepath)
+        os.remove(filepath)
+
     with pytest.raises(ValueError) as ex:
         img_samples >> WriteImage(0, ()) >> Consume()
     assert str(ex.value).startswith('Expect path or function')
