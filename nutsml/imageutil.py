@@ -472,7 +472,9 @@ def resize(image, w, h):
     :return: Resized image
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
-    return skt.resize(image, (h, w), preserve_range=True).astype('uint8')
+    return skt.resize(image, (h, w),
+                      mode='constant',
+                      preserve_range=True).astype('uint8')
 
 
 def shear(image, shear_factor):
