@@ -17,10 +17,10 @@ def Boost(iterable, batcher, network, targetcol=-1):
     Boost samples with high softmax probability for incorrect class.
     Expects one-hot encoded targets and softmax predictions for output.
 
-    network = Network()
-    build_batch = BuildBatch(BATCHSIZE, colspec)
-    boost = Boost(build_batch, network)
-    samples >> boost >> network.train() >> Consume()
+    | network = Network()
+    | build_batch = BuildBatch(BATCHSIZE, colspec)
+    | boost = Boost(build_batch, network)
+    | samples >> boost >> network.train() >> Consume()
 
     :param iterable iterable: Iterable with samples.
     :param nutsml.BuildBatch batcher: Batcher used for network training.
