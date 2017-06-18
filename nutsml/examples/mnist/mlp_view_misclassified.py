@@ -19,7 +19,7 @@ if __name__ == "__main__":
                  .by('flatten'))
     show_image = ViewImageAnnotation(0, (1, 2), pause=3, figsize=(3, 3))
     pred_batch = BuildBatch(BATCH_SIZE).by(0, 'vector', 'float32')
-    IsMisclassified = nut_filter(lambda (i, t, p): p != t)
+    IsMisclassified = nut_filter(lambda t: t[1] != t[2])
 
     print('loading samples ...')
     train_samples, test_samples = load_samples()
