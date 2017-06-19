@@ -108,8 +108,17 @@ class Network(object):
         :param string weightspath: Filepath where network weights are saved to
             and loaded from.
         """
-        self.filepath = weightspath
+        self.weightspath = weightspath
         self.best_score = None  # score of best scoring network so far
+
+    def _weightspath(self, weightspath):
+        """
+        Return give weightspath if not None else return self.weightspath.
+        
+        :param string|None weightspath: Path to network weights or None.
+        :return: Return weightspath
+        """
+        return self.weightspath if weightspath is None else weightspath
 
     def train(self):
         """
@@ -177,17 +186,23 @@ class Network(object):
 
     def save_weights(self):
         """
-        Save network weights. self.weightspath is used.
+        Save network weights.
 
-        network.save_weights()
+        | network.save_weights()
+
+        :param string weightspath: Path to network weights.
+          self.weightspath is used if weightspath is None.
         """
         raise NotImplementedError('Implement save_weights()!')
 
-    def load_weights(self):
+    def load_weights(self, weightspath=None):
         """
-        Load network weights. self.weightspath is used.
+        Load network weights.
 
-        network.load_weights()
+        | network.load_weights()
+        
+        :param string weightspath: Path to network weights.
+          self.weightspath is used if weightspath is None.
         """
         raise NotImplementedError('Implement load_weights()!')
 
@@ -249,13 +264,15 @@ class LasagneNetwork(Network):  # pragma no cover
 
         return EvalNut(self, metrics, compute, predcol, targetcol)
 
-    def save_weights(self):
+    def save_weights(self, weightspath=None):
+        weightspath = super(LasagneNetwork, self)._weightspath(weightspath)
         weights = {name: p.get_value() for name, p in
                    LasagneNetwork._get_named_params(self.out_layer)}
-        np.savez_compressed(self.filepath, **weights)
+        np.savez_compressed(weightspath, **weights)
 
-    def load_weights(self):
-        weights = np.load(self.filepath)
+    def load_weights(self, weightspath=None):
+        weightspath = super(LasagneNetwork, self)._weightspath(weightspath)
+        weights = np.load(weightspath)
         for name, param in LasagneNetwork._get_named_params(self.out_layer):
             param.set_value(weights[name])
 
@@ -305,11 +322,13 @@ class KerasNetwork(Network):  # pragma no cover
 
         return EvalNut(self, metrics, compute, predcol, targetcol)
 
-    def save_weights(self):
-        self.model.save_weights(self.filepath)
+    def save_weights(self, weightspath=None):
+        weightspath = super(KerasNetwork, self)._weightspath(weightspath)
+        self.model.save_weights(weightspath)
 
-    def load_weights(self):
-        self.model.load_weights(self.filepath)
+    def load_weights(self, weightspath=None):
+        weightspath = super(KerasNetwork, self)._weightspath(weightspath)
+        self.model.load_weights(weightspath)
 
     def print_layers(self):
         self.model.summary()

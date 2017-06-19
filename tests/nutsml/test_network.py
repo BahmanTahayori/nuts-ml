@@ -25,11 +25,11 @@ class FakeModel(object):
     def predict(self, X):
         return X
 
-    def save_weights(self, filepath):
-        self.saved_weights = filepath
+    def save_weights(self, weightspath):
+        self.saved_weights = weightspath
 
-    def load_weights(self, filepath):
-        self.loaded_weights = filepath
+    def load_weights(self, weightspath):
+        self.loaded_weights = weightspath
 
     def summary(self):
         return "network summary"
@@ -55,11 +55,13 @@ class FakeNetwork(Network):
 
         return EvalNut(self, metrics, compute, predcol, targetcol)
 
-    def save_weights(self):
-        self.model.save_weights(self.filepath)
+    def save_weights(self, weightspath=None):
+        weightspath = super(FakeNetwork, self)._weightspath(weightspath)
+        self.model.save_weights(weightspath)
 
-    def load_weights(self):
-        self.model.load_weights(self.filepath)
+    def load_weights(self, weightspath=None):
+        weightspath = super(FakeNetwork, self)._weightspath(weightspath)
+        self.model.load_weights(weightspath)
 
     def print_layers(self):
         self.model.summary()
@@ -98,33 +100,40 @@ def test_EvalNut():
 
 
 def test_Network_constructor():
-    filepath = 'dummy_filepath'
-    network = Network(filepath)
-    assert network.filepath == filepath
+    weightspath = 'dummy_filepath'
+    network = Network(weightspath)
+    assert network.weightspath == weightspath
+
+
+def test_Network_weightspath():
+    weightspath = 'dummy_filepath'
+    network = Network(weightspath)
+    assert network._weightspath(None) == weightspath
+    assert network._weightspath('new_path') == 'new_path'
 
 
 def test_Network_save_load_weights():
     model = FakeModel()
-    filepath = 'dummy_filepath'
-    network = FakeNetwork(model, filepath)
+    weightspath = 'dummy_filepath'
+    network = FakeNetwork(model, weightspath)
     assert not model.saved_weights
     assert not model.loaded_weights
 
     network.save_weights()
-    assert model.saved_weights == filepath
+    assert model.saved_weights == weightspath
 
     network.load_weights()
-    assert model.loaded_weights == filepath
+    assert model.loaded_weights == weightspath
 
 
 def test_Network_save_best():
     model = FakeModel()
-    filepath = 'dummy_filepath'
-    network = FakeNetwork(model, filepath)
+    weightspath = 'dummy_filepath'
+    network = FakeNetwork(model, weightspath)
 
     network.save_best(2.0)
     assert network.best_score == 2.0
-    assert model.saved_weights == filepath
+    assert model.saved_weights == weightspath
 
     network.save_best(1.0, isloss=True)
     assert network.best_score == 1.0
@@ -147,7 +156,7 @@ def test_Network_exceptions():
     with pytest.raises(NotImplementedError) as ex:
         network.predict()
     assert str(ex.value) == 'Implement predict()!'
-    
+
     with pytest.raises(NotImplementedError) as ex:
         network.evaluate([])
     assert str(ex.value) == 'Implement evaluate()!'
@@ -168,9 +177,9 @@ def test_Network_exceptions():
 def test_Network():
     model = FakeModel()
 
-    filepath = 'dummy_filepath'
-    network = FakeNetwork(model, filepath)
-    assert network.filepath == filepath
+    weightspath = 'dummy_filepath'
+    network = FakeNetwork(model, weightspath)
+    assert network.weightspath == weightspath
 
     batches = [((1, 2), (3, 4)), ((5, 6), (7, 8))]
     train_err = batches >> network.train() >> Collect()
