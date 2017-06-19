@@ -9,6 +9,7 @@ from __future__ import absolute_import
 import numpy as np
 import nutsml.imageutil as iu
 
+from six.moves import range
 from .datautil import shapestr
 from nutsflow import NutFunction, nut_function, as_tuple, as_set
 from matplotlib import pyplot as plt
@@ -124,7 +125,7 @@ class ViewImage(NutFunction):  # pragma no coverage
 
         fig = plt.figure(figsize=figsize)
         fig.canvas.set_window_title('ViewImage')
-        self.axes = [fig.add_subplot(r, c, i + 1) for i in xrange(n)]
+        self.axes = [fig.add_subplot(r, c, i + 1) for i in range(n)]
         self.imgcols = imgcols
         self.pause = pause
         self.imargs = imargs
