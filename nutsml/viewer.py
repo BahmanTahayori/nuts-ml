@@ -218,7 +218,7 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         labelcol = 0.7
         for acol in self.annocols:
             annos = data[acol]
-            if hasattr(annos, '__iter__'):
+            if isinstance(annos, (list, tuple)):
                 for anno in iu.annotation2pltpatch(annos, **self._shapeprops()):
                     ax.add_patch(anno)
             else:
