@@ -4,7 +4,7 @@
 """
 
 from six.moves import zip
-from nutsflow import Take, Consume, Enumerate, Zip, Format, Get
+from nutsflow import Take, Consume, Enumerate, Zip, Format, Get, Print
 from nutsml import WriteImage
 
 
@@ -17,5 +17,6 @@ def load_samples():
 if __name__ == '__main__':
     train_samples, _ = load_samples()
     imagepath = 'images/*.png'
-    names = Enumerate() >> Zip(train_samples >> Get(1)) >> Format('{1}/img{0}')
+    names = Enumerate() >> Zip(train_samples >> Get(1)) >> Format('{1}/img{0}') 
+    names = names >> Print()
     train_samples >> Take(30) >> WriteImage(0, imagepath, names) >> Consume()
