@@ -101,9 +101,9 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
     ...            ('neg1', 0), ('neg2', 0)]
     >>> for i in range(3):
     ...     print(random_downsample(samples, 1, StableRandom(i), True))
-    [('neg2', 0), ('neg1', 0), ('pos3', 1), ('pos2', 1)]
-    [('neg1', 0), ('neg2', 0), ('pos3', 1), ('pos2', 1)]
-    [('neg1', 0), ('neg2', 0), ('pos1', 1), ('pos2', 1)]
+    [('pos2', 1), ('pos3', 1), ('neg2', 0), ('neg1', 0)]
+    [('pos2', 1), ('pos3', 1), ('neg2', 0), ('neg1', 0)]
+    [('pos2', 1), ('pos1', 1), ('neg1', 0), ('neg2', 0)]
 
     :param iterable samples: Iterable of samples where each sample has a
       label at a fixed position (labelcol). Labels can be any hashable type,
@@ -114,7 +114,7 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
     :return: Stratified sample set.
     :rtype: list of samples
     """
-    groups, labelcnts = group_samples(samples, labelcol, ordered)
+    groups, labelcnts = group_samples(samples, labelcol, ordered=ordered)
     _, min_cnts = min(iteritems(labelcnts), key=lambda l_c1: l_c1[1])
     return [s for e in groups.values() for s in rand.sample(e, min_cnts)]
 
@@ -124,9 +124,9 @@ def group_samples(samples, labelcol, ordered=False):
     Return samples grouped by label and label counts.
 
     >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]  
-    >>> groups, labelcnts = group_samples(samples, 1)
-    >>> groups  # doctest: +SKIP
-    {0: [('neg', 0)], 1: [('pos', 1), ('pos', 1)]}
+    >>> groups, labelcnts = group_samples(samples, 1, True)
+    >>> groups
+    OrderedDict([(1, [('pos', 1), ('pos', 1)]), (0, [('neg', 0)])])
 
     >>> labelcnts
     Counter({1: 2, 0: 1})
@@ -142,7 +142,7 @@ def group_samples(samples, labelcol, ordered=False):
     """
     labelcnts = cl.Counter(s[labelcol] for s in samples)
     groups = group_by(samples, lambda s: s[labelcol], ordered=ordered)
-    return dict(groups), labelcnts
+    return groups, labelcnts
 
 
 def group_by(elements, keyfunc, ordered=False):
@@ -151,8 +151,8 @@ def group_by(elements, keyfunc, ordered=False):
 
     >>> is_odd = lambda x: bool(x % 2)
     >>> numbers = [0, 1, 2, 3, 4]
-    >>> group_by(numbers, is_odd)
-    {False: [0, 2, 4], True: [1, 3]}
+    >>> group_by(numbers, is_odd, True)
+    OrderedDict([(False, [0, 2, 4]), (True, [1, 3])])
 
     :param iterable elements: Any iterable
     :param function keyfunc: Function that returns key to group by
