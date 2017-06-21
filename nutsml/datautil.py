@@ -83,14 +83,14 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
     return stratified
 
 
-def random_downsample(samples, labelcol, rand=rnd.Random(None)):
+def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
     """
     Randomly down-sample samples.
 
     Creates stratified samples by down-sampling larger classes to the size of
     the smallest class.
 
-    Note: The example shown below uses rnd.Random(i) to create a deterministic
+    Note: The example shown below uses StableRandom(i) to create a deterministic
     sequence of randomly stratified samples. Usually it is sufficient to use
     the default (rand=rnd.Random(None)). Do NOT use rnd.Random(0) since this
     will generate the same subsample every time.
@@ -100,7 +100,7 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None)):
     >>> samples = [('pos1', 1), ('pos2', 1), ('pos3', 1),
     ...            ('neg1', 0), ('neg2', 0)]
     >>> for i in range(3):
-    ...     print(random_downsample(samples, 1, rand=StableRandom(i)))
+    ...     print(random_downsample(samples, 1, StableRandom(i), True))
     [('neg2', 0), ('neg1', 0), ('pos3', 1), ('pos2', 1)]
     [('neg1', 0), ('neg2', 0), ('pos3', 1), ('pos2', 1)]
     [('neg1', 0), ('neg2', 0), ('pos1', 1), ('pos2', 1)]
@@ -110,15 +110,16 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None)):
       e.g. int, str, bool
     :param int labelcol: Index of label in sample
     :param random.Random rand: Random number generator.
+    :param bool ordered: True: samples are kept in order when downsampling.
     :return: Stratified sample set.
     :rtype: list of samples
     """
-    groups, labelcnts = group_samples(samples, labelcol)
+    groups, labelcnts = group_samples(samples, labelcol, ordered)
     _, min_cnts = min(iteritems(labelcnts), key=lambda l_c1: l_c1[1])
     return [s for e in groups.values() for s in rand.sample(e, min_cnts)]
 
 
-def group_samples(samples, labelcol):
+def group_samples(samples, labelcol, ordered=False):
     """
     Return samples grouped by label and label counts.
 
@@ -133,17 +134,18 @@ def group_samples(samples, labelcol):
     :param iterable samples: Iterable of samples where each sample has a
       label at a fixed position (labelcol)
     :param int labelcol: Index of label in sample
+    :param bool ordered: True: samples are kept in order when grouping.
     :return: (groups, labelcnts) where groups is a dict containing
       samples grouped by label, and labelcnts is a Counter dict
       containing label frequencies.
     :rtype: tuple(dict, Counter)
     """
     labelcnts = cl.Counter(s[labelcol] for s in samples)
-    groups = group_by(samples, lambda s: s[labelcol])
+    groups = group_by(samples, lambda s: s[labelcol], ordered=ordered)
     return dict(groups), labelcnts
 
 
-def group_by(elements, keyfunc):
+def group_by(elements, keyfunc, ordered=False):
     """
     Group elements using the given key function.
 
@@ -154,15 +156,19 @@ def group_by(elements, keyfunc):
 
     :param iterable elements: Any iterable
     :param function keyfunc: Function that returns key to group by
+    :param bool ordered: True: return OrderedDict else return dict
     :return: dictionary with results of keyfunc as keys and the elements
              for that key as value
-    :rtype: dict
+    :rtype: dict|OrderedDict
     """
-    groups = cl.defaultdict(list)
+    groups = cl.OrderedDict() if ordered else dict()
     for e in elements:
-        groups[keyfunc(e)].append(e)
-    return dict(groups)
-
+        key = keyfunc(e)
+        if key in groups:
+            groups[key].append(e)
+        else:
+            groups[key] = [e]
+    return groups
 
 def col_map(sample, columns, func, *args, **kwargs):
     """
