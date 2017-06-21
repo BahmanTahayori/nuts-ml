@@ -106,7 +106,7 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
     [('neg1', 0), ('neg2', 0), ('pos1', 1), ('pos2', 1)]
 
     :param iterable samples: Iterable of samples where each sample has a
-      label at a fixed position (labelcol). Labels can by any hashable type,
+      label at a fixed position (labelcol). Labels can be any hashable type,
       e.g. int, str, bool
     :param int labelcol: Index of label in sample
     :param random.Random rand: Random number generator.
