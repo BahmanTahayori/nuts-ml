@@ -73,20 +73,20 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
     >>> fix=StableRandom(0)  # stable random numbers for testing
 
     >>> train, val = range(10) >> SplitRandom(rand=fix, ratio=0.7)
-    >>> sorted(train), sorted(val)
-    ([0, 1, 2, 3, 4, 6, 7], [5, 8, 9])
+    >>> train, val
+    ([6, 3, 1, 7, 0, 2, 4], [5, 9, 8])
 
     >>> train, val, test = range(10) >> SplitRandom(rand=fix, ratio=(0.6, 0.3, 0.1))
-    >>> sorted(train), sorted(val), sorted(test)
-    ([0, 1, 4, 6, 7, 9], [3, 5, 8], [2])
+    >>> train, val, test
+    ([7, 1, 0, 6, 9, 4], [3, 5, 8], [2])
 
     >>> data = zip('aabbccddee', range(10))
     >>> same_letter = lambda t: t[0]
     >>> train, val = data >> SplitRandom(rand=fix, ratio=0.6, constraint=same_letter)
-    >>> sorted(train)
-    [('a', 0), ('a', 1), ('b', 2), ('b', 3), ('d', 6), ('d', 7)]
-    >>> sorted(val)
-    [('c', 4), ('c', 5), ('e', 8), ('e', 9)]
+    >>> train
+    [('a', 1), ('c', 5), ('e', 8), ('e', 9), ('c', 4), ('a', 0)]
+    >>> val
+    [('d', 7), ('d', 6), ('b', 2), ('b', 3)]
 
     :param iterable iterable: Iterable over anything. Will be consumed!
     :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7
@@ -118,7 +118,8 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
     if constraint is None:
         groups = [[s] for s in samples]
     else:
-        groups = list(group_by(samples, constraint).values())
+        # sort to make stable across python 2.x, 3.x
+        groups = sorted(group_by(samples, constraint).values())
     rand.shuffle(groups)
     groups = iter(groups)
     splits = []
