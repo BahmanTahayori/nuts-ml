@@ -69,23 +69,24 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
     """
     Randomly split iterable into partitions.
 
-    >>> fix=rnd.Random(0)  # fixed random numbers for testing
+    >>> from nutsflow import StableRandom
+    >>> fix=StableRandom(0)  # stable random numbers for testing
 
     >>> train, val = range(10) >> SplitRandom(rand=fix, ratio=0.7)
-    >>> sorted(train), sorted(val)  # doctest: +SKIP
-    ([0, 1, 2, 4, 5, 7, 9], [3, 6, 8])
+    >>> sorted(train), sorted(val)
+    ([0, 1, 2, 3, 4, 6, 7], [5, 8, 9])
 
     >>> train, val, test = range(10) >> SplitRandom(rand=fix, ratio=(0.6, 0.3, 0.1))
-    >>> sorted(train), sorted(val), sorted(test)  # doctest: +SKIP
-    ([0, 1, 3, 4, 5, 6], [2, 7, 8], [9])
+    >>> sorted(train), sorted(val), sorted(test)
+    ([0, 1, 4, 6, 7, 9], [3, 5, 8], [2])
 
     >>> data = zip('aabbccddee', range(10))
     >>> same_letter = lambda t: t[0]
     >>> train, val = data >> SplitRandom(rand=fix, ratio=0.6, constraint=same_letter)
-    >>> sorted(train)  # doctest: +SKIP
-    [('a', 0), ('a', 1), ('c', 4), ('c', 5), ('e', 8), ('e', 9)]
-    >>> sorted(val)  # doctest: +SKIP
-    [('b', 2), ('b', 3), ('d', 6), ('d', 7)]
+    >>> sorted(train)
+    [('a', 0), ('a', 1), ('b', 2), ('b', 3), ('d', 6), ('d', 7)]
+    >>> sorted(val)
+    [('c', 4), ('c', 5), ('e', 8), ('e', 9)]
 
     :param iterable iterable: Iterable over anything. Will be consumed!
     :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7
@@ -98,7 +99,7 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
         images are not scattered across partitions.
         Note that constrains have precedence over ratios.
     :param random.Random rand: Random number generator.
-            rand=rnd.Random(0) = 0 ensures that the same split is created
+            rand=rnd.Random(0) ensures that the same split is created
             every time SplitRandom is called. This is important when continuing
             an interrupted training session!
             see random.

@@ -6,9 +6,10 @@
 import pytest
 
 import numpy as np
-import random as rnd
 import collections as cl
 import nutsml.datautil as util
+
+from nutsflow import StableRandom
 
 
 @pytest.fixture(scope="function")
@@ -31,27 +32,27 @@ def test_shapestr():
 
 def test_random_upsample(sampleset):
     samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    stratified = sorted(util.upsample(samples, 1, rand=rnd.Random(0)))
+    stratified = sorted(util.upsample(samples, 1, rand=StableRandom(0)))
     assert stratified == [('neg', 0), ('neg', 0), ('pos', 1), ('pos', 1)]
 
-    stratified1 = util.upsample(sampleset, 0, rand=rnd.Random())
+    stratified1 = util.upsample(sampleset, 0, rand=StableRandom(0))
     _, labelcnts = util.group_samples(stratified1, 0)
     assert labelcnts == {0: 50, 1: 50}
 
-    stratified2 = util.upsample(sampleset, 0, rand=rnd.Random())
+    stratified2 = util.upsample(sampleset, 0, rand=StableRandom(1))
     assert stratified1 != stratified2, 'Order should be random'
 
 
 def test_random_downsample(sampleset):
     samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    stratified = sorted(util.random_downsample(samples, 1, rand=rnd.Random(0)))
+    stratified = sorted(util.random_downsample(samples, 1, rand=StableRandom(0)))
     assert stratified == [('neg', 0), ('pos', 1)]
 
-    stratified1 = util.random_downsample(sampleset, 0, rand=rnd.Random())
+    stratified1 = util.random_downsample(sampleset, 0, rand=StableRandom(0))
     _, labelcnts = util.group_samples(stratified1, 0)
     assert labelcnts == {0: 10, 1: 10}
 
-    stratified2 = util.random_downsample(sampleset, 0, rand=rnd.Random())
+    stratified2 = util.random_downsample(sampleset, 0, rand=StableRandom(1))
     assert stratified1 != stratified2, 'Order should be random'
 
 
