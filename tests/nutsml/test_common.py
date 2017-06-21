@@ -5,10 +5,9 @@
 import pytest
 
 import numpy as np
-import random as rnd
 
 from six.moves import zip, range
-from nutsflow import Consume, Collect, Map
+from nutsflow import Consume, Collect, Map, StableRandom
 from nutsml import SplitRandom, CheckNaN, PartitionByCol
 
 
@@ -63,9 +62,9 @@ def test_SplitRandom_ratios():
 
 
 def test_SplitRandom_seed():
-    split1 = range(10) >> SplitRandom(rand=rnd.Random(0))
-    split2 = range(10) >> SplitRandom(rand=rnd.Random(0))
-    split3 = range(10) >> SplitRandom(rand=rnd.Random(1))
+    split1 = range(10) >> SplitRandom(rand=StableRandom(0))
+    split2 = range(10) >> SplitRandom(rand=StableRandom(0))
+    split3 = range(10) >> SplitRandom(rand=StableRandom(1))
     assert split1 == split2
     assert split1 != split3
 
@@ -73,7 +72,7 @@ def test_SplitRandom_seed():
 def test_SplitRandom_constraint():
     same_letter = lambda t: t[0]
     data = zip('aabbccddee', range(10))
-    train, val = data >> SplitRandom(rand=rnd.Random(0), ratio=0.6,
+    train, val = data >> SplitRandom(rand=StableRandom(0), ratio=0.6,
                                      constraint=same_letter) >> Map(sorted)
-    assert train == [('a', 0), ('a', 1), ('b', 2), ('b', 3), ('c', 4), ('c', 5)]
-    assert val == [('d', 6), ('d', 7), ('e', 8), ('e', 9)]
+    assert train == [('a', 0), ('a', 1), ('c', 4), ('c', 5), ('e', 8), ('e', 9)]
+    assert val == [('b', 2), ('b', 3), ('d', 6), ('d', 7)]
