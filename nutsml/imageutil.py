@@ -433,24 +433,33 @@ def translate(image, dx, dy):
     return skt.warp(image, transmat, preserve_range=True).astype('uint8')
 
 
-def rotate(image, angle=0):
+def rotate(image, angle=0, **kwargs):
     """
     Rotate image.
 
-    Note that this rotate function is designed for images and does not perform
-    a 'mathematically correct' rotation of a matrix, e.g. for 90 degrees.
     For details see:
     http://scikit-image.org/docs/dev/api/skimage.transform.html#skimage.transform.rotate
 
+    For a smooth interpolation of images set 'order=1'. To rotate masks use
+    the default 'order=0'.
+
     >>> image = np.eye(3, dtype='uint8')
-    >>> rotated = rotate(image, 45)
+    >>> rotate(image, 90)
+    array([[0, 0, 1],
+           [0, 1, 0],
+           [1, 0, 0]], dtype=uint8)
 
     :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'.
     :param float angle: Angle in degrees in counter-clockwise direction
+    :param kwargs kwargs: Keyword arguments for the underlying scikit-image
+       rotate function, e.g. order=1 for linear interpolation.
     :return: Rotated image
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
-    return skt.rotate(image, angle, preserve_range=True).astype('uint8')
+    if not 'order' in kwargs:
+        kwargs['order'] = 0
+    return skt.rotate(image, angle, preserve_range=True,
+                      **kwargs).astype('uint8')
 
 
 def resize(image, w, h):

@@ -279,9 +279,14 @@ def test_translate(datadirs):
 def test_rotate(datadirs):
     imagedir, _, _, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    new_img = ni.rotate(img_arr, 45)
+    new_img = ni.rotate(img_arr, 45, order=1)
     imagepath = processeddir + 'nut_color_rotated.bmp'
     assert_equal_image(imagepath, new_img, rtol=0.1, atol=0.1)
+
+    img_arr = np.eye(4, dtype=np.uint8)
+    exp_img = np.array([[0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0], [1, 0, 0, 0]])
+    new_img = ni.rotate(img_arr, 90)
+    nt.assert_allclose(new_img, exp_img)
 
 
 def test_shear(datadirs):
