@@ -93,8 +93,6 @@ def arr_to_pil(image):
     return pil.Image.fromarray(image, 'RGB' if image.ndim == 3 else 'L')
 
 
-# TODO: faster conversion
-# https://blog.eduardovalle.com/2015/08/25/input-images-theano/
 def pil_to_arr(image):
     """
     Convert PIL image to Numpy array.
