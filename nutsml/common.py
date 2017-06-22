@@ -69,7 +69,7 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
     """
     Randomly split iterable into partitions.
 
-    >>> from nutsflow import StableRandom
+    >>> from nutsflow.common import StableRandom
     >>> fix=StableRandom(0)  # stable random numbers for testing
 
     >>> train, val = range(10) >> SplitRandom(rand=fix, ratio=0.7)

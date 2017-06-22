@@ -10,7 +10,8 @@ import random as rnd
 import nutsml.datautil as ut
 import nutsml.imageutil as ni
 
-from nutsflow import Nut, NutFunction, nut_processor, as_tuple, as_set
+from nutsflow import Nut, NutFunction, nut_processor
+from nutsflow.common import as_tuple, as_set
 
 
 # map transformation to specified sample columns

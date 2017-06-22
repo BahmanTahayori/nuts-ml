@@ -11,7 +11,8 @@ import nutsml.imageutil as iu
 
 from six.moves import range
 from .datautil import shapestr
-from nutsflow import NutFunction, nut_function, as_tuple, as_set
+from nutsflow import NutFunction, nut_function
+from nutsflow.common import as_tuple, as_set
 from matplotlib import pyplot as plt
 
 

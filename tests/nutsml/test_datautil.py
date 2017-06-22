@@ -9,7 +9,7 @@ import numpy as np
 import collections as cl
 import nutsml.datautil as util
 
-from nutsflow import StableRandom
+from nutsflow.common import StableRandom
 
 
 @pytest.fixture(scope="function")

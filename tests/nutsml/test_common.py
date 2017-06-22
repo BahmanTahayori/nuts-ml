@@ -7,7 +7,8 @@ import pytest
 import numpy as np
 
 from six.moves import zip, range
-from nutsflow import Consume, Collect, Map, StableRandom
+from nutsflow import Consume, Collect, Map
+from nutsflow.common import StableRandom
 from nutsml import SplitRandom, CheckNaN, PartitionByCol
 
 

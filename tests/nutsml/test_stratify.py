@@ -5,7 +5,8 @@
 
 import pytest
 
-from nutsflow import Collect, Sort, StableRandom
+from nutsflow import Collect, Sort
+from nutsflow.common import StableRandom
 from nutsml import Stratify
 
 

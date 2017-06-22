@@ -7,7 +7,7 @@ import random as rnd
 import collections as cl
 
 from six import iteritems
-from nutsflow import as_set
+from nutsflow.common import as_set
 
 
 def isnan(x):
@@ -96,7 +96,8 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
     will generate the same subsample every time.
 
     >>> from __future__ import print_function  
-    >>> from nutsflow import StableRandom
+    >>> from nutsflow.common import StableRandom
+
     >>> samples = [('pos1', 1), ('pos2', 1), ('pos3', 1),
     ...            ('neg1', 0), ('neg2', 0)]
     >>> for i in range(3):

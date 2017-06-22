@@ -10,7 +10,8 @@ import pandas as pd
 
 from glob import glob
 from .imageutil import load_image
-from nutsflow import NutSource, nut_function, nut_source, as_set
+from nutsflow import NutSource, nut_function, nut_source
+from nutsflow.common import as_set
 from dplython import DplyFrame
 
 

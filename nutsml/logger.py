@@ -6,7 +6,8 @@
 import os
 import numpy as np
 from warnings import warn
-from nutsflow import NutFunction, as_tuple
+from nutsflow import NutFunction
+from nutsflow.common import as_tuple
 
 
 class LogToFile(NutFunction):
