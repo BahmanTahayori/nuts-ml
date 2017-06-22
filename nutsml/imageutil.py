@@ -108,9 +108,24 @@ def pil_to_arr(image):
     :return: Numpy array
     :rtype: numpy.array with dtype 'uint8'
     """
-    if not image.mode in {'L', 'RGB'}:
+    if image.mode not in {'L', 'RGB'}:
         raise ValueError('Expect RBG or grayscale but got:' + image.mode)
     return np.asarray(image)
+
+
+def set_default_order(kwargs):
+    """
+    Set order parameter in kwargs for scikit-image functions.
+
+    Default order is 1, which performs a linear interpolation of pixel values
+    when images are rotated, resized and sheared. This is fine for images
+    but causes unwanted pixel values in masks. This function set the default
+    order to 9, which disables the interpolation.
+
+    :param kwargs kwargs: Dictionary with keyword arguments.
+    """
+    if 'order' not in kwargs:
+        kwargs['order'] = 0
 
 
 def add_channel(image, channelfirst):
@@ -411,7 +426,7 @@ def rgb2gray(image):
     return floatimg2uint8(skc.rgb2gray(image))
 
 
-def translate(image, dx, dy):
+def translate(image, dx, dy, **kwargs):
     """
     Shift image horizontally and vertically
 
@@ -423,12 +438,16 @@ def translate(image, dx, dy):
 
     :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'.
     :param dx: horizontal translation in pixels
-    :param dy: vertical translation in picels
+    :param dy: vertical translation in pixels
+    :param kwargs kwargs: Keyword arguments for the underlying scikit-image
+       rotate function, e.g. order=1 for linear interpolation.
     :return: translated image
     :rtype:  numpy array with range [0,255] and dtype 'uint8'
     """
+    set_default_order(kwargs)
     transmat = skt.AffineTransform(translation=(-dx, -dy))
-    return skt.warp(image, transmat, preserve_range=True).astype('uint8')
+    return skt.warp(image, transmat, preserve_range=True,
+                    **kwargs).astype('uint8')
 
 
 def rotate(image, angle=0, **kwargs):
@@ -454,13 +473,12 @@ def rotate(image, angle=0, **kwargs):
     :return: Rotated image
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
-    if not 'order' in kwargs:
-        kwargs['order'] = 0
+    set_default_order(kwargs)
     return skt.rotate(image, angle, preserve_range=True,
                       **kwargs).astype('uint8')
 
 
-def resize(image, w, h):
+def resize(image, w, h, **kwargs):
     """
     Resize image.
 
@@ -476,15 +494,17 @@ def resize(image, w, h):
     :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'.
     :param int w: Width in pixels.
     :param int h: Height in pixels.
+    :param kwargs kwargs: Keyword arguments for the underlying scikit-image
+       resize function, e.g. order=1 for linear interpolation.
     :return: Resized image
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
-    return skt.resize(image, (h, w),
-                      mode='constant',
-                      preserve_range=True).astype('uint8')
+    set_default_order(kwargs)
+    return skt.resize(image, (h, w), mode='constant',
+                      preserve_range=True, **kwargs).astype('uint8')
 
 
-def shear(image, shear_factor):
+def shear(image, shear_factor, **kwargs):
     """
     Shear image.
 
@@ -496,11 +516,14 @@ def shear(image, shear_factor):
 
     :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'.
     :param float shear_factor: Shear factor [0, 1]
+    :param kwargs kwargs: Keyword arguments for the underlying scikit-image
+       warp function, e.g. order=1 for linear interpolation.
     :return: Sheared image
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
+    set_default_order(kwargs)
     transform = skt.AffineTransform(shear=shear_factor)
-    return (skt.warp(image, transform) * 255).astype('uint8')
+    return (skt.warp(image, transform, **kwargs) * 255).astype('uint8')
 
 
 def fliplr(image):

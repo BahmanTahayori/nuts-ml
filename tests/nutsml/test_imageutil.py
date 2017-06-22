@@ -127,6 +127,15 @@ def test_pil_to_arr():
     assert str(ex.value).startswith('Expect RBG or grayscale but got')
 
 
+def test_set_default_order():
+    kwargs = {}
+    ni.set_default_order(kwargs)
+    assert kwargs['order'] == 0
+    kwargs = {'order': 1}
+    ni.set_default_order(kwargs)
+    assert kwargs['order'] == 1
+
+
 def test_add_channel():
     image = np.ones((10, 20))
     assert ni.add_channel(image, True).shape == (1, 10, 20)
