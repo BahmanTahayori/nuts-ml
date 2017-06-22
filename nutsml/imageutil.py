@@ -523,7 +523,8 @@ def shear(image, shear_factor, **kwargs):
     """
     set_default_order(kwargs)
     transform = skt.AffineTransform(shear=shear_factor)
-    return (skt.warp(image, transform, **kwargs) * 255).astype('uint8')
+    return skt.warp(image, transform, preserve_range=True,
+                    **kwargs).astype('uint8')
 
 
 def fliplr(image):
