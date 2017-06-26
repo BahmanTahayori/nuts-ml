@@ -194,6 +194,22 @@ def test_crop():
     nt.assert_allclose(expected, cropped)
 
 
+def test_crop_square():
+    rgb_arr = np.ones((6, 7, 3), dtype='uint8')
+    cropped = ni.crop_square(rgb_arr)
+    assert cropped.shape == (6, 6, 3)
+    assert cropped.dtype == np.uint8
+
+    gray_arr = np.ones((6, 7), dtype='uint8')
+    cropped = ni.crop_square(gray_arr)
+    assert cropped.shape == (6, 6)
+
+    image = np.reshape(np.arange(12, dtype='uint8'), (4, 3))
+    cropped = ni.crop_square(image)
+    expected = np.array([[3, 4, 5], [6, 7, 8], [9, 10, 11]])
+    nt.assert_allclose(expected, cropped)
+
+
 def test_crop_center():
     image = np.reshape(np.arange(16, dtype='uint8'), (4, 4))
     cropped = ni.crop_center(image, 3, 2)

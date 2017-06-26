@@ -259,6 +259,26 @@ def crop_center(image, w, h):
     return image[dh // 2:dh // 2 + h, dw // 2:dw // 2 + w]
 
 
+def crop_square(image):
+    """
+    Crop image to square shape.
+
+    Crops symmetrically left and right or top and bottom to achieve
+    aspect ratio of one and preserves the largest dimension.
+
+    :param numpy array image: Numpy array.
+    :return: Cropped image
+    :rtype: numpy array
+    """
+    iw, ih = image.shape[1], image.shape[0]
+    if iw > ih:
+        dw, mw = int((iw-ih)/2), (iw-ih) % 2
+        return crop(image, dw+mw, 0, iw-dw, ih)
+    else:
+        dh, mh = int((ih-iw)/2), (ih-iw) % 2
+        return crop(image, 0, dh+mh, iw, ih-dh)
+
+
 def normalize_histo(image, gamma=0.8):
     """
     Perform histogram normalization on image.
