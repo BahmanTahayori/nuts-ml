@@ -235,7 +235,7 @@ def crop_center(image, w, h):
     """
     Crop region with size w, h from center of image.
 
-    Note that the crop is specified via W, h and not via shape (h,w).
+    Note that the crop is specified via w, h and not via shape (h,w).
     Furthermore if the image or the crop region have even dimensions,
     coordinates are rounded down.
 
