@@ -45,6 +45,7 @@ class TransformImage(NutFunction):
         'identical': ni.identical,
         'rerange': ni.rerange,
         'crop': ni.crop,
+        'crop_square': ni.crop_square,
         'crop_center': ni.crop_center,
         'normalize_histo': ni.normalize_histo,
         'gray2rgb': ni.gray2rgb,
@@ -96,6 +97,7 @@ class TransformImage(NutFunction):
            (old_min, old_max, new_min, new_max, dtype)
         | :func:`crop <nutsml.imageutil.crop>` (x1, y1, x2, y2)
         | :func:`crop_center <nutsml.imageutil.crop_center>`  (w, h)
+        | :func:`crop_square <nutsml.imageutil.crop_square>`
         | :func:`normalize_histo <nutsml.imageutil.normalize_histo>`  (gamma)
         | :func:`rgb2gray <nutsml.imageutil.rgb2gray>`
         | :func:`gray2rgb <nutsml.imageutil.gray2rgb>`
