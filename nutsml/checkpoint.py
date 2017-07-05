@@ -22,14 +22,21 @@ class Checkpoint(NutFunction):
         return configpath, weightspath
 
     def dirs(self):
+        """
+        Return full paths to all checkpoint folders.
+
+        :return: Paths to all folders under the basedir.
+        :rtype: list
+        """
         dirs = (join(self.basedir, d) for d in os.listdir(self.basedir))
         return [d for d in dirs if isdir(d)]
 
-    def latests(self):
+    def latest(self):
         """
         Find most recently modified/created checkpoint folder.
 
         :return: Full path to checkpoint folder if it exists otherwise None.
+        :rtype: str | None
         """
         dirs = sorted(self.dirs(), key = getmtime, reverse=True)
         return dirs[0] if dirs else None
