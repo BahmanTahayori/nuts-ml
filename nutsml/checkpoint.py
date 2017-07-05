@@ -4,39 +4,41 @@ from nutsflow.base import NutFunction
 from config import Config
 from os.path import join, exists, isdir, getmtime
 
-
-# load latest checkpoint if checkpointname=None
-# store and load bestscore in config!
-# derive Checkpoint from NutFunction ?
+"""
+.. module:: checkpoint
+   :synopsis: Creation of checkpoints with network weights and parameters.
+"""
 
 class Checkpoint(NutFunction):
-    def __init__(self, create_network, foldername='checkpoints', **config):
-        self.foldername = foldername
+    def __init__(self, create_network, basedir='checkpoints', **config):
+        self.basedir = basedir
         self.create_network = create_network
         self.config = Config(**config)
         self.config.bestscore = None
 
-    def paths(self, checkpointname):
-        configpath = join(self.foldername, checkpointname, 'config.json')
-        weightspath = join(self.foldername, checkpointname, 'weights')
+    def datapaths(self, checkpointname):
+        configpath = join(self.basedir, checkpointname, 'config.json')
+        weightspath = join(self.basedir, checkpointname, 'weights')
         return configpath, weightspath
 
-    def find_latests(self):
+    def dirs(self):
+        dirs = (join(self.basedir, d) for d in os.listdir(self.basedir))
+        return [d for d in dirs if isdir(d)]
+
+    def latests(self):
         """
         Find most recently modified/created checkpoint folder.
 
         :return: Full path to checkpoint folder if it exists otherwise None.
         """
-        base = self.foldername
-        dirs = [d for d in os.listdir(base) if isdir(join(base, d))]
-        dirs.sort(key = lambda d: getmtime(join(base, d)), reverse=True)
-        return join(base, dirs[0]) if dirs else None
+        dirs = sorted(self.dirs(), key = getmtime, reverse=True)
+        return dirs[0] if dirs else None
 
     def checkpoint_exits(self, checkpointname):
-        return exists(join(join(self.foldername, checkpointname)))
+        return exists(join(join(self.basedir, checkpointname)))
 
     def load(self, checkpointname='checkpoint'):
-        configpath, weightspath = self.paths(checkpointname)
+        configpath, weightspath = self.datapaths(checkpointname)
         checkpoint_exits = self.checkpoint_exits(checkpointname)
         if checkpoint_exits:
             self.config.load(configpath)
@@ -46,10 +48,10 @@ class Checkpoint(NutFunction):
         return self.network, self.config
 
     def save(self, checkpointname='checkpoint'):
-        configpath, weightspath = self.paths(checkpointname)
+        configpath, weightspath = self.datapaths(checkpointname)
         self.network.save_weights(weightspath)
         self.config.save(configpath)
-        return join(self.foldername, checkpointname)
+        return join(self.basedir, checkpointname)
 
     def save_best(self, score, checkpointname='checkpoint', isloss=False):
         bestscore = self.config.bestscore
@@ -58,7 +60,7 @@ class Checkpoint(NutFunction):
             or (not isloss and score > bestscore)):
             self.config.bestscore = bestscore
             self.save(checkpointname)
-        return join(self.foldername, checkpointname)
+        return join(self.basedir, checkpointname)
 
     def __call__(self, score):
         self.savebest(score)
