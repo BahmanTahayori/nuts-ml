@@ -10,7 +10,7 @@ from os.path import join
 
 
 @pytest.fixture(scope="function")
-def checkpointdirs():
+def checkpointdirs(request):
     basedir = 'tests/data/checkpoints'
     checkpoint1 = join(basedir, 'checkpoint1')
     checkpoint2 = join(basedir, 'checkpoint2')
@@ -18,9 +18,11 @@ def checkpointdirs():
     os.mkdir(checkpoint2)
 
     def fin():
+        print 'REMOVING checkpoint dirs'
         os.rmdir(checkpoint1)
-        os.mkdir(checkpoint2)
+        os.rmdir(checkpoint2)
 
+    request.addfinalizer(fin)
     return checkpoint1, checkpoint2
 
 
@@ -36,20 +38,23 @@ def test_Checkpoint():
 def test_dirs_empty():
     basedir = 'tests/data/checkpoints'
     checkpoint = nc.Checkpoint(create_network, basedir=basedir)
-    assert checkpoint.dirs() is []
+    assert checkpoint.dirs() == []
 
 def test_dirs(checkpointdirs):
     checkpoint1, checkpoint2 = checkpointdirs
     basedir = 'tests/data/checkpoints'
     checkpoint = nc.Checkpoint(create_network, basedir=basedir)
-    assert sorted(checkpoint.dirs()) is [checkpoint1, checkpoint2]
+    assert sorted(checkpoint.dirs()) == [checkpoint1, checkpoint2]
 
-# def test_latest():
+def test_latest_empty():
+    basedir = 'tests/data/checkpoints'
+    checkpoint = nc.Checkpoint(create_network, basedir=basedir)
+    assert checkpoint.latests() == None
+
 #     basedir = 'tests/data/checkpoints'
 #     checkpoint = nc.Checkpoint(create_network, basedir=basedir)
 #
-#     latest = checkpoint.latests()
-#     assert latest is None
+
 #
 #     os.mkdir(join(basedir, 'checkpoint1'))
 #     os.mkdir(join(basedir, 'checkpoint2'))
