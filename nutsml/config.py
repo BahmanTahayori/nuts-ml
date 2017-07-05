@@ -5,9 +5,10 @@
 
 import os
 import yaml
+import json
 
 
-class ConfigDict(dict):
+class Config(dict):
     """
     Dictionary that allows access via keys or attributes.
 
@@ -18,23 +19,66 @@ class ConfigDict(dict):
         """
         Create dictionary.
 
-        >>> contact = ConfigDict({'age':13, 'name':'stefan'})
+        >>> contact = Config({'age':13, 'name':'stefan'})
         >>> contact['age']
         13
 
         >>> contact.name
         'stefan'
 
-        :param args: See dict
-        :param kwargs: See dict
+        >>> contact.surname = 'maetschke'
+        >>> contact.surname
+        'maetschke'
+
+        :param args args: See dict
+        :param kwargs kwargs: See dict
         """
-        super(ConfigDict, self).__init__(*args, **kwargs)
+        super(Config, self).__init__(*args, **kwargs)
         self.__dict__ = self
+
+    @staticmethod
+    def isjson(filepath):
+        """
+        Return true if filepath ends with '.json'.
+
+        :param str filepath: Filepaht
+        :return: True if filepath points ot JSON file.
+        :rtype: bool
+        """
+        return filepath.lower().endswith('.json')
+
+    def load(self, filepath):
+        """
+        Load configuration from file in JSON or YAML format.
+
+        >>> cfg = Config()
+        >>> cfg.load('tests/data/configuration.json')
+        >>> cfg.number
+        13
+
+        :param str filepath: Path to JSON or YAML file.
+        """
+        reader = json.load if Config.isjson(filepath) else yaml.load
+        with open(filepath, 'r') as f:
+            self.__init__(reader(f))
+
+    def save(self, filepath):
+        """
+        Save configuration to file in JSON or YAML format.
+
+        >>> cfg = Config({'number': 13, 'name': 'Stefan'})
+        >>> cfg.save('tests/data/configuration.yaml')
+
+        :param str filepath: Filepath. Should end with '.json' or '.yaml'
+        """
+        writer = json.dump if Config.isjson(filepath) else yaml.dump
+        with open(filepath, 'w') as f:
+            writer(dict(self), f)
 
 
 def load_config(filename):
     """
-    Load configuration file in YAML format.
+    Load configuration file in YAML format from locations in defined order.
 
     The search order for the config file is:
     1) user home dir
@@ -63,7 +107,7 @@ def load_config(filename):
             filepath = os.path.join(dirpath, filename)
             filepaths.append(filepath)
             with open(filepath, 'r') as f:
-                return ConfigDict(yaml.load(f))
+                return Config(yaml.load(f))
         except IOError:
             pass
     raise IOError('Configuration file not found: ' + ', '.join(filepaths))
