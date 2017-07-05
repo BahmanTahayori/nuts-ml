@@ -184,7 +184,7 @@ class Network(object):
             self.best_score = score
             self.save_weights()
 
-    def save_weights(self):
+    def save_weights(self, weightspath=None):
         """
         Save network weights.
 
