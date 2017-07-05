@@ -23,10 +23,9 @@ def checkpointdirs(request):
         if os.path.exists(path):
             os.rmdir(path)
 
-    basedir = 'tests/data/checkpoints'
-    checkpoint1 = join(basedir, 'checkpoint1')
-    checkpoint2 = join(basedir, 'checkpoint2')
-    mkdir(basedir)
+    checkpoint1 = join(BASEPATH, 'checkpoint1')
+    checkpoint2 = join(BASEPATH, 'checkpoint2')
+    mkdir(BASEPATH)
     mkdir(checkpoint1)
     time.sleep(0.1)  # ensure diff in creation time of checkpoints
     mkdir(checkpoint2)

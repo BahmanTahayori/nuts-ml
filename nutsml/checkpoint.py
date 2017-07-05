@@ -1,8 +1,9 @@
 import os
 
-from nutsflow.base import NutFunction
-from config import Config
 from os.path import join, exists, isdir, getmtime
+from nutsflow.base import NutFunction
+from . config import Config
+
 
 """
 .. module:: checkpoint
