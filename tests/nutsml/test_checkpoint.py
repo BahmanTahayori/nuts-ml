@@ -7,6 +7,7 @@ import os
 import time
 import nutsml.checkpoint as nc
 
+from nutsml.network import Network
 from os.path import join
 
 BASEPATH = 'tests/data/checkpoints'
@@ -36,6 +37,16 @@ def checkpointdirs(request):
 
     request.addfinalizer(fin)
     return checkpoint1, checkpoint2
+
+
+class FakeNetwork(Network):
+    def save_weights(self, weightspath=None):
+        with open(weightspath, 'w') as f:
+            f.write('weights')
+
+    def load_weights(self, weightspath=None):
+        with open(weightspath, 'r') as f:
+            return f.read()
 
 
 def create_network(config):
@@ -75,6 +86,7 @@ def test_latest(checkpointdirs):
 def test_datapaths_empty():
     checkpoint = nc.Checkpoint(create_network, BASEPATH)
     assert checkpoint.datapaths() == (None, None)
+
 
 def test_datapaths(checkpointdirs):
     checkpoint1, checkpoint2 = checkpointdirs
