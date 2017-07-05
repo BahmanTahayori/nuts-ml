@@ -15,27 +15,37 @@ class Checkpoint(NutFunction):
     A factory for checkpoints to periodically save network weights and other
     hyper/configuration parameters.
 
-# def create_network(config):
-#     eta = config.eta
-#     return network
-#
-#
-# checkpoint = Checkpoint(create_network, eta=0.01)
-#
-# network, config = checkpoint.load()  # most recent or provide specific path
-#
-# for epoch in EPCOHS:
-#     trainerr = train_network
-#     valerr = validate_network
-#
-#     checkpointfolder = checkpoint.save()
-#     checkpointfolder = checkpoint.savebest(valerr)
-#
-#     for image in misclassified_images:
-#         save_image(checkpointfolder, image)
-#
-#     network.evaluate() >> checkpoint.saveBest() >> Collect()
+    | Example usage
+    | def create_network(config):
+    |   model = Sequential()
+    |   ...
+    |   optimizer = opt.SGD(lr=config.lr)
+    |   model.compile(optimizer=optimizer, metrics=['accuracy'])
+    |   return KerasNetwork(model)
+    |
+    |
+    | checkpoint = Checkpoint(create_network, lr=0.001)
+    | network, config = checkpoint.load()
+    |
+    | for epoch in xrange(EPOCHS):
+    |   train_err = train_network()
+    |   val_err = validate_network()
+    |
+    |   if epoch > 10:
+    |     config.lr = config.lr / 2
+    |
+    |   checkpoint.save_best(val_err)
+    |
 
+    Checkpoints can also be saved under different names, e.g.
+
+    |  checkpoint.save_best(val_err, 'checkpoint'+str(epoch))
+
+    And specific checkpoints can be loaded:
+
+    | network, config = checkpoint.load('checkpoint103')
+
+    If no checkpoint is specified the most recent one is loaded.
     """
 
     def __init__(self, create_network, basepath='checkpoints', **config):
@@ -103,22 +113,31 @@ class Checkpoint(NutFunction):
             return None, None
         return join(path, 'config.json'), join(path, 'weights')
 
-    def load(self, checkpointname=None):
-        configpath, weightspath = self.datapaths(checkpointname)
-        if configpath:
-            self.config.load(configpath)
-        self.network = self.create_network(self.config)
-        if weightspath:
-            self.network.load_weights(weightspath)
-        return self.network, self.config
-
     def save(self, checkpointname='checkpoint'):
+        """
+        Save network weights and configuration under the given name.
+
+        :param str checkpointname: Name of checkpoint folder. Path will be
+           self.basepath/checkpointname
+        :return: path to checkpoint folder
+        :rtype: str
+        """
         configpath, weightspath = self.datapaths(checkpointname)
         self.network.save_weights(weightspath)
         self.config.save(configpath)
         return join(self.basepath, checkpointname)
 
     def save_best(self, score, checkpointname='checkpoint', isloss=False):
+        """
+        Save best network weights and config under the given name.
+
+        :param float|int score: Some score indicating quality of network.
+        :param str checkpointname: Name of checkpoint folder.
+        :param bool isloss: True, score is a loss and lower is better otherwise
+           higher is better.
+        :return: path to checkpoint folder
+        :rtype: str
+        """
         bestscore = self.config.bestscore
         if (bestscore is None
             or (isloss and score < bestscore)
@@ -127,27 +146,36 @@ class Checkpoint(NutFunction):
             self.save(checkpointname)
         return join(self.basepath, checkpointname)
 
-    def __call__(self, score):
-        self.savebest(score)
-        return score
+    def load(self, checkpointname=None):
+        """
+        Create network, load weights and configuration.
 
-# def create_network(config):
-#     eta = config.eta
-#     pass
-#
-#
-# checkpoint = Checkpoint(create_network, eta=0.01)
-#
-# network, config = checkpoint.load()  # most recent or provide specific path
-#
-# for epoch in EPCOHS:
-#     trainerr = train_network
-#     valerr = validate_network
-#
-#     checkpointfolder = checkpoint.save()
-#     checkpointfolder = checkpoint.savebest(valerr)
-#
-#     for image in misclassified_images:
-#         save_image(checkpointfolder, image)
-#
-#     network.evaluate() >> checkpoint.saveBest() >> Collect()
+        :param str|none checkpointname: Name of checkpoint to load. If None
+           the most recent checkpoint is used. If no checkpoint exists yet
+           the network will be created but no weights loaded and the
+           default configuration will be returned.
+        :return: (network, config)
+        :rtype: tuple
+        """
+        configpath, weightspath = self.datapaths(checkpointname)
+        if configpath:
+            self.config.load(configpath)
+        self.network = self.create_network(self.config)
+        if weightspath:
+            self.network.load_weights(weightspath)
+        return self.network, self.config
+
+    def __call__(self, accuracy):
+        """
+        Enables checkpoint to be used in nuts-ml flow.
+
+        samples >> build_batch >> network.evaluate() >> checkpoint >> Consume()
+
+        :param float|int accuracy: Some measure of network accuracy
+           (NOT loss!)
+        :return: accuracy
+        :rtype: int|float
+        """
+        self.savebest(accuracy)
+        return accuracy
+
