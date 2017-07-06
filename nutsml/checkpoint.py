@@ -1,9 +1,13 @@
+"""
+.. module:: checkpoint
+   :synopsis: Conveniency class to create checkpoints for network training.
+"""
+
 import os
+import time
 
 from os.path import join, exists, isdir, getmtime
-from nutsflow.base import NutFunction
-from . config import Config
-
+from .config import Config
 
 """
 .. module:: checkpoint
@@ -11,31 +15,35 @@ from . config import Config
 """
 
 
-class Checkpoint(NutFunction):
+class Checkpoint(object):
     """
     A factory for checkpoints to periodically save network weights and other
     hyper/configuration parameters.
 
-    | Example usage
-    | def create_network(config):
+    | Example usage:
+    |
+    | def create_network(lr=0.01, momentum=0.9):
     |   model = Sequential()
     |   ...
-    |   optimizer = opt.SGD(lr=config.lr)
+    |   optimizer = opt.SGD(lr=lr, momentum=momentum)
     |   model.compile(optimizer=optimizer, metrics=['accuracy'])
-    |   return KerasNetwork(model)
+    |   return KerasNetwork(model), optimizer
     |
+    | def parameters(network, optimizer):
+    |   return dict(lr = optimizer.lr, momentum = optimizer.momentum)
     |
-    | checkpoint = Checkpoint(create_network, lr=0.001)
-    | network, config = checkpoint.load()
+    | def train_network():
+    |   checkpoint = Checkpoint(create_network, parameters)
+    |   network, optimizer = checkpoint.load()
     |
-    | for epoch in xrange(EPOCHS):
-    |   train_err = train_network()
-    |   val_err = validate_network()
+    |   for epoch in xrange(EPOCHS):
+    |     train_err = train_network()
+    |     val_err = validate_network()
     |
-    |   if epoch > 10:
-    |     config.lr = config.lr / 2
+    |     if epoch % 10 == 0:  # Reduce learning rate every 10 epochs
+    |       optimizer.lr /= 2
     |
-    |   checkpoint.save_best(val_err)
+    |     checkpoint.save_best(val_err)
     |
 
     Checkpoints can also be saved under different names, e.g.
@@ -49,33 +57,39 @@ class Checkpoint(NutFunction):
     If no checkpoint is specified the most recent one is loaded.
     """
 
-    def __init__(self, create_network, basepath='checkpoints', **config):
+    def __init__(self, create_net, parameters, checkpointspath='checkpoints'):
         """
         Create checkpoint factory.
 
-        >>> def create_network(config):
-        ...     return 'network eta=' + str(config.eta)
+        >>> def create_network(lr=0.1):
+        ...     return 'MyNetwork', lr
 
-        >>> checkpoint = Checkpoint(create_network, eta=0.1)
-        >>> network, config = checkpoint.load()
-        >>> network
-        'network eta=0.1'
-        >>> config.eta
-        0.1
+        >>> def parameters(network, lr):
+        ...     return dict(lr = lr)
 
-        :param function create_network: Function that takes a Config
-           and returns a nuts-ml Network.
-        :param string basedir: Path to folder that will contain
+        >>> checkpoint = Checkpoint(create_network, parameters)
+        >>> network, lr = checkpoint.load()
+        >>> network, lr
+        ('MyNetwork', 0.1)
+
+        :param function create_net: Function that takes keyword parameters
+           and returns a nuts-ml Network and and any other values or objects
+           needed to describe the state to be checkpointed.
+           Note: parameters(*create_net()) must work!
+        :param function parameters: Function that takes output of create_net()
+            and returns dictionary with parameters (same as the one that are
+            used in create_net(...))
+        :param string checkpointspath: Path to folder that will contain
           checkpoint folders.
-        :param kwargs config: Keyword arguments used to create a Config
-          dictionary.
         """
-        if not exists(basepath):
-            os.makedirs(basepath)
-        self.basepath = basepath
-        self.create_network = create_network
-        self.config = Config(**config)
-        self.config.bestscore = None
+        if not exists(checkpointspath):
+            os.makedirs(checkpointspath)
+        self.basepath = checkpointspath
+        self.create_net = create_net
+        self.parameters = parameters
+        self.state = None  # network and other objets
+        self.network = None  # only the network
+        self.config = None  # bestscore and other checkpoint params
 
     def dirs(self):
         """
@@ -99,38 +113,47 @@ class Checkpoint(NutFunction):
 
     def datapaths(self, checkpointname=None):
         """
-        Return paths to network weights and config files.
+        Return paths to network weights, parameters and config files.
 
-        If no checkpoints exist under basedir (None, None) is returned.
+        If no checkpoints exist under basedir (None, None, None) is returned.
 
         :param str|None checkpointname: Name of checkpoint. If name is None
            the most recent checkpoint is used.
-        :return: (weightspath, configpath) or (None, None)
+        :return: (weightspath, paramspath, configpath) or (None, None, None)
         :rtype: tuple
         """
         name = checkpointname
-        path = self.latest() if name is None else join(self.basepath, name)
-        if path is None or not exists(path):
-            return None, None
-        return join(path, 'config.json'), join(path, 'weights')
+        if name is None:
+            path = self.latest()
+            if path is None:
+                return None, None, None
+        else:
+            path = join(self.basepath, name)
+            if not exists(path):
+                os.makedirs(path)
+        return (join(path, 'weights'), join(path, 'params.json'),
+                join(path, 'config.json'))
 
     def save(self, checkpointname='checkpoint'):
         """
-        Save network weights and configuration under the given name.
+        Save network weights and parameters under the given name.
 
         :param str checkpointname: Name of checkpoint folder. Path will be
            self.basepath/checkpointname
         :return: path to checkpoint folder
         :rtype: str
         """
-        configpath, weightspath = self.datapaths(checkpointname)
+        weightspath, paramspath, configpath = self.datapaths(checkpointname)
+        self.config.timestamp = time.time()
         self.network.save_weights(weightspath)
-        self.config.save(configpath)
+        state = self.state if hasattr(self.state, '__iter__') else [self.state]
+        Config(self.parameters(*state)).save(paramspath)
+        Config(self.config).save(configpath)
         return join(self.basepath, checkpointname)
 
     def save_best(self, score, checkpointname='checkpoint', isloss=False):
         """
-        Save best network weights and config under the given name.
+        Save best network weights and parameters under the given name.
 
         :param float|int score: Some score indicating quality of network.
         :param str checkpointname: Name of checkpoint folder.
@@ -143,40 +166,29 @@ class Checkpoint(NutFunction):
         if (bestscore is None
             or (isloss and score < bestscore)
             or (not isloss and score > bestscore)):
-            self.config.bestscore = bestscore
+            self.config.bestscore = score
+            self.config.isloss = isloss
             self.save(checkpointname)
         return join(self.basepath, checkpointname)
 
     def load(self, checkpointname=None):
         """
-        Create network, load weights and configuration.
+        Create network, load weights and parameters.
 
         :param str|none checkpointname: Name of checkpoint to load. If None
            the most recent checkpoint is used. If no checkpoint exists yet
            the network will be created but no weights loaded and the
            default configuration will be returned.
-        :return: (network, config)
-        :rtype: tuple
+        :return: whatever self.create_net returns
+        :rtype: object
         """
-        configpath, weightspath = self.datapaths(checkpointname)
-        if configpath:
-            self.config.load(configpath)
-        self.network = self.create_network(self.config)
+        weightspath, paramspath, configpath = self.datapaths(checkpointname)
+        params = Config().load(paramspath) if paramspath else None
+        state = self.create_net(**params) if params else self.create_net()
+        self.network = state[0] if hasattr(state, '__iter__') else state
+        self.state = state
         if weightspath:
             self.network.load_weights(weightspath)
-        return self.network, self.config
-
-    def __call__(self, accuracy):
-        """
-        Enables checkpoint to be used in nuts-ml flow.
-
-        samples >> build_batch >> network.evaluate() >> checkpoint >> Consume()
-
-        :param float|int accuracy: Some measure of network accuracy
-           (NOT loss!)
-        :return: accuracy
-        :rtype: int|float
-        """
-        self.savebest(accuracy)
-        return accuracy
-
+        defaultconfig = Config(bestscore=None, timestamp=None)
+        self.config = Config().load(configpath) if configpath else defaultconfig
+        return state

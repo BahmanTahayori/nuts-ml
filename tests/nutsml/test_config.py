@@ -29,9 +29,10 @@ def test_save_load():
 
     cfg.save('tests/data/configuration.yaml')
     newcfg = nc.Config()
-    newcfg.load('tests/data/configuration.yaml')
+    loaded_cfg = newcfg.load('tests/data/configuration.yaml')
     assert newcfg.number == 13
     assert newcfg == cfg
+    assert loaded_cfg == cfg
 
     cfg.save('tests/data/configuration.JSON')
     newcfg = nc.Config()

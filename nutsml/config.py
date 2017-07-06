@@ -51,16 +51,18 @@ class Config(dict):
         """
         Load configuration from file in JSON or YAML format.
 
-        >>> cfg = Config()
-        >>> cfg.load('tests/data/configuration.json')
+        >>> cfg = Config().load('tests/data/configuration.json')
         >>> cfg.number
         13
 
         :param str filepath: Path to JSON or YAML file.
+        :return: returns loaded configuration.
+        :rtype: Config
         """
         reader = json.load if Config.isjson(filepath) else yaml.load
         with open(filepath, 'r') as f:
             self.__init__(reader(f))
+        return self
 
     def save(self, filepath):
         """
