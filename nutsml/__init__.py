@@ -3,6 +3,7 @@ __version__ = '1.0.27'
 from nutsml.batcher import BuildBatch
 from nutsml.booster import Boost
 from nutsml.config import load_config
+from nutsml.checkpoint import Checkpoint
 from nutsml.stratify import Stratify
 from nutsml.logger import LogToFile, LogCols
 from nutsml.network import Network, KerasNetwork, LasagneNetwork
