@@ -64,7 +64,7 @@ def ReadLabelDirs(basedir, filepattern='*'):
         if os.path.isdir(os.path.join(basedir, label)):
             pathname = os.path.join(basedir, label, filepattern)
             for filepath in glob(pathname):
-                yield (filepath.replace("\\", "/"), label)
+                yield (filepath.replace('\\', '/'), label)
 
 
 @nut_function
