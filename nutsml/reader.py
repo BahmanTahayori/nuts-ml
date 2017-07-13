@@ -5,6 +5,7 @@
 from __future__ import absolute_import
 
 import os
+import fnmatch
 
 import pandas as pd
 
@@ -34,7 +35,7 @@ def DplyToList(dplyframe):
 
 
 @nut_source
-def ReadLabelDirs(basedir, filepattern='*'):
+def ReadLabelDirs(basedir, filepattern='*', exclude='_*'):
     """
     Read file paths from label directories.
 
@@ -57,11 +58,15 @@ def ReadLabelDirs(basedir, filepattern='*'):
     :param string basedir: Path to folder that contains label directories.
     :param string filepattern: Pattern for filepaths to read from
            label directories, e.g. '*.jpg', '*.txt'
+    :param string exclude: Pattern for label directories to exclude.
+           Default is '_*' which excludes all label folders prefixed with '_'.
     :return: iterator over labeled file paths
     :rtype: iterator
     """
     for label in os.listdir(basedir):
         if os.path.isdir(os.path.join(basedir, label)):
+            if fnmatch.fnmatch(label, exclude):
+                continue
             pathname = os.path.join(basedir, label, filepattern)
             for filepath in glob(pathname):
                 yield (filepath.replace('\\', '/'), label)

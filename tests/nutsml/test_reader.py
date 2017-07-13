@@ -34,6 +34,13 @@ def test_ReadLabelDirs():
                        ('tests/data/labeldirs/1/test1.txt', '1'),
                        ('tests/data/labeldirs/1/test11.txt', '1')]
 
+    read = ReadLabelDirs('tests/data/labeldirs', '*.txt', '')
+    samples = read >> Collect()
+    assert samples == [('tests/data/labeldirs/0/test0.txt', '0'),
+                       ('tests/data/labeldirs/1/test1.txt', '1'),
+                       ('tests/data/labeldirs/1/test11.txt', '1'),
+                       ('tests/data/labeldirs/_2/test2.txt', '_2')]
+
 
 def test_ReadImage():
     arr0 = np.load('tests/data/img_arrays/nut_color.jpg.npy')
