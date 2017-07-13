@@ -5,11 +5,11 @@
 from __future__ import absolute_import
 
 import os
-import fnmatch
 
 import pandas as pd
 
 from glob import glob
+from fnmatch import fnmatch
 from .imageutil import load_image
 from nutsflow import NutSource, nut_function, nut_source
 from nutsflow.common import as_set
@@ -65,7 +65,7 @@ def ReadLabelDirs(basedir, filepattern='*', exclude='_*'):
     """
     for label in os.listdir(basedir):
         if os.path.isdir(os.path.join(basedir, label)):
-            if fnmatch.fnmatch(label, exclude):
+            if fnmatch(label, exclude):
                 continue
             pathname = os.path.join(basedir, label, filepattern)
             for filepath in glob(pathname):
