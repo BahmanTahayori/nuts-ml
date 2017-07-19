@@ -6,7 +6,7 @@
 import numpy as np
 import random as rnd
 
-from nutsflow import nut_function, nut_sink, ArgMax, NutFunction
+from nutsflow import nut_function, nut_sink, NutFunction
 from nutsml.datautil import group_by
 
 
@@ -192,7 +192,8 @@ class ConvertLabel(NutFunction):
             y = self.id2label[round(x)]
         else:  # assume vector with confidence values
             assert len(x) == len(self.labels)
-            y = self.id2label[x >> ArgMax()]
+            _, argmax = max((v,i) for i,v in enumerate(x))
+            y = self.id2label[argmax]
 
         if hascol:  # input has columns => return sample
             outsample = list(sample)
