@@ -83,6 +83,13 @@ def test_SplitRandom_constraint():
 
 def test_ConvertLabel():
     labels = ['class0', 'class1', 'class2']
+
+    convert = ConvertLabel(None, labels)
+    assert [1, 0] >> convert >> Collect() == ['class1', 'class0']
+    assert ['class1', 'class0'] >> convert >> Collect() == [1, 0]
+    assert [0.9, 1.6] >> convert >> Collect() == ['class1', 'class2']
+    assert [[0.1, 0.7, 0.2]] >> convert >> Collect() == ['class1']
+
     convert = ConvertLabel(0, labels)
     assert [('class2',)] >> convert >> Collect() == [(2,)]
     assert [(1,)] >> convert >> Collect() == [('class1',)]

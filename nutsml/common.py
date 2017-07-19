@@ -153,8 +153,18 @@ class ConvertLabel(NutFunction):
 
         >>> from nutsflow import Collect
         >>> labels = ['class0', 'class1', 'class2']
-        >>> convert = ConvertLabel(1, labels)
 
+        >>> convert = ConvertLabel(None, labels)
+        >>> [1, 0] >> convert >> Collect()
+        ['class1', 'class0']
+        >>> ['class1', 'class0'] >> convert >> Collect()
+        [1, 0]
+        >>> [0.9, 0.4, 1.6] >> convert >> Collect()
+        ['class1', 'class0', 'class2']
+        >>> [[0.1, 0.7, 0.2], [0.8, 0.1, 0.1]] >> convert >> Collect()
+        ['class1', 'class0']
+
+        >>> convert = ConvertLabel(1, labels)
         >>> [('data', 'class1'), ('data', 'class0')] >> convert >> Collect()
         [('data', 1), ('data', 0)]
         >>> [('data', 1), ('data', 2)] >> convert >> Collect()
@@ -170,8 +180,10 @@ class ConvertLabel(NutFunction):
         self.label2id = {l: i for i, l in enumerate(labels)}
 
     def __call__(self, sample):
-        """Return sample and replace label within sample"""
-        x = sample[self.column]  # x is label or id or vector
+        """Return sample and replace label within sample if it is a sample"""
+        hascol = self.column is not None
+        x = sample[self.column] if hascol else sample
+
         if isinstance(x, str):
             y = self.label2id[x]
         elif isinstance(x, int):
@@ -181,6 +193,10 @@ class ConvertLabel(NutFunction):
         else:  # assume vector with confidence values
             assert len(x) == len(self.labels)
             y = self.id2label[x >> ArgMax()]
-        outsample = list(sample)
-        outsample[self.column] = y
-        return tuple(outsample)
+
+        if hascol:  # input has columns => return sample
+            outsample = list(sample)
+            outsample[self.column] = y
+            return tuple(outsample)
+        else:
+            return y
