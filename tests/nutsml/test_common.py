@@ -9,7 +9,7 @@ import numpy as np
 from six.moves import zip, range
 from nutsflow import Consume, Collect, Map
 from nutsflow.common import StableRandom
-from nutsml import SplitRandom, CheckNaN, PartitionByCol
+from nutsml import SplitRandom, CheckNaN, PartitionByCol, ConvertLabel
 
 
 def test_CheckNaN():
@@ -79,3 +79,16 @@ def test_SplitRandom_constraint():
     print(val)
     assert train == [('a', 1), ('a', 0), ('d', 7), ('b', 2), ('d', 6), ('b', 3)]
     assert val == [('c', 5), ('e', 8), ('e', 9), ('c', 4)]
+
+
+def test_ConvertLabel():
+    labels = ['class0', 'class1', 'class2']
+    convert = ConvertLabel(0, labels)
+    assert [('class2',)] >> convert >> Collect() == [(2,)]
+    assert [(1,)] >> convert >> Collect() == [('class1',)]
+    assert [(0.1,)] >> convert >> Collect() == [('class0',)]
+    assert [(0.9,)] >> convert >> Collect() == [('class1',)]
+    assert [(1.7,)] >> convert >> Collect() == [('class2',)]
+    assert [([0.1, 0.7, 0.2],)] >> convert >> Collect() == [('class1',)]
+    assert [(2,), (0,)] >> convert >> Collect() == [('class2',), ('class0',)]
+    assert [(1, 'data')] >> convert >> Collect() == [('class1', 'data')]

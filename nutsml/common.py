@@ -6,7 +6,7 @@
 import numpy as np
 import random as rnd
 
-from nutsflow import nut_function, nut_sink
+from nutsflow import nut_function, nut_sink, ArgMax, NutFunction
 from nutsml.datautil import group_by
 
 
@@ -137,3 +137,50 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
                 break
     append([e for g in groups for e in g])  # append remaining groups
     return splits
+
+
+class ConvertLabel(NutFunction):
+    """
+    Convert string labels to integer class ids and vice versa.
+    """
+
+    def __init__(self, column, labels):
+        """
+        Convert string labels to integer class ids and vice versa.
+
+        Also converts confidence vectors, e.g. softmax output or float values
+        to integer class ids.
+
+        >>> from nutsflow import Collect
+        >>> labels = ['class0', 'class1', 'class2']
+        >>> convert = ConvertLabel(1, labels)
+
+        >>> [('data', 'class1'), ('data', 'class0')] >> convert >> Collect()
+        [('data', 1), ('data', 0)]
+        >>> [('data', 1), ('data', 2)] >> convert >> Collect()
+        [('data', 'class1'), ('data', 'class2')]
+        >>> [('data', 0.9)] >> convert >> Collect()
+        [('data', 'class1')]
+        >>> [('data', [0.1, 0.7, 0.2])] >> convert >> Collect()
+        [('data', 'class1')]
+        """
+        self.column = column
+        self.labels = labels
+        self.id2label = {i: l for i, l in enumerate(labels)}
+        self.label2id = {l: i for i, l in enumerate(labels)}
+
+    def __call__(self, sample):
+        """Return sample and replace label within sample"""
+        x = sample[self.column]  # x is label or id or vector
+        if isinstance(x, str):
+            y = self.label2id[x]
+        elif isinstance(x, int):
+            y = self.id2label[x]
+        elif isinstance(x, float):
+            y = self.id2label[round(x)]
+        else:  # assume vector with confidence values
+            assert len(x) == len(self.labels)
+            y = self.id2label[x >> ArgMax()]
+        outsample = list(sample)
+        outsample[self.column] = y
+        return tuple(outsample)
