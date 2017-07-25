@@ -21,6 +21,7 @@ install:
 script:
   - "echo 'backend : Agg' > matplotlibrc"
   - py.test
-  - coverage run --source=nutsml --omit="nutsml/examples/*" setup.py test 
+  - coverage run --source=nutsml --omit="nutsml/examples/*" setup.py test
+  - coverage report --fail-under=100
 after_success:
   - coveralls  
