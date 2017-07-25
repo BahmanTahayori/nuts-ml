@@ -7,15 +7,15 @@ from __future__ import print_function
 
 from glob import glob
 from nutsflow import Collect, Consume, Get, Zip, Map, ArgMax, Print
-from nutsml import TransformImage, BuildBatch, ReadImage, ViewImageAnnotation
+from nutsml import (TransformImage, BuildBatch, ReadImage, ViewImageAnnotation,
+                    ConvertLabel)
 
 BATCH_SIZE = 128
 
 if __name__ == "__main__":
     from cnn_train import create_network, load_names
 
-    names = load_names()
-
+    convert_label = ConvertLabel(None, load_names())
     rerange = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
     show_image = ViewImageAnnotation(0, 1, pause=1, figsize=(3, 3),
                                      interpolation='spline36')
@@ -29,5 +29,5 @@ if __name__ == "__main__":
     samples = glob('images/*.png') >> Print() >> ReadImage(None) >> Collect()
 
     predictions = (samples >> rerange >> pred_batch >>
-                   network.predict() >> Map(ArgMax()) >> Map(names.__getitem__))
+                   network.predict() >> convert_label)
     samples >> Get(0) >> Zip(predictions) >> show_image >> Consume()
