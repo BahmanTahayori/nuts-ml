@@ -173,9 +173,6 @@ class BuildBatch(Nut):
         column data to numpy arrays of various types, aggregate converted
         samples into a batch.
 
-        Dat structure of output batch depends on fmt function used. If None
-        output is a list of np.arrays.
-
         >>> from nutsflow import Collect
         >>> numbers = [4.1, 3.2, 1.1]
         >>> images = [np.zeros((5, 3)), np.ones((5, 3)) , np.ones((5, 3))]
@@ -184,6 +181,16 @@ class BuildBatch(Nut):
 
         >>> build_batch = (BuildBatch(2)
         ...                .by(0, 'number', float)
+        ...                .by(1, 'image', np.uint8, True)
+        ...                .by(2, 'one_hot', np.uint8, 3))
+        >>> batches = samples >> build_batch >> Collect()
+
+        The structure of the output batch depends on fmt function used. If None,
+        output is a list of np.arrays. The following example shows how to
+        build a batch with two images for input and a one-hot vector as target:
+
+        >>> build_batch = (BuildBatch(2, fmt=lambda b: [[b[0], b[1]], b[2]])
+        ...                .by(0, 'image', np.uint8, True)
         ...                .by(1, 'image', np.uint8, True)
         ...                .by(2, 'one_hot', np.uint8, 3))
         >>> batches = samples >> build_batch >> Collect()
