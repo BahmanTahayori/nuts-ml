@@ -189,8 +189,9 @@ class BuildBatch(Nut):
         output is a list of np.arrays. The following example shows how to
         build a batch with two images for input and a one-hot vector as target:
 
+        >>> samples = zip(images, images, class_ids)
         >>> build_batch = (BuildBatch(2, prefetch=0,
-        >>>                fmt=lambda b: [[b[0], b[1]], b[2]])
+        ...                fmt=lambda b: [[b[0], b[1]], b[2]])
         ...                .by(0, 'image', np.uint8, True)
         ...                .by(1, 'image', np.uint8, True)
         ...                .by(2, 'one_hot', np.uint8, 3))
