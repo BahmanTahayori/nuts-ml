@@ -179,8 +179,8 @@ class Network(object):
         """
 
         if (not self.best_score or
-                (isloss is True and score < self.best_score) or
-                (isloss is False and score > self.best_score)):
+                (isloss is True and score <= self.best_score) or
+                (isloss is False and score >= self.best_score)):
             self.best_score = score
             self.save_weights()
 
