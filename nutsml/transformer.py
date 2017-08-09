@@ -385,16 +385,17 @@ def ImagePatchesByMask(iterable, imagecol, maskcol, pshape, npos,
 
 @nut_processor
 def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
-                             nneg=lambda npos: npos, pos=255, neg=0):
+                             nneg=lambda npos: npos, pos=255, neg=0,
+                             retlabel=True):
     """
     samples >> ImagePatchesByAnnotation(imagecol, annocol, pshape, npos,
                                  nneg=lambda npos: npos,
-                                 pos=255, neg=0)
+                                 pos=255, neg=0, retlabel=True)
 
     Randomly sample positive/negative patches from image based on annotation.
     See imageutil.annotation2coords for annotation format.
     A patch is positive if its center point is within the annotated region
-    and is negative otherwise
+    and is negative otherwise.
 
     >>> import numpy as np
     >>> np.random.seed(0)    # just to ensure stable doctest
@@ -419,8 +420,9 @@ def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
         based on number of positives.
     :param int pos: Mask value indicating positives
     :param int neg: Mask value indicating negatives
+    :param bool retlabel: True return label, False return mask patch
     :return: Iterator over samples where images are replaced by image patches
-        and annotations are replaced by labels [0,1]
+        and masks are replaced by labels [0,1] or mask patches
     :rtype: generator
     """
     for sample in iterable:
@@ -428,10 +430,10 @@ def ImagePatchesByAnnotation(iterable, imagecol, annocol, pshape, npos,
         mask = ni.annotation2mask(image, annotations)
         n = len(annotations[1]) if annotations else 0
         it = ni.sample_pn_patches(image, mask, pshape, npos * n, nneg, pos, neg)
-        for img_patch, _, label in it:
+        for img_patch, mask_patch, label in it:
             outsample = list(sample)[:]
             outsample[imagecol] = img_patch
-            outsample[annocol] = label
+            outsample[annocol] = label if retlabel else mask_patch
             yield tuple(outsample)
 
 

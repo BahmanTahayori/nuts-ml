@@ -166,6 +166,15 @@ def test_ImagePatchesByAnnotation():
     assert l == 1
     nt.assert_allclose(p, img_patch1)
 
+    np.random.seed(0)
+    get_patches = ImagePatchesByAnnotation(0, 1, (3, 3), 1, 1, retlabel=False)
+    patches = samples >> get_patches >> Collect()
+    p, m = patches[0]
+    img_patch0 = np.array([[12, 13, 14], [17, 18, 19], [22, 23, 24]])
+    img_mask0 = np.array([[0, 255, 0], [255, 0, 0], [0, 0, 0]])
+    nt.assert_allclose(m, img_mask0)
+    nt.assert_allclose(p, img_patch0)
+
 
 def test_ImageAnnotationToMask():
     img = np.zeros((3, 3), dtype='uint8')
