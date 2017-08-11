@@ -9,7 +9,7 @@ import os
 import numpy as np
 import numpy.testing as nt
 
-from nutsflow import Collect
+from nutsflow import Collect, Count
 from nutsml.transformer import (map_transform, TransformImage, AugmentImage,
                                 RegularImagePatches, RandomImagePatches,
                                 ImagePatchesByMask, ImageAnnotationToMask,
@@ -53,6 +53,14 @@ def test_AugmentImage():
 
     augment = AugmentImage(0).by('fake_trans1', 1.0).by('fake_trans2', 0.0)
     assert samples >> augment >> Collect() == [(2, 2), (4, 4)]
+
+    samples = [(x,) for x in range(1000)]
+    augment = AugmentImage(0).by('identical', 0.5)
+    n = samples >> augment >> Count()
+    assert 450 < n < 550
+
+    augment = AugmentImage(0).by('identical', 10)
+    assert [(1,)] >> augment >> Count() == 10
 
 
 def test_RegularImagePatches():

@@ -213,7 +213,9 @@ class AugmentImage(Nut):
 
         :param string name: Name of the augmentation/transformation, e.g.
           'rotate'
-        :param float prob: Probability [0,1] that the augmentation is applied.
+        :param float|int prob:
+          If prob <= 1:  probability [0,1] that the augmentation is applied
+          If prob > 1: number of times augmentation is applied.
         :param list of lists ranges: Lists with ranges for each argument of
           the augmentation, e.g. [0, 360] degrees, where parameters are
             randomly sampled from.
@@ -236,10 +238,12 @@ class AugmentImage(Nut):
         rand = self.rand
         for sample in iterable:
             for name, p, ranges, kwargs in self.augmentations:
-                if rand.uniform(0, 1) < p:
-                    args = [rand.uniform(r[0], r[1]) for r in ranges]
-                    transformation = name, args, kwargs
-                    yield map_transform(sample, imagecols, transformation)
+                n = int(p) if p > 1.0 else 1
+                for _ in range(n):
+                    if rand.uniform(0, 1) < p:
+                        args = [rand.uniform(r[0], r[1]) for r in ranges]
+                        transformation = name, args, kwargs
+                        yield map_transform(sample, imagecols, transformation)
 
 
 @nut_processor
