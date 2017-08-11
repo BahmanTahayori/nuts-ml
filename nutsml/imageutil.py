@@ -272,11 +272,11 @@ def crop_square(image):
     """
     iw, ih = image.shape[1], image.shape[0]
     if iw > ih:
-        dw, mw = int((iw-ih)/2), (iw-ih) % 2
-        return crop(image, dw+mw, 0, iw-dw, ih)
+        dw, mw = int((iw - ih) / 2), (iw - ih) % 2
+        return crop(image, dw + mw, 0, iw - dw, ih)
     else:
-        dh, mh = int((ih-iw)/2), (ih-iw) % 2
-        return crop(image, 0, dh+mh, iw, ih-dh)
+        dh, mh = int((ih - iw) / 2), (ih - iw) % 2
+        return crop(image, 0, dh + mh, iw, ih - dh)
 
 
 def normalize_histo(image, gamma=0.8):
@@ -870,6 +870,7 @@ def annotation2coords(image, annotation):
     The following annotation formats are supported:
     ('point', ((x, y), ... ))
     ('circle', ((x, y, r), ...))
+    ('ellipse', ((x, y, rx, ry, rot), ...))
     ('rect', ((x, y, w, h), ...))
     ('polyline', (((x, y), (x, y), ...), ...))
 
@@ -903,6 +904,9 @@ def annotation2coords(image, annotation):
                 rr, cc = np.array([]), np.array([])
         elif kind == 'circle':
             rr, cc = skd.circle(geo[1], geo[0], geo[2], shape)
+        elif kind == 'ellipse':
+            rr, cc = skd.ellipse(geo[1], geo[0], geo[3], geo[2],
+                                rotation=geo[4], shape=shape)
         elif kind == 'rect':
             x, y, w, h = geo
             xs = [x, x + w, x + w, x, x]

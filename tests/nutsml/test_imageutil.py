@@ -458,6 +458,16 @@ def test_annotation2coords():
     nt.assert_allclose(rr, [1, 1, 1, 2, 2, 2, 3, 3, 3])
     nt.assert_allclose(cc, [1, 2, 3, 1, 2, 3, 1, 2, 3])
 
+    anno = ('ellipse', ((2, 2, 2, 2, 0),))
+    rr, cc = list(ni.annotation2coords(img, anno))[0]
+    nt.assert_allclose(rr, [1, 1, 1, 2, 2, 2, 3, 3, 3])
+    nt.assert_allclose(cc, [1, 2, 3, 1, 2, 3, 1, 2, 3])
+
+    anno = ('ellipse', ((2, 2, 1, 3, 1.5),))
+    rr, cc = list(ni.annotation2coords(img, anno))[0]
+    nt.assert_allclose(rr, [1, 1, 2, 2, 2, 2, 2, 3, 3])
+    nt.assert_allclose(cc, [1, 2, 0, 1, 2, 3, 4, 2, 3])
+
     anno = ('rect', ((1, 2, 2, 3),))
     rr, cc = list(ni.annotation2coords(img, anno))[0]
     nt.assert_allclose(rr, [2, 2, 3, 3, 4, 4])
