@@ -18,6 +18,8 @@ from six.moves import range, map
 from .datautil import shapestr, isnan
 from PIL import ImageEnhance as ie
 from skimage.color import rgb2gray
+from scipy.ndimage.interpolation import map_coordinates
+from scipy.ndimage.filters import gaussian_filter
 from warnings import warn
 
 
@@ -579,6 +581,46 @@ def flipud(image):
     return np.flipud(image)
 
 
+def distort_elastic(image, smooth=10.0, scale=100.0, seed=0):
+    """
+    Elastic distortion of images.
+
+    Channel axis in RGB images will not be distorted but grayscale or
+    RGB images are both valid inputs. RGB and grayscale images will be
+    distorted identically for the same seed.
+
+    Simard, et. al, "Best Practices for Convolutional Neural Networks
+    applied to Visual Document Analysis",
+    in Proc. of the International Conference on Document Analysis and
+    Recognition, 2003.
+
+    :param ndarayy image: Image of shape [h,w] or [h,w,c]
+    :param float smooth: Smoothes the distortion.
+    :param float scale: Scales the distortion.
+    :param int seed: Seed for random number generator. Ensures that for the
+      same seed images are distorted identically.
+    :return: Distorted image with same shape as input image.
+    :rtype: ndarray
+    """
+    # create random, smoothed displacement field
+    rnd = np.random.RandomState(int(seed))
+    h, w = image.shape[:2]
+    dxy = rnd.rand(2, h, w, 3) * 2 - 1
+    dxy = gaussian_filter(dxy, smooth, mode="constant")
+    dxy = dxy / np.linalg.norm(dxy) * scale
+    dxyz = dxy[0], dxy[1], np.zeros_like(dxy[0])
+
+    # create transformation coordinates and deform image
+    is_color = len(image.shape) == 3
+    ranges = [np.arange(d) for d in image.shape]
+    grid = np.meshgrid(*ranges, indexing='ij')
+    add = lambda v, dv: v + dv if is_color else v + dv[:, :, 0]
+    idx = [np.reshape(add(v, dv), (-1, 1)) for v, dv in zip(grid, dxyz)]
+    distorted = map_coordinates(image, idx, order=1, mode='reflect')
+
+    return distorted.reshape(image.shape)
+
+
 def polyline2coords(points):
     """
     Return row and column coordinates for a polyline.
@@ -906,7 +948,7 @@ def annotation2coords(image, annotation):
             rr, cc = skd.circle(geo[1], geo[0], geo[2], shape)
         elif kind == 'ellipse':
             rr, cc = skd.ellipse(geo[1], geo[0], geo[3], geo[2],
-                                rotation=geo[4], shape=shape)
+                                 rotation=geo[4], shape=shape)
         elif kind == 'rect':
             x, y, w, h = geo
             xs = [x, x + w, x + w, x, x]

@@ -322,6 +322,19 @@ def test_shear(datadirs):
     assert_equal_image(imagepath, new_img)
 
 
+def test_distort_elastic(datadirs):
+    imagedir, _, _, processeddir = datadirs
+    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
+    new_img = ni.distort_elastic(img_arr, 10, 5000)
+    imagepath = processeddir + 'nut_color_elastic.bmp'
+    assert_equal_image(imagepath, new_img)
+
+    img_arr = ni.load_image(imagedir + 'nut_grayscale.bmp')
+    new_img = ni.distort_elastic(img_arr, 10, 5000)
+    imagepath = processeddir + 'nut_grayscale_elastic.bmp'
+    assert_equal_image(imagepath, new_img)
+
+
 def test_mask_where():
     expected = np.array([[0, 0], [1, 1], [2, 2]], dtype='int64')
     mask = np.eye(3, dtype='uint8')

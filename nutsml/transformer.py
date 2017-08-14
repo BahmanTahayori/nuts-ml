@@ -60,6 +60,7 @@ class TransformImage(NutFunction):
         'fliplr': ni.fliplr,
         'flipud': ni.flipud,
         'shear': ni.shear,
+        'elastic': ni.distort_elastic,
     }
 
     def __init__(self, imagecols):
@@ -111,6 +112,7 @@ class TransformImage(NutFunction):
         | :func:`fliplr <nutsml.imageutil.fliplr>`
         | :func:`flipud <nutsml.imageutil.flipud>`
         | :func:`shear <nutsml.imageutil.shear>` (shear_factor)
+        | :func:`elastic <nutsml.imageutil.distort_elastic>` (smooth, scale, seed)
 
 
         :param string name: Name of the transformation to apply, e.g. 'resize'
