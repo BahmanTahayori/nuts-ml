@@ -14,9 +14,11 @@ if __name__ == "__main__":
     p = 0.5
     augment = (AugmentImage(0)
                .by('identical', 1.0)
+               .by('elastic', p, [5, 5], [50, 50], [0, 100])
                .by('brightness', p, [0.7, 1.3])
                .by('rotate', p, [-10, 10])
-               .by('fliplr', p))
+               .by('fliplr', p)
+               )
     show_image = ViewImageAnnotation(0, 1, pause=1, figsize=(2, 2),
                                      interpolation='spline36')
 

@@ -12,7 +12,8 @@ from __future__ import print_function
 
 from six.moves import zip, range
 from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick, Mean
-from nutsml import KerasNetwork, TransformImage, BuildBatch, PlotLines
+from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
+                    PlotLines)
 
 PICK = 0.1  # Pick 10% of the data for a quick trial
 NUM_EPOCHS = 10
@@ -53,6 +54,7 @@ def create_network():
 def train():
     from keras.metrics import categorical_accuracy
 
+    augment = AugmentImage(0).by(10, 'elastic', [5, 5], [100, 100], [0, 100])
     transform = (TransformImage(0)
                  .by('rerange', 0, 255, 0, 1, 'float32'))
     build_batch = (BuildBatch(BATCH_SIZE)
@@ -71,7 +73,7 @@ def train():
         print('EPOCH:', epoch)
 
         t_loss, t_acc = (train_samples >> PrintProgress(train_samples) >>
-                         Pick(PICK) >> transform >> Shuffle(100) >>
+                         Pick(PICK) >> augment >> transform >> Shuffle(100) >>
                          build_batch >> network.train() >> plot >> Unzip())
         print('train loss : {:.6f}'.format(t_loss >> Mean()))
         print('train acc  : {:.1f}'.format(100 * (t_acc >> Mean())))

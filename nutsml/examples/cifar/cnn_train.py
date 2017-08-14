@@ -79,6 +79,7 @@ def train():
     p = 0.1
     augment = (AugmentImage(0)
                .by('identical', 1.0)
+               .by('elastic', p, [5, 5], [100, 100], [0, 100])
                .by('brightness', p, [0.7, 1.3])
                .by('color', p, [0.7, 1.3])
                .by('shear', p, [0, 0.1])
