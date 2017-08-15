@@ -1,6 +1,6 @@
 """
 .. module:: view_train_images
-   :synopsis: Example for showing images with annotation
+   :synopsis: Example for showing images with transformation
 """
 
 from nutsflow import Take, Consume, GetCols
@@ -11,4 +11,5 @@ if __name__ == "__main__":
 
     samples, _ = load_samples()
     transform = (TransformImage(0).by('elastic', 5, 100))
-    (samples >> GetCols(0,0,1) >> Take(1000) >> transform >> ViewImage((0,1), pause=1) >> Consume())
+    (samples >> GetCols(0,0,1) >> Take(1000) >> transform >>
+     ViewImage((0,1), pause=1) >> Consume())
