@@ -169,22 +169,20 @@ class Network(object):
         """
         raise NotImplementedError('Implement evaluate()!')
 
-    def save_best(self, score, isloss=True, weightspath=None):
+    def save_best(self, score, isloss=True):
         """
         Save weights of best network
 
         :param float score: Score of the network, e.g. loss, accuracy
         :param bool isloss: True means lower score is better, e.g. loss
           and the network with the lower score score is saved.
-        :param string weightspath: Path to network weights.
-          self.weightspath is used if weightspath is None.
         """
 
         if (not self.best_score or
                 (isloss is True and score <= self.best_score) or
                 (isloss is False and score >= self.best_score)):
             self.best_score = score
-            self.save_weights(weightspath=weightspath)
+            self.save_weights()
 
     def save_weights(self, weightspath=None):
         """
