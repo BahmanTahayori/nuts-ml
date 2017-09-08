@@ -20,14 +20,14 @@ def Boost(iterable, batcher, network, targetcol=-1):
     | network = Network()
     | build_batch = BuildBatch(BATCHSIZE, colspec)
     | boost = Boost(build_batch, network)
-    | samples >> boost >> network.train() >> Consume()
+    | samples >> boost >> build_batch >> network.train() >> Consume()
 
     :param iterable iterable: Iterable with samples.
     :param nutsml.BuildBatch batcher: Batcher used for network training.
     :param nutsml.Network network: Network used for prediction
     :param int targetcol: Column in sample that contains target values.
-    :return: Iterator with samples to boost
-    :rtype: iterator
+    :return: Generator over samples to boost
+    :rtype: generator
     """
 
     def do_boost(probs, target):
