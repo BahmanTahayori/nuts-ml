@@ -234,16 +234,18 @@ class LasagneNetwork(Network):  # pragma no cover
         self.pred_fn = pred_fn
 
     @staticmethod
-    def _weight_layers(layer):
-        """Return list of layers with weights. InputLayer is NOT returned."""
+    def _layers(layer, ret_input=False):
+        """Return network layers. InputLayer is returned if ret_input==True."""
         while hasattr(layer, 'input_layer'):
             yield layer
             layer = layer.input_layer
+        if ret_input:
+            yield layer
 
     @staticmethod
     def _get_named_params(network):
         """Return layer parameters and names"""
-        for l_num, layer in enumerate(LasagneNetwork._weight_layers(network)):
+        for l_num, layer in enumerate(LasagneNetwork._layers(network)):
             for p_num, param in enumerate(layer.get_params()):
                 name = '{}_{}'.format(l_num, p_num)
                 yield name, param
@@ -277,9 +279,32 @@ class LasagneNetwork(Network):  # pragma no cover
             param.set_value(weights[name])
 
     def print_layers(self):
-        for layer in LasagneNetwork._weight_layers(self.out_layer):
+        import lasagne as nn
+        layers = list(LasagneNetwork._layers(self.out_layer, ret_input=True))
+        for i, layer in enumerate(reversed(layers)):
             print('_' * 80)
-            print(layer.__class__.__name__)
+            name = layer.__class__.__name__
+            shape = nn.layers.get_output_shape(layer)
+            print('{:3d}  {:30s} {}'.format(i, name, shape), end=' ')
+            if hasattr(layer, 'filter_size'):
+                print('{}'.format(layer.filter_size[0]), end='//')
+            elif hasattr(layer, 'pool_size'):
+                is_int = isinstance(layer.pool_size, int)
+                size = layer.pool_size if is_int else layer.pool_size[0]
+                print('{}'.format(size), end='//')
+            if hasattr(layer, 'p'):
+                print(' [{:.2f}]'.format(layer.p), end='')
+            if hasattr(layer, 'stride'):
+                print('{}'.format(layer.stride[0]), end='')
+            if hasattr(layer, 'learning_rate_scale'):
+                if layer.learning_rate_scale != 1.0:
+                    lr_scale = layer.learning_rate_scale
+                    print(' [lr_scale={:.2f}]'.format(lr_scale), end='')
+            if hasattr(layer, 'params'):
+                for param in layer.params:
+                    if 'trainable' not in layer.params[param]:
+                        print(' [NT]', end='')
+            print()
 
 
 class KerasNetwork(Network):  # pragma no cover
