@@ -26,9 +26,12 @@ def Stratify(iterable, labelcol, labeldist, rand=rnd.Random()):
     in memory.
 
     >>> from nutsflow import Collect, CountValues
+    >>> from nutsflow.common import StableRandom
+    >>> rand = StableRandom(0)  # Stable random numbers for doctest
+
     >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]
     >>> labeldist = samples >> CountValues(1)
-    >>> samples >> Stratify(1, labeldist) >> Sort()
+    >>> samples >> Stratify(1, labeldist, rand) >> Sort()
     [('neg', 0), ('pos', 1)]
 
     :param iterable over tuples iterable: Iterable of tuples where column
