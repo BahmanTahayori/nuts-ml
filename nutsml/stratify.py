@@ -27,7 +27,7 @@ def Stratify(iterable, labelcol, labeldist, rand=rnd.Random()):
 
     >>> from nutsflow import Collect, CountValues
     >>> from nutsflow.common import StableRandom
-    >>> rand = StableRandom(0)  # Stable random numbers for doctest
+    >>> rand = StableRandom(1)  # Stable random numbers for doctest
 
     >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]
     >>> labeldist = samples >> CountValues(1)
