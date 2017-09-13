@@ -279,12 +279,12 @@ class LasagneNetwork(Network):  # pragma no cover
             param.set_value(weights[name])
 
     def print_layers(self):
-        import lasagne as nn
+        import lasagne as la
         layers = list(LasagneNetwork._layers(self.out_layer, ret_input=True))
         for i, layer in enumerate(reversed(layers)):
             print('_' * 80)
             name = layer.__class__.__name__
-            shape = nn.layers.get_output_shape(layer)
+            shape = la.layers.get_output_shape(layer)
             print('{:3d}  {:30s} {}'.format(i, name, shape), end=' ')
             if hasattr(layer, 'filter_size'):
                 print('{}'.format(layer.filter_size[0]), end='//')
