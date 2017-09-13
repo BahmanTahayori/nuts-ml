@@ -28,7 +28,7 @@ def test_StratifyInMem():
 
 def test_Stratify():
     samples = [('pos', 1)] * 1000 + [('neg', 0)] * 100
-    dist = samples >> Get(1) >> CountValues()
+    dist = samples >> CountValues(1)
 
     stratify = Stratify(1, dist, rand=StableRandom(0))
     stratified1 = samples >> stratify >> Collect()
