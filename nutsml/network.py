@@ -282,7 +282,6 @@ class LasagneNetwork(Network):  # pragma no cover
         import lasagne as la
         layers = list(LasagneNetwork._layers(self.out_layer, ret_input=True))
         for i, layer in enumerate(reversed(layers)):
-            print('_' * 80)
             name = layer.__class__.__name__
             shape = la.layers.get_output_shape(layer)
             print('{:3d}  {:30s} {}'.format(i, name, shape), end=' ')
