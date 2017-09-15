@@ -62,7 +62,15 @@ the default graphical backend for matplotlib. In this case create a file
 
 .. code::
   
-  backend : agg
+  backend : Agg
+
+  
+Alternatively add the following lines to your code:
+
+.. code::
+
+  import matplotlib
+  matplotlib.use('Agg')
     
   
   
