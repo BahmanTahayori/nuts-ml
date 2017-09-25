@@ -6,7 +6,7 @@ from __future__ import absolute_import
 
 import random as rnd
 
-from nutsflow import nut_processor, Sort
+from nutsflow import nut_processor, nut_sink, Sort
 from .datautil import upsample, random_downsample
 
 
@@ -17,7 +17,7 @@ def Stratify(iterable, labelcol, labeldist, rand=rnd.Random()):
 
     Stratifies samples by randomly down-sampling according to the given
     label distribution. In detail: samples belonging to the class with the
-    smallest number of samples are returned with propability one. Samples
+    smallest number of samples are returned with probability one. Samples
     from other classes are randomly down-sampled to match the number of
     samples in the smallest class.
 
@@ -50,18 +50,19 @@ def Stratify(iterable, labelcol, labeldist, rand=rnd.Random()):
             yield sample
 
 
-@nut_processor
-def StratifyInMem(iterable, labelcol, mode='downrnd', rand=rnd.Random()):
+@nut_sink
+def CollectStratified(iterable, labelcol, mode='downrnd', container=list,
+                      rand=rnd.Random()):
     """
-    iterable >> Stratify(labelcol, mode='downrnd', rand=rnd.Random())
+    iterable >> CollectStratified(labelcol, mode='downrnd',  container=list,
+                                  rand=rnd.Random())
 
-    Stratifies samples by either randomly down-sampling classes or
-    up-sampling classes by duplicating samples.
-    Loads all samples in memory!
+    Collects samples in a container and stratifies them by either randomly
+    down-sampling classes or up-sampling classes by duplicating samples.
 
     >>> from nutsflow import Collect
     >>> samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    >>> samples >> StratifyInMem(1) >> Sort()
+    >>> samples >> CollectStratified(1) >> Sort()
     [('neg', 0), ('pos', 1)]
 
     :param iterable over tuples iterable: Iterable of tuples where column
@@ -70,6 +71,8 @@ def StratifyInMem(iterable, labelcol, mode='downrnd', rand=rnd.Random()):
     :param string mode:
        'downrnd' : randomly down-sample
        'up' : up-sample
+    :param container container: Some container, e.g. list, set, dict
+           that can be filled from an iterable
     :param rand.Random rand: Random number generator used for down-sampling
     :return: Stratified samples
     :rtype: List of tuples
@@ -81,4 +84,4 @@ def StratifyInMem(iterable, labelcol, mode='downrnd', rand=rnd.Random()):
         stratified = random_downsample(samples, labelcol, rand)
     else:
         raise ValueError('Unknown mode: ' + mode)
-    return stratified
+    return container(stratified)
