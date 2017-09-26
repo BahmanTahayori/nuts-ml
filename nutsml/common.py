@@ -40,7 +40,7 @@ def CheckNaN(data):
 
 
 @nut_sink
-def PartitionByCol(iterable, col, values):
+def PartitionByCol(iterable, column, values):
     """
     Partition samples in iterables depending on column value.
 
@@ -55,12 +55,12 @@ def PartitionByCol(iterable, col, values):
     sufficient to provide the values for the partitions wanted.
 
     :param iterable iterable: Iterable over samples
-    :param int col: Index of column to extract
+    :param int column: Index of column to extract
     :param list values: List of column values to create partitions for.
     :return: tuple of partitions
     :rtype: tuple
     """
-    groups = group_by(iterable, lambda sample: sample[col])
+    groups = group_by(iterable, lambda sample: sample[column])
     return tuple(groups.get(v, []) for v in values)
 
 
@@ -141,15 +141,15 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
 
 class ConvertLabel(NutFunction):
     """
-    Convert string labels to integer class ids and vice versa.
+    Convert string labels to integer class ids (or one-hot) and vice versa.
     """
 
-    def __init__(self, column, labels):
+    def __init__(self, column, labels, onehot=False):
         """
-        Convert string labels to integer class ids and vice versa.
+        Convert string labels to integer class ids (or one-hot) and vice versa.
 
         Also converts confidence vectors, e.g. softmax output or float values
-        to integer class ids.
+        to class labels.
 
         >>> from nutsflow import Collect
         >>> labels = ['class0', 'class1', 'class2']
@@ -164,6 +164,10 @@ class ConvertLabel(NutFunction):
         >>> [[0.1, 0.7, 0.2], [0.8, 0.1, 0.1]] >> convert >> Collect()
         ['class1', 'class0']
 
+        >>> convert = ConvertLabel(None, labels, onehot=True)
+        >>> ['class1', 'class0'] >> convert >> Collect()
+        [[0, 1, 0], [1, 0, 0]]
+
         >>> convert = ConvertLabel(1, labels)
         >>> [('data', 'class1'), ('data', 'class0')] >> convert >> Collect()
         [('data', 1), ('data', 0)]
@@ -173,9 +177,17 @@ class ConvertLabel(NutFunction):
         [('data', 'class1')]
         >>> [('data', [0.1, 0.7, 0.2])] >> convert >> Collect()
         [('data', 'class1')]
+
+        :param int column: Index of column in sample that contains label.
+           If None process labels directly.
+        :param list|tuple labels: List of class labels (strings).
+        :param bool onehot: True: convert class labels to one-hot encoded
+          vectors. False, convert to class index.
         """
         self.column = column
         self.labels = labels
+        self.onehot = onehot
+        self.n_labels = len(labels)
         self.id2label = {i: l for i, l in enumerate(labels)}
         self.label2id = {l: i for i, l in enumerate(labels)}
 
@@ -192,8 +204,11 @@ class ConvertLabel(NutFunction):
             y = self.id2label[round(x)]
         else:  # assume vector with confidence values
             assert len(x) == len(self.labels)
-            _, argmax = max((v,i) for i,v in enumerate(x))
+            _, argmax = max((v, i) for i, v in enumerate(x))
             y = self.id2label[argmax]
+
+        if self.onehot and isinstance(y, int):
+            y = [1 if i == y else 0 for i in range(self.n_labels)]
 
         if hascol:  # input has columns => return sample
             outsample = list(sample)

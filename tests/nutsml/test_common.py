@@ -99,3 +99,7 @@ def test_ConvertLabel():
     assert [([0.1, 0.7, 0.2],)] >> convert >> Collect() == [('class1',)]
     assert [(2,), (0,)] >> convert >> Collect() == [('class2',), ('class0',)]
     assert [(1, 'data')] >> convert >> Collect() == [('class1', 'data')]
+
+    convert = ConvertLabel(None, labels, True)
+    expected = [[0, 1, 0], [1, 0, 0]]
+    assert ['class1', 'class0'] >> convert >> Collect() == expected
