@@ -15,18 +15,13 @@ def test_CollectStratified():
 
     samples = [('pos', 1), ('pos', 1), ('neg', 0)]
     stratify = CollectStratified(1, mode='up', rand=rand)
-    stratified = samples >> stratify
-    assert stratified == [('neg', 0), ('pos', 1), ('neg', 0), ('pos', 1)]
-
-    samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    stratify = CollectStratified(1, mode='up', container=tuple, rand=rand)
-    stratified = samples >> stratify
-    assert stratified == (('neg', 0), ('pos', 1), ('neg', 0), ('pos', 1))
+    stratified = samples >> stratify >> Sort()
+    assert stratified == [('neg', 0), ('neg', 0), ('pos', 1), ('pos', 1)]
 
     samples = [('pos', 1), ('pos', 1), ('pos', 1), ('neg1', 0), ('neg2', 0)]
     stratify = CollectStratified(1, mode='downrnd', rand=rand)
-    stratified = samples >> stratify
-    assert stratified == [('neg2', 0), ('neg1', 0), ('pos', 1), ('pos', 1)]
+    stratified = samples >> stratify >> Sort()
+    assert stratified == [('neg1', 0), ('neg2', 0), ('pos', 1), ('pos', 1)]
 
     with pytest.raises(ValueError) as ex:
         samples >> CollectStratified(1, mode='invalid')
