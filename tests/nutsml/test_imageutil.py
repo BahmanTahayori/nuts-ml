@@ -253,12 +253,12 @@ def test_brightness(datadirs):
     assert_equal_image(imagepath, new_img)
 
 
-# def test_sharpness(datadirs):
-#     imagedir, _, _, processeddir = datadirs
-#     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-#     new_img = ni.change_sharpness(img_arr, 0.5)
-#     imagepath = processeddir + 'nut_color_sharpness.bmp'
-#     assert_equal_image(imagepath, new_img)
+def test_sharpness(datadirs):
+    imagedir, _, _, processeddir = datadirs
+    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
+    new_img = ni.change_sharpness(img_arr, 0.5)
+    imagepath = processeddir + 'nut_color_sharpness.bmp'
+    assert_equal_image(imagepath, new_img, rtol=0, atol=10)
 
 
 def test_change_color(datadirs):
