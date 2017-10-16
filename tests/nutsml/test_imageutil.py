@@ -222,6 +222,8 @@ def test_crop_center():
     assert str(ex.value).startswith('Image too small for crop')
 
 
+@pytest.mark.filterwarnings('ignore:This might be a color image')
+@pytest.mark.filterwarnings('ignore:Possible precision loss')
 def test_normalize_histo(datadirs):
     imagedir, _, arraydir, processeddir = datadirs
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
