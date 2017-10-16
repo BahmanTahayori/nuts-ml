@@ -14,6 +14,7 @@ import nutsml.imageutil as ni
 import numpy.testing as nt
 import matplotlib.patches as plp
 
+from warnings import warn
 from glob import glob
 from PIL import ImageEnhance as ie
 
@@ -358,7 +359,7 @@ def test_extract_patch():
 
 
 def test_patch_iter():
-    img = np.asfortranarray(np.reshape(np.arange(12), (3, 4)))
+    img = np.reshape(np.arange(12), (3, 4))
 
     patches = list(ni.patch_iter(img, (2, 2), 2))
     expected = [np.array([[0, 1], [4, 5]]),
@@ -377,6 +378,24 @@ def test_patch_iter():
                 np.array([[8, 9, 10]]), np.array([[9, 10, 11]])]
     for p, e in zip(patches, expected):
         nt.assert_allclose(p, e)
+
+
+@pytest.mark.filterwarnings('ignore:Image is not contiguous and will be copied!')
+def test_patch_iter_notcontiguous():
+    img = np.asfortranarray(np.reshape(np.arange(12), (3, 4)))
+
+    patches = list(ni.patch_iter(img, (2, 2), 2))
+    expected = [np.array([[0, 1], [4, 5]]),
+                np.array([[2, 3], [6, 7]])]
+    for p, e in zip(patches, expected):
+        nt.assert_allclose(p, e)
+
+
+def test_patch_iter_warning():
+    with pytest.warns(UserWarning):
+        img = np.asfortranarray(np.reshape(np.arange(12), (3, 4)))
+        list(ni.patch_iter(img, (2, 2), 2))
+        warn("Image is not contiguous and will be copied!", UserWarning)
 
 
 def test_patch_iter_3channel():

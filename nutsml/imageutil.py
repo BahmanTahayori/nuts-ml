@@ -726,7 +726,7 @@ def patch_iter(image, shape=(3, 3), stride=1):
     """
     # view_as_windows requires contiguous array, which we ensure here
     if not image.flags['C_CONTIGUOUS']:
-        warn('image is not contiguous array')
+        warn('Image is not contiguous and will be copied!')
         image = np.ascontiguousarray(image)
 
     is_gray = image.ndim == 2
