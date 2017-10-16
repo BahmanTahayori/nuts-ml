@@ -22,7 +22,7 @@ def filepath():
     return filepath
 
 
-# LogCols is deprecated.
+@pytest.mark.filterwarnings('ignore:LogCols is deprecated. Use LogToFile!')
 def test_LogCols(filepath):
     data = [[1, 2], [3, 4]]
 
