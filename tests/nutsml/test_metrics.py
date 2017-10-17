@@ -1,6 +1,9 @@
 """
 .. module:: test_metrics
    :synopsis: Unit tests for metrics module
+
+Note: In contrast to losses, which operate on batches, metricies operate on
+entire collections of samples.
 """
 
 import pytest
