@@ -113,6 +113,7 @@ def box_avg_precision(true_boxes, pred_boxes, pred_scores, iou_thresh=0.5,
 
     Note that there are various, different definitions of Average Precision.
     See: https://arxiv.org/abs/1607.03476
+    and: https://sanchom.wordpress.com/tag/average-precision/
     This code implements the version used in VOC challenge 2007, see
     | http://host.robots.ox.ac.uk/pascal/VOC/voc2007/index.html
     | http://host.robots.ox.ac.uk/pascal/VOC/pubs/everingham10.pdf
