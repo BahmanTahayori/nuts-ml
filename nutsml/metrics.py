@@ -28,7 +28,7 @@ def box_iou(box1, box2):
     """
     Return Intersection of Union of two (bounding) boxes.
 
-    :param (x,y,w,h) box1: First bounding box with x,y specifing the
+    :param (x,y,w,h) box1: First bounding box with x,y specifying the
             left upper corner.
     :param (x,y,w,h) box2: Second bounding box.
     :return: Intersection of Union [0...1]
