@@ -19,7 +19,7 @@ class PlotLines(NutFunction):  # pragma no coverage
     """
 
     def __init__(self, ycols,
-                 xcols=itt.count(),
+                 xcols=None,
                  layout=(1, None),
                  every_sec=0,
                  every_n=0,
@@ -51,11 +51,12 @@ class PlotLines(NutFunction):  # pragma no coverage
         :param int|tuple|None ycols: Index or tuple of indices of the 
             data columns that contain the y-data for the plot.
             If None data is used directly.
-        :param int|tuple|function|iterable xcols: Index or tuple of indices of
-            the data columns that contain the x-data for the plot.
+        :param int|tuple|function|iterable|None xcols: Index or tuple of indices
+            of the data columns that contain the x-data for the plot.
             Alternatively an iterator or a function can be provided that
             generates the x-data for the plot, e.g. xcols = itertools.count()
             or xcols = lambda: epoch
+            For xcols==None, itertools.count() will be used.
         :param tuple layout: Rows and columns of the plotter layout., e.g.
                a layout of (2,3) means that 6 plots in the data are
                arranged in 2 rows and 3 columns.
@@ -71,7 +72,7 @@ class PlotLines(NutFunction):  # pragma no coverage
         :rtype: any
         """
         self.ycols = [-1] if ycols is None else as_list(ycols)
-        self.xcols = xcols
+        self.xcols = itt.count() if xcols is None else xcols
         self.filepath = filepath
         self.figsize = figsize
         self.cnt = 0
