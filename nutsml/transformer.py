@@ -157,9 +157,9 @@ class AugmentImage(Nut):
     Random augmentation of images in samples
     """
 
-    def __init__(self, imagecols, rand=rnd.Random()):
+    def __init__(self, imagecols, rand=None):
         """
-        samples >> AugmentImage(imagecols, rand=rnd.Random())
+        samples >> AugmentImage(imagecols, rand=None)
 
         Randomly augment images, e.g. changing contrast. See TransformImage for
         a full list of available augmentations. Every transformation can be
@@ -201,10 +201,11 @@ class AugmentImage(Nut):
 
         :param int|tuple imagecols: Indices of sample columns that contain
             images.
-        :param Random rand: Random number generator to be used.
+        :param Random|None rand: Random number generator. If None,
+           random.Random() is used.
         """
         self.imagecols = imagecols
-        self.rand = rand
+        self.rand = rnd.Random() if rand is None else rand
         self.augmentations = []
 
     def by(self, name, prob, *ranges, **kwargs):

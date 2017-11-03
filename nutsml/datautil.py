@@ -44,7 +44,7 @@ def shapestr(array):
     return 'x'.join(str(int(d)) for d in array.shape)
 
 
-def upsample(samples, labelcol, rand=rnd.Random(None)):
+def upsample(samples, labelcol, rand=None):
     """
     Up-sample sample set.
 
@@ -53,7 +53,7 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
 
     Note: The example shown below uses rnd.Random(i) to create a deterministic
     sequence of randomly stratified samples. Usually it is sufficient to use
-    the default (rand=rnd.Random(None)).
+    the default (rand=None).
 
     >>> from __future__ import print_function
     >>> import random as rnd
@@ -68,11 +68,13 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
       label at a fixed position (labelcol). Labels can by any hashable type,
       e.g. int, str, bool
     :param int labelcol: Index of label in sample
-    :param random.Random rand: Random number generator.
+    :param Random|None rand: Random number generator. If None,
+           random.Random(None) is used.
     :return: Stratified sample set.
     :rtype: list of samples
     """
 
+    rand = rnd.Random() if rand is None else rand
     groups, labelcnts = group_samples(samples, labelcol)
     _, max_cnts = max(iteritems(labelcnts), key=lambda l_c: l_c[1])
     stratified = []
@@ -83,7 +85,7 @@ def upsample(samples, labelcol, rand=rnd.Random(None)):
     return stratified
 
 
-def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
+def random_downsample(samples, labelcol, rand=None, ordered=False):
     """
     Randomly down-sample samples.
 
@@ -92,7 +94,7 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
 
     Note: The example shown below uses StableRandom(i) to create a deterministic
     sequence of randomly stratified samples. Usually it is sufficient to use
-    the default (rand=rnd.Random(None)). Do NOT use rnd.Random(0) since this
+    the default (rand=None). Do NOT use rnd.Random(0) since this
     will generate the same subsample every time.
 
     >>> from __future__ import print_function  
@@ -110,11 +112,13 @@ def random_downsample(samples, labelcol, rand=rnd.Random(None), ordered=False):
       label at a fixed position (labelcol). Labels can be any hashable type,
       e.g. int, str, bool
     :param int labelcol: Index of label in sample
-    :param random.Random rand: Random number generator.
+    :param Random|None rand: Random number generator. If None,
+      random.Random(None) is used.
     :param bool ordered: True: samples are kept in order when downsampling.
     :return: Stratified sample set.
     :rtype: list of samples
     """
+    rand = rnd.Random() if rand is None else rand
     groups, labelcnts = group_samples(samples, labelcol, ordered=ordered)
     _, min_cnts = min(iteritems(labelcnts), key=lambda l_c1: l_c1[1])
     return [s for e in groups.values() for s in rand.sample(e, min_cnts)]

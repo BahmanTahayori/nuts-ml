@@ -62,6 +62,12 @@ def test_SplitRandom_ratios():
     assert str(ex.value).startswith('Ratios must sum up to one')
 
 
+def test_SplitRandom_stable_default():
+    split1 = range(10) >> SplitRandom()
+    split2 = range(10) >> SplitRandom()
+    assert split1 == split2
+
+
 def test_SplitRandom_seed():
     split1 = range(10) >> SplitRandom(rand=StableRandom(0))
     split2 = range(10) >> SplitRandom(rand=StableRandom(0))

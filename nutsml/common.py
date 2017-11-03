@@ -7,6 +7,7 @@ import numpy as np
 import random as rnd
 
 from nutsflow import nut_function, nut_sink, NutFunction
+from nutsflow.common import StableRandom
 from nutsml.datautil import group_by
 
 
@@ -65,28 +66,32 @@ def PartitionByCol(iterable, column, values):
 
 
 @nut_sink
-def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
+def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
     """
     Randomly split iterable into partitions.
 
-    >>> from nutsflow.common import StableRandom
-    >>> fix=StableRandom(0)  # stable random numbers for testing
+    For the same input data the same split is created every time and is stable
+    across different Python version 2.x or 3.x. A random number generator
+    can be provided to create varying splits.
 
-    >>> train, val = range(10) >> SplitRandom(rand=fix, ratio=0.7)
+    >>> train, val = range(10) >> SplitRandom(ratio=0.7)
     >>> train, val
     ([6, 3, 1, 7, 0, 2, 4], [5, 9, 8])
 
-    >>> train, val, test = range(10) >> SplitRandom(rand=fix, ratio=(0.6, 0.3, 0.1))
+    >>> range(10) >> SplitRandom(ratio=0.7)  # Same split again
+    [[6, 3, 1, 7, 0, 2, 4], [5, 9, 8]]
+
+    >>> train, val, test = range(10) >> SplitRandom(ratio=(0.6, 0.3, 0.1))
     >>> train, val, test
-    ([7, 1, 0, 6, 9, 4], [3, 5, 8], [2])
+    ([6, 1, 4, 0, 3, 2], [8, 7, 9], [5])
 
     >>> data = zip('aabbccddee', range(10))
     >>> same_letter = lambda t: t[0]
-    >>> train, val = data >> SplitRandom(rand=fix, ratio=0.6, constraint=same_letter)
+    >>> train, val = data >> SplitRandom(ratio=0.6, constraint=same_letter)
     >>> train
-    [('a', 1), ('c', 5), ('e', 8), ('e', 9), ('c', 4), ('a', 0)]
+    [('a', 1), ('a', 0), ('d', 7), ('b', 2), ('d', 6), ('b', 3)]
     >>> val
-    [('d', 7), ('d', 6), ('b', 2), ('b', 3)]
+    [('c', 5), ('e', 8), ('e', 9), ('c', 4)]
 
     :param iterable iterable: Iterable over anything. Will be consumed!
     :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7
@@ -98,14 +103,16 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=rnd.Random(0)):
         that a partition contains related elements, e.g. left and right eye
         images are not scattered across partitions.
         Note that constrains have precedence over ratios.
-    :param random.Random rand: Random number generator.
-            rand=rnd.Random(0) ensures that the same split is created
-            every time SplitRandom is called. This is important when continuing
-            an interrupted training session!
-            see random.
+    :param Random|None rand: Random number generator. The default None
+            ensures that the same split is created every time SplitRandom
+            is called. This is important when continuing an interrupted
+            training session or running the same training on machines with
+            different Python versions. Note that Python's random.Random(0)
+            generates different number for Python 2.x and 3.x!
     :return: partitions of iterable with sizes according to provided ratios.
     :rtype: (list, list, ...)
     """
+    rand = StableRandom(0) if rand is None else rand
     samples = list(iterable)
     if hasattr(ratio, '__iter__'):
         ratios = tuple(ratio)

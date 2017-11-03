@@ -18,7 +18,7 @@ class WriteImage(NutFunction):
     Write images within samples.
     """
 
-    def __init__(self, column, pathfunc, namefunc=Enumerate()):
+    def __init__(self, column, pathfunc, namefunc=None):
         """
         Write images within samples to file.
 
@@ -57,14 +57,16 @@ class WriteImage(NutFunction):
             or
             Function to compute path to image file from sample and name, e.g.
             pathfunc=lambda sample, name: 'tests/data/test_{}.jpg'.format(name)
-        :param iterable|function namefunc: Iterable over names to generate
+        :param iterable|function|None namefunc: Iterable over names to generate
             image paths from (length need to be the same as samples),
             or
             Function to compute filenames from sample, e.g.
             namefunc=lambda samples: sample[0]
+            if None, Enumerate() is used.
         """
-        self.column = column
+        namefunc = Enumerate() if namefunc is None else namefunc
         self.namefunc = namefunc if isfunction(namefunc) else iter(namefunc)
+        self.column = column
         self.pathfunc = pathfunc
 
     def __call__(self, sample):
