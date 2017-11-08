@@ -9,13 +9,15 @@ import nutsml.config as nc
 
 
 def test_Config():
-    cfg = nc.Config({'number': 13})
-    assert cfg['number'] == 13
-    assert cfg.number == 13
+    cfg = nc.Config({'name': 'stefan', 'address': {'number': 12}})
+    assert cfg['name'] == 'stefan'
+    assert cfg.name == 'stefan'
+    assert cfg['address']['number'] == 12
+    assert cfg.address.number == 12
 
-    cfg.name = 'Stefan'
-    assert cfg['name'] == 'Stefan'
-    assert cfg.name == 'Stefan'
+    cfg.address.number = 7
+    assert cfg['address']['number'] == 7
+    assert cfg.address.number == 7
 
 
 def test_isjson():
