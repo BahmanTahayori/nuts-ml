@@ -19,12 +19,15 @@ class Config(dict):
         """
         Create dictionary.
 
-        >>> contact = Config({'age':13, 'name':'stefan'})
-        >>> contact['age']
-        13
+        >>> contact = Config({'name':'stefan', 'address':{'number':12}})
+        >>> contact['name']
+        'stefan'
 
         >>> contact.name
         'stefan'
+
+        >>> contact.address.number
+        12
 
         >>> contact.surname = 'maetschke'
         >>> contact.surname
@@ -33,7 +36,9 @@ class Config(dict):
         :param args args: See dict
         :param kwargs kwargs: See dict
         """
-        super(Config, self).__init__(*args, **kwargs)
+        wrap = lambda v: Config(v) if type(v) is dict else v
+        kvdict = {k: wrap(v) for k, v in dict(*args, **kwargs).items()}
+        super(Config, self).__init__(kvdict)
         self.__dict__ = self
 
     @staticmethod
