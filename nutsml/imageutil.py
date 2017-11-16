@@ -122,7 +122,7 @@ def set_default_order(kwargs):
     Default order is 1, which performs a linear interpolation of pixel values
     when images are rotated, resized and sheared. This is fine for images
     but causes unwanted pixel values in masks. This function set the default
-    order to 9, which disables the interpolation.
+    order to 0, which disables the interpolation.
 
     :param kwargs kwargs: Dictionary with keyword arguments.
     """
