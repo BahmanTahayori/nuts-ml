@@ -12,10 +12,9 @@ from nutsflow import NutFunction
 from nutsflow.common import as_tuple, as_list
 
 
-# TODO: markers, axis labels, titles, legend, ...
 class PlotLines(NutFunction):  # pragma no coverage
     """
-    Plot lines for selected data columns
+    Plot line graph for selected data columns.
     """
 
     def __init__(self, ycols,
