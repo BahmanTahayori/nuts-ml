@@ -281,7 +281,7 @@ def crop_square(image):
         return crop(image, 0, dh + mh, iw, ih - dh)
 
 
-def normalize_histo(image, gamma=0.8):
+def normalize_histo(image, gamma=1.0):
     """
     Perform histogram normalization on image.
 
@@ -290,7 +290,6 @@ def normalize_histo(image, gamma=0.8):
     :return: Normalized image
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
-    image = ske.equalize_hist(image)
     image = ske.equalize_adapthist(image)
     image = ske.adjust_gamma(image, gamma=gamma)
     return floatimg2uint8(image)
@@ -945,7 +944,7 @@ def annotation2coords(image, annotation):
             else:
                 rr, cc = np.array([]), np.array([])
         elif kind == 'circle':
-            rr, cc = skd.circle(geo[1], geo[0], geo[2], shape)
+            rr, cc = skd.circle(geo[1], geo[0], geo[2], shape=shape)
         elif kind == 'ellipse':
             rr, cc = skd.ellipse(geo[1], geo[0], geo[3], geo[2],
                                  rotation=geo[4], shape=shape)
@@ -953,17 +952,19 @@ def annotation2coords(image, annotation):
             x, y, w, h = geo
             xs = [x, x + w, x + w, x, x]
             ys = [y, y, y + h, y + h, y]
-            rr, cc = skd.polygon(ys, xs, shape)
+            rr, cc = skd.polygon(ys, xs, shape=shape)
         elif kind == 'polyline':
             if geo[0] == geo[-1]:  # closed polyline => draw fill polygon
                 xs, ys = zip(*geo)
-                rr, cc = skd.polygon(ys, xs, shape)
+                rr, cc = skd.polygon(ys, xs, shape=shape)
             else:
                 rr, cc = polyline2coords(geo)
         else:
             raise ValueError('Invalid kind of annotation: ' + kind)
         if not rr.size or not cc.size:
-            raise ValueError('Annotation outside image! Image resized?')
+            err_msg = 'Annotation {}:{} '.format(kind, geo)
+            err_msg += 'outside image {}! Image transformed?'.format(shape)
+            raise ValueError(err_msg)
         yield rr, cc
 
 

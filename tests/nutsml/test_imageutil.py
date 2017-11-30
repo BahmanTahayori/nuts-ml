@@ -76,7 +76,7 @@ def test_save_image(datadirs):
         ni.save_image(outpath, image)
         loaded = ni.load_image(outpath)
         os.remove(outpath)
-        # Saved and loaded JPG images can vary greatly (lossy format) when using 
+        # Saved and loaded JPG images can vary greatly (lossy format) when using
         # skimage and a direct comparision fails under Windows 7, Anaconda.
         # Therefore, only shape and mean value are verified for JPG images.
         if format == 'jpg':
@@ -220,16 +220,6 @@ def test_crop_center():
     with pytest.raises(ValueError) as ex:
         ni.crop_center(image, 5, 6)
     assert str(ex.value).startswith('Image too small for crop')
-
-
-@pytest.mark.filterwarnings('ignore:This might be a color image')
-@pytest.mark.filterwarnings('ignore:Possible precision loss')
-def test_normalize_histo(datadirs):
-    imagedir, _, arraydir, processeddir = datadirs
-    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
-    new_img = ni.normalize_histo(img_arr)
-    imagepath = processeddir + 'nut_color_normalize_histo.bmp'
-    assert_equal_image(imagepath, new_img)
 
 
 def test_enhance():
@@ -382,7 +372,8 @@ def test_patch_iter():
         nt.assert_allclose(p, e)
 
 
-@pytest.mark.filterwarnings('ignore:Image is not contiguous and will be copied!')
+@pytest.mark.filterwarnings(
+    'ignore:Image is not contiguous and will be copied!')
 def test_patch_iter_notcontiguous():
     img = np.asfortranarray(np.reshape(np.arange(12), (3, 4)))
 
@@ -520,7 +511,7 @@ def test_annotation2coords():
     with pytest.raises(ValueError) as ex:
         anno = ('point', ((10, 10),))
         list(ni.annotation2coords(img, anno))[0]
-    assert str(ex.value).startswith('Annotation outside image!')
+    assert str(ex.value).startswith('Annotation point:(10, 10) outside image')
 
     with pytest.raises(ValueError) as ex:
         anno = ('invalid', ((1,),))
@@ -566,3 +557,15 @@ def test_annotation2mask():
     mask = ni.annotation2mask(img, anno)
     expected = np.array([[0, 0, 255], [255, 0, 0], [0, 0, 0]], dtype='uint8')
     nt.assert_allclose(mask, expected)
+
+
+# Note: For some reason this test causes the unrelated test_annotation2coords
+# to fail when executed before. This is related to ske.equalize_adapthist but
+# how is unknown.
+@pytest.mark.filterwarnings('ignore:Possible precision loss')
+def test_normalize_histo(datadirs):
+    imagedir, _, arraydir, processeddir = datadirs
+    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
+    new_img = ni.normalize_histo(img_arr)
+    imagepath = processeddir + 'nut_color_normalize_histo.bmp'
+    assert_equal_image(imagepath, new_img)
