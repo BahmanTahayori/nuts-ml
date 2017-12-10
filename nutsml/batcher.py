@@ -149,7 +149,7 @@ def build_image_batch(images, dtype, channelfirst=False):
     if not n:
         raise ValueError('No images to build batch!')
     h, w, c = _targetshape(images[0])  # shape of first(=all) images
-    if c > 4:
+    if c > w or c > h:
         raise ValueError('Channel not at last axis: ' + str((h, w, c)))
     batch = np.empty((n, c, h, w) if channelfirst else (n, h, w, c))
     for i, image in enumerate(images):
