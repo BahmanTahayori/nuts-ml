@@ -41,7 +41,7 @@ def test_build_vector_batch():
 def test_build_tensor_batch():
     tensors = [np.zeros((2, 3, 2)), np.ones((2, 3, 2))]
     batch = nb.build_tensor_batch(tensors, 'uint8')
-    expected = np.vstack(tensors)
+    expected = np.stack(tensors)
     assert batch.dtype == np.uint8
     assert np.array_equal(batch, expected)
 

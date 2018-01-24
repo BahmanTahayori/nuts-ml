@@ -76,27 +76,19 @@ def build_tensor_batch(tensors, dtype):
     Return batch of tensors.
 
     >>> from nutsml.datautil import shapestr
-    >>> tensors = [np.zeros((2, 3, 2)), np.ones((2, 3, 2))]
+    >>> tensors = [np.zeros((3, 3)), np.ones((3, 3))]
     >>> batch = build_tensor_batch(tensors, 'uint8')
     >>> shapestr(batch)
-    '4x3x2'
+    '2x3x3'
 
     >>> print(batch)
-    [[[0 0]
-      [0 0]
-      [0 0]]
+    [[[0 0 0]
+      [0 0 0]
+      [0 0 0]]
     <BLANKLINE>
-     [[0 0]
-      [0 0]
-      [0 0]]
-    <BLANKLINE>
-     [[1 1]
-      [1 1]
-      [1 1]]
-    <BLANKLINE>
-     [[1 1]
-      [1 1]
-      [1 1]]]
+     [[1 1 1]
+      [1 1 1]
+      [1 1 1]]]
 
     :param iterable tensors: Numpy tensors
     :param numpy data type dtype: Data type of batch, e.g. 'uint8'
@@ -105,7 +97,7 @@ def build_tensor_batch(tensors, dtype):
     """
     if not len(tensors):
         raise ValueError('No tensors to build batch!')
-    return np.vstack(tensors).astype(dtype)
+    return np.stack(tensors).astype(dtype)
 
 
 def build_image_batch(images, dtype, channelfirst=False):
