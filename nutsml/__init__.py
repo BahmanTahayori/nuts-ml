@@ -1,4 +1,4 @@
-__version__ = '1.0.33'
+__version__ = '1.0.34'
 
 from nutsml.batcher import BuildBatch
 from nutsml.booster import Boost
