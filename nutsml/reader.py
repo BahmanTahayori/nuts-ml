@@ -150,7 +150,7 @@ class ReadPandas(NutSource):
         >>> ReadPandas('tests/data/pandas_table.csv') >> Collect()
         [(1.0, 4.0), (3.0, 6.0)]
 
-        Note that samples.table contains the original Pandas dataframe and
+        Note that samples.dataframe contains the original Pandas dataframe and
         any Pandas operations can be performed on it.
         
         >>> samples = ReadPandas('tests/data/pandas_table.csv')
