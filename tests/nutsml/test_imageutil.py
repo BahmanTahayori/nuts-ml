@@ -411,7 +411,7 @@ def test_centers_inside():
     nt.assert_allclose(expected, result)
 
     result = ni.centers_inside(centers, image, (4, 3))
-    assert not result
+    assert not result.size
 
 
 def test_sample_mask():
