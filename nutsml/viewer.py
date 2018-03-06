@@ -104,8 +104,9 @@ class ViewImage(NutFunction):  # pragma no coverage
         >>> read_image = ReadImage(1, imagepath)
         >>> samples >> read_image >> ViewImage(1) >> Consume() # doctest: +SKIP
 
-        :param int|tuple imgcols: Index or tuple of indices of data columns
-               containing images (ndarray)
+        :param int|tuple|None imgcols: Index or tuple of indices of data columns
+               containing images (ndarray). Use None if images are provided
+               directly, e.g. [img1, img2, ...] >> ViewImage(None) >> Consume()
         :param tuple layout: Rows and columns of the viewer layout., e.g.
                a layout of (2,3) means that 6 images in the data are
                arranged in 2 rows and 3 columns.
@@ -117,7 +118,7 @@ class ViewImage(NutFunction):  # pragma no coverage
             imshow() function. See
             http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
         """
-        imgcols = as_tuple(imgcols)
+        imgcols = (None,) if imgcols is None else as_tuple(imgcols)
         r, c, n = layout[0], layout[1], len(imgcols)
         if c is None:
             c = n
@@ -141,7 +142,8 @@ class ViewImage(NutFunction):  # pragma no coverage
         """
         for imgcol, ax in zip(self.imgcols, self.axes):
             ax.clear()
-            img = np.squeeze(data[imgcol])  # remove single-dim axis, e.g. MxNx1
+            img = data if imgcol is None else data[imgcol]
+            img = np.squeeze(img)  # remove single-dim axis, e.g. MxNx1
             ax.imshow(img, **self.imargs)
             ax.figure.canvas.draw()
         plt.waitforbuttonpress(timeout=self.pause)  # or plt.pause(self.pause)
