@@ -175,6 +175,7 @@ def group_by(elements, keyfunc, ordered=False):
             groups[key] = [e]
     return groups
 
+
 def col_map(sample, columns, func, *args, **kwargs):
     """
     Map function to given columns of sample and keep other columns
