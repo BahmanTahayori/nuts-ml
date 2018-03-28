@@ -125,8 +125,9 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
     if constraint is None:
         groups = [[s] for s in samples]
     else:
-        # sort to make stable across python 2.x, 3.x
-        groups = sorted(group_by(samples, constraint).values())
+        samples = map(tuple, samples)  # in case of numpy arrays
+        # sort and covert to list to make stable across python 2.x, 3.x
+        groups = sorted(list(group_by(samples, constraint).values()))
     rand.shuffle(groups)
     groups = iter(groups)
     splits = []
