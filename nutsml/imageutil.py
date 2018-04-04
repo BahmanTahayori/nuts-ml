@@ -281,6 +281,36 @@ def crop_square(image):
         return crop(image, 0, dh + mh, iw, ih - dh)
 
 
+def occlude(image, x, y, w, h, color=0):
+    """
+    Occlude image with a rectangular region.
+
+    Occludes an image region with dimensions w,h centered on x,y with the
+    given color.
+
+    >>> import numpy as np
+    >>> image = np.ones((4, 5)).astype('uint8')
+    >>> occlude(image, 2, 2, 2, 3)
+    array([[1, 1, 1, 1, 1],
+           [1, 0, 0, 1, 1],
+           [1, 0, 0, 1, 1],
+           [1, 0, 0, 1, 1]], dtype=uint8)
+
+    :param numpy array image: Numpy array.
+    :param int x: x coordinate for center of occlusion region.
+    :param int y: y coordinate for center of occlusion region.
+    :param int w: width of occlusion region.
+    :param int h: height of occlusion region.
+    :param int|tuple color: gray-scale or RGB color of occlusion.
+    :return: Copy of input image with occluded region.
+    :rtype: numpy array
+    """
+    r, c = int(y - h // 2), int(x - w // 2)
+    image2 = image.copy()
+    image2[r:r + h, c:c + w] = color
+    return image2
+
+
 def normalize_histo(image, gamma=1.0):
     """
     Perform histogram normalization on image.
