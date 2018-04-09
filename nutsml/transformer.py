@@ -61,6 +61,7 @@ class TransformImage(NutFunction):
         'flipud': ni.flipud,
         'shear': ni.shear,
         'elastic': ni.distort_elastic,
+        'occlude': ni.occlude,
     }
 
     def __init__(self, imagecols):
@@ -113,7 +114,7 @@ class TransformImage(NutFunction):
         | :func:`flipud <nutsml.imageutil.flipud>`
         | :func:`shear <nutsml.imageutil.shear>` (shear_factor)
         | :func:`elastic <nutsml.imageutil.distort_elastic>` (smooth, scale, seed)
-
+        | :func:`occlude <nutsml.imageutil.occlude>` (x, y, w, h)
 
         :param string name: Name of the transformation to apply, e.g. 'resize'
         :param args args: Arguments for the transformation, e.g. width and

@@ -286,7 +286,8 @@ def occlude(image, x, y, w, h, color=0):
     Occlude image with a rectangular region.
 
     Occludes an image region with dimensions w,h centered on x,y with the
-    given color.
+    given color. Invalid x,y coordinates will be clipped to ensure complete
+    occlusion rectangle is within the image.
 
     >>> import numpy as np
     >>> image = np.ones((4, 5)).astype('uint8')
@@ -296,16 +297,32 @@ def occlude(image, x, y, w, h, color=0):
            [1, 0, 0, 1, 1],
            [1, 0, 0, 1, 1]], dtype=uint8)
 
+    >>> image = np.ones((4, 4)).astype('uint8')
+    >>> occlude(image, 0.5, 0.5, 0.5, 0.5)
+    array([[1, 1, 1, 1],
+           [1, 0, 0, 1],
+           [1, 0, 0, 1],
+           [1, 1, 1, 1]], dtype=uint8)
+
     :param numpy array image: Numpy array.
-    :param int x: x coordinate for center of occlusion region.
-    :param int y: y coordinate for center of occlusion region.
-    :param int w: width of occlusion region.
-    :param int h: height of occlusion region.
+    :param int|float x: x coordinate for center of occlusion region.
+                        Can be provided as fraction (float) of image width
+    :param int|float y: y coordinate for center of occlusion region.
+                        Can be provided as fraction (float) of image height
+    :param int|float w: width of occlusion region.
+                        Can be provided as fraction (float) of image width
+    :param int|float h: height of occlusion region.
+                        Can be provided as fraction (float) of image height
     :param int|tuple color: gray-scale or RGB color of occlusion.
     :return: Copy of input image with occluded region.
     :rtype: numpy array
     """
+    frac = lambda c, m: int(m * c) if isinstance(c, float) else c
+    iw, ih = image.shape[:2]
+    x, y = frac(x, iw), frac(y, ih)
+    w, h = frac(w, iw), frac(h, ih)
     r, c = int(y - h // 2), int(x - w // 2)
+    r, c = max(min(r, ih - h), 0), max(min(c, iw - w), 0)
     image2 = image.copy()
     image2[r:r + h, c:c + w] = color
     return image2

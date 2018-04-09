@@ -230,6 +230,13 @@ def test_occlude():
     assert occluded.dtype == np.uint8
     nt.assert_allclose(expected, occluded)
 
+    image = np.ones((4, 5)).astype('uint8')
+    occluded = ni.occlude(image, 0.5, 0.5, 3, 2)
+    expected = np.array([[1, 1, 1, 1, 1], [1, 0, 0, 0, 1],
+                         [1, 0, 0, 0, 1], [1, 1, 1, 1, 1]], dtype='uint8')
+    assert occluded.dtype == np.uint8
+    nt.assert_allclose(expected, occluded)
+
     rgb_arr = np.ones((2, 2, 3)).astype('uint8')
     color = (2, 3, 4)
     occluded = ni.occlude(rgb_arr, 1, 1, 1, 1, color=color)
