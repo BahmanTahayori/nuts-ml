@@ -644,7 +644,7 @@ def distort_elastic(image, smooth=10.0, scale=100.0, seed=0):
     :param float smooth: Smoothes the distortion.
     :param float scale: Scales the distortion.
     :param int seed: Seed for random number generator. Ensures that for the
-      same seed images are distorted identically.
+                     same seed images are distorted identically.
     :return: Distorted image with same shape as input image.
     :rtype: ndarray
     """
