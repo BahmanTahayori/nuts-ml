@@ -640,7 +640,7 @@ def distort_elastic(image, smooth=10.0, scale=100.0, seed=0):
     in Proc. of the International Conference on Document Analysis and
     Recognition, 2003.
 
-    :param ndarayy image: Image of shape [h,w] or [h,w,c]
+    :param ndarray image: Image of shape [h,w] or [h,w,c]
     :param float smooth: Smoothes the distortion.
     :param float scale: Scales the distortion.
     :param int seed: Seed for random number generator. Ensures that for the

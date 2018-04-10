@@ -178,7 +178,7 @@ class AugmentImage(Nut):
         ...     .by('rotate', 0.5, [0, 360]))
 
 
-        See :func:`nutsml.transformer.AugmentImage.by` for full list of 
+        See :func:`nutsml.transformer.TransformImage.by` for full list of
         available augmentations.
 
         Note that each augmentation is applied independently. This is in
