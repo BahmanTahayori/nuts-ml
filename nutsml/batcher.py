@@ -217,7 +217,9 @@ class BuildBatch(Nut):
 
     def by(self, col, name, *args, **kwargs):
         """
-        Specify and add batch columns to create
+        Specify and add batch columns to create batch.
+
+        DEPREACTED. Use .input() and .output() instead.
 
         :param int col: column of the sample to extract and to create a
           batch column from.
