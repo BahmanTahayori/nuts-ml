@@ -39,7 +39,7 @@ def Diff(sample):
 
 
 def train():
-    print('\n\ntraining...')
+    print('\n\nTRAIN...')
     rerange = TransformImage((0, 1)).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE)
                    .input(0, 'image', 'float32')
@@ -61,7 +61,7 @@ def train():
 
 
 def predict():
-    print('\n\npredicting...')
+    print('\n\nPREDICT...')
     rerange = TransformImage((0, 1)).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE).input(0, 'image', 'float32'))
 
@@ -79,14 +79,14 @@ def predict():
      ViewImage((0, 1, 2), pause=0.5) >> Consume())
 
 
-def show_images():
-    print('\n\nshowing images...')
+def view():
+    print('\n\nVIEW...')
     train_samples, test_samples = load_samples()
     (train_samples >> Take(10) >> PrintColType() >> ViewImage(0, pause=1) >>
      Consume())
 
 
 if __name__ == "__main__":
-    show_images()
+    view()
     train()
     predict()
