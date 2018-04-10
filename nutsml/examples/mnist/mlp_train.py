@@ -53,8 +53,8 @@ def train():
                  .by('rerange', 0, 255, 0, 1, 'float32')
                  .by('flatten'))
     build_batch = (BuildBatch(BATCH_SIZE)
-                   .by(0, 'vector', 'float32')
-                   .by(1, 'one_hot', 'uint8', NUM_CLASSES))
+                   .input(0, 'vector', 'float32')
+                   .output(1, 'one_hot', 'uint8', NUM_CLASSES))
     plot = PlotLines((0, 1), layout=(2, 1), every_sec=1)
 
     print('loading data...')

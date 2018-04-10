@@ -101,19 +101,22 @@ def test_BuildBatch():
     samples = zip(numbers, vectors, images, class_ids)
 
     build_batch = (nb.BuildBatch(2, prefetch=0)
-                   .by(0, 'number', float)
-                   .by(1, 'vector', np.uint8)
-                   .by(2, 'image', np.uint8, False)
-                   .by(3, 'one_hot', 'uint8', 3))
+                   .input(0, 'number', float)
+                   .input(1, 'vector', np.uint8)
+                   .input(2, 'image', np.uint8, False)
+                   .output(3, 'one_hot', 'uint8', 3))
     batches = samples >> build_batch >> Collect()
     assert len(batches) == 2
 
     batch = batches[0]
-    assert len(batch) == 4, 'Expect four columns in batch'
-    assert np.array_equal(batch[0], nb.build_number_batch(numbers[:2], float))
-    assert np.array_equal(batch[1], nb.build_vector_batch(vectors[:2], 'uint8'))
-    assert np.array_equal(batch[2], nb.build_image_batch(images[:2], 'uint8'))
-    assert np.array_equal(batch[3],
+    assert len(batch) == 2, 'Expect inputs and outputs'
+    ins, outs = batch
+    assert len(ins) == 3, 'Expect three input columns in batch'
+    assert len(outs) == 1, 'Expect one output column in batch'
+    assert np.array_equal(ins[0], nb.build_number_batch(numbers[:2], float))
+    assert np.array_equal(ins[1], nb.build_vector_batch(vectors[:2], 'uint8'))
+    assert np.array_equal(ins[2], nb.build_image_batch(images[:2], 'uint8'))
+    assert np.array_equal(outs[0],
                           nb.build_one_hot_batch(class_ids[:2], 'uint8', 3))
 
 
@@ -123,8 +126,8 @@ def test_BuildBatch_fmt():
     samples = zip(numbers1, numbers2)
     build_batch = (nb.BuildBatch(3, prefetch=0,
                                  fmt=lambda t: ((t[0], t[1], t[0]), t[1]))
-                   .by(0, 'number', float)
-                   .by(1, 'number', float))
+                   .input(0, 'number', float)
+                   .input(1, 'number', float))
     batches = samples >> build_batch >> Collect()
     assert len(batches) == 1
     ((a, b, c), d) = batches[0]
@@ -141,7 +144,7 @@ def test_BuildBatch_exceptions():
 
     with pytest.raises(ValueError) as ex:
         build_batch = (nb.BuildBatch(2, prefetch=0)
-                       .by(0, 'number', float)
-                       .by(1, 'invalid', 'uint8', 3))
+                       .input(0, 'number', float)
+                       .output(1, 'invalid', 'uint8', 3))
         samples >> build_batch >> Collect()
     assert str(ex.value).startswith('Invalid builder')

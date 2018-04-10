@@ -2,7 +2,7 @@
 .. module:: batcher
    :synopsis: Collecting samples in mini-batches for GPU-based training.
 """
-
+import warnings
 import numpy as np
 import nutsml.imageutil as ni
 
@@ -172,27 +172,37 @@ class BuildBatch(Nut):
         >>> samples = zip(numbers, images, class_ids)
 
         >>> build_batch = (BuildBatch(2, prefetch=0)
-        ...                .by(0, 'number', float)
-        ...                .by(1, 'image', np.uint8, True)
-        ...                .by(2, 'one_hot', np.uint8, 3))
+        ...                .input(0, 'number', float)
+        ...                .input(1, 'image', np.uint8, True)
+        ...                .output(2, 'one_hot', np.uint8, 3))
         >>> batches = samples >> build_batch >> Collect()
 
-        The structure of the output batch depends on fmt function used. If None,
-        output is a list of np.arrays. The following example shows how to
-        build a batch with two images for input and a one-hot vector as target:
+        Sample columns can be ignored or reused. Assuming an autoencoder, one
+        might which to use the sample image as input and output:
+
+        >>> build_batch = (BuildBatch(2, prefetch=0)
+        ...                .input(1, 'image', np.uint8, True)
+        ...                .output(1, 'image', np.uint8, True))
+        >>> batches = samples >> build_batch >> Collect()
+
+        A batch typically is of the format [[inputs], [outputs]], e.g. in the
+        firs case above [[number, image], [one_hot]], where each of the columns
+        is a Numpy array. If a different structure is required a format function
+        can be specified. The following example shows how to build a batch as
+        as tuple of columns instead of a list.
 
         >>> samples = zip(images, images, class_ids)
         >>> build_batch = (BuildBatch(2, prefetch=0,
-        ...                fmt=lambda b: [[b[0], b[1]], b[2]])
-        ...                .by(0, 'image', np.uint8, True)
-        ...                .by(1, 'image', np.uint8, True)
-        ...                .by(2, 'one_hot', np.uint8, 3))
+        ...                fmt=lambda b: (b[0], b[1], b[2]) )
+        ...                .input(0, 'image', np.uint8, True)
+        ...                .input(1, 'image', np.uint8, True)
+        ...                .input(2, 'one_hot', np.uint8, 3))
         >>> batches = samples >> build_batch >> Collect()
 
         :param int batchsize: Size of batch = number of rows in batch.
-            Number of columns is determined by colspec.
         :param int prefetch: Number of batches to prefetch. This speeds up
-           GPU based training.
+           GPU based training, since one batch is built on CPU while the
+           another is procesed on the GPU.
         :param function|None fmt: Function to format output.
         """
         self.batchsize = batchsize
@@ -224,7 +234,52 @@ class BuildBatch(Nut):
         :return: instance of BuildBatch
         :rtype: BuildBatch
         """
-        self.colspecs.append((col, name, args, kwargs))
+        warnings.warn("Use .input() or .output() instead.", DeprecationWarning)
+        self.colspecs.append((col, name, True, args, kwargs))
+        return self
+
+    def input(self, col, name, *args, **kwargs):
+        """
+        Specify and add input columns for batch to create
+
+        :param int col: column of the sample to extract and to create a
+          batch input column from.
+        :param string name: Name of the column function to apply to create
+            a batch column, e.g. 'image'
+            See the following functions for more details:
+            'image': nutsflow.batcher.build_image_batch
+            'number': nutsflow.batcher.build_number_batch
+            'vector': nutsflow.batcher.build_vector_batch
+            'tensor': nutsflow.batcher.build_tensor_batch
+            'one_hot': nutsflow.batcher.build_one_hot_batch
+        :param args args: Arguments for column function, e.g. dtype
+        :param kwargs kwargs: Keyword arguments for column function
+        :return: instance of BuildBatch
+        :rtype: BuildBatch
+        """
+        self.colspecs.append((col, name, True, args, kwargs))
+        return self
+
+    def output(self, col, name, *args, **kwargs):
+        """
+        Specify and add output columns for batch to create
+
+        :param int col: column of the sample to extract and to create a
+          batch output column from.
+        :param string name: Name of the column function to apply to create
+            a batch column, e.g. 'image'
+            See the following functions for more details:
+            'image': nutsflow.batcher.build_image_batch
+            'number': nutsflow.batcher.build_number_batch
+            'vector': nutsflow.batcher.build_vector_batch
+            'tensor': nutsflow.batcher.build_tensor_batch
+            'one_hot': nutsflow.batcher.build_one_hot_batch
+        :param args args: Arguments for column function, e.g. dtype
+        :param kwargs kwargs: Keyword arguments for column function
+        :return: instance of BuildBatch
+        :rtype: BuildBatch
+        """
+        self.colspecs.append((col, name, False, args, kwargs))
         return self
 
     def _batch_generator(self, iterable):
@@ -234,13 +289,18 @@ class BuildBatch(Nut):
             if not batchsamples:
                 break
             cols = list(zip(*batchsamples))  # flip rows to cols
-            batch = []  # columns of batch
+            batch = [[], []]  # in, out columns of batch
             for colspec in self.colspecs:
-                col, func, args, kwargs = colspec
+                col, func, isinput, args, kwargs = colspec
                 if not func in self.builder:
                     raise ValueError('Invalid builder: ' + func)
-                batch.append(self.builder[func](cols[col], *args, **kwargs))
-            yield batch if self.fmt is None else self.fmt(batch)
+                coldata = self.builder[func](cols[col], *args, **kwargs)
+                batch[0 if isinput else 1].append(coldata)
+            if not batch[1]:  # no output (prediction phase)
+                batch = batch[0]  # flatten and take only inputs
+            if self.fmt:  # format function for batch given
+                batch = self.fmt(batch)
+            yield batch
 
     def __rrshift__(self, iterable):
         """

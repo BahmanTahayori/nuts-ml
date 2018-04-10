@@ -44,8 +44,8 @@ def test_Boost():
     samples = negatives + positives
 
     build_batch = (BuildBatch(3, prefetch=0)
-                   .by(0, 'number', 'uint8')
-                   .by(1, 'one_hot', 'uint8', 2))
+                   .input(0, 'number', 'uint8')
+                   .input(1, 'one_hot', 'uint8', 2))
 
     network = FakeNetwork(predict_all_positive)
     boost = Boost(build_batch, network)

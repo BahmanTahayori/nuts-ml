@@ -27,8 +27,8 @@ def load_samples():
     from keras.datasets import mnist
     (x_train, _), (x_test, _) = mnist.load_data()
     h, w, c = INPUT_SHAPE
-    x_train = np.reshape(x_train, (len(x_train), h, w, c))
-    x_test = np.reshape(x_test, (len(x_test), h, w, c))
+    x_train = np.reshape(x_train, (len(x_train), h, w))
+    x_test = np.reshape(x_test, (len(x_test), h, w))
     return list(zip(x_train, x_train)), list(zip(x_test, x_test))
 
 
@@ -36,8 +36,8 @@ def train():
     print('creating nuts...')
     rerange = TransformImage((0, 1)).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE)
-                   .by(0, 'image', 'float32')
-                   .by(1, 'image', 'float32'))
+                   .input(0, 'image', 'float32')
+                   .output(1, 'image', 'float32'))
 
     print('creating network and loading data...')
     network = create_network()
@@ -62,7 +62,7 @@ def predict():
 
     print('creating nuts...')
     rerange = TransformImage((0, 1)).by('rerange', 0, 255, 0, 1, 'float32')
-    build_batch = (BuildBatch(BATCH_SIZE).by(0, 'image', 'float32'))
+    build_batch = (BuildBatch(BATCH_SIZE).input(0, 'image', 'float32'))
 
     print('creating network ...')
     network = create_network()

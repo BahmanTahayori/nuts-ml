@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     transform = TransformImage(0).by('rerange', 0, 255, 0, 1, 'float32')
     show_image = ViewImageAnnotation(0, 1, pause=1, figsize=(3, 3))
-    pred_batch = BuildBatch(BATCH_SIZE).by(0, 'image', 'float32')
+    pred_batch = BuildBatch(BATCH_SIZE).input(0, 'image', 'float32')
 
     print('loading network...')
     network = create_network()

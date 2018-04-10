@@ -58,8 +58,8 @@ def train():
     transform = (TransformImage(0)
                  .by('rerange', 0, 255, 0, 1, 'float32'))
     build_batch = (BuildBatch(BATCH_SIZE)
-                   .by(0, 'image', 'float32')
-                   .by(1, 'one_hot', 'uint8', NUM_CLASSES))
+                   .input(0, 'image', 'float32')
+                   .output(1, 'one_hot', 'uint8', NUM_CLASSES))
     plot = PlotLines((0, 1), layout=(2, 1), every_sec=1)
 
     print('loading data...')

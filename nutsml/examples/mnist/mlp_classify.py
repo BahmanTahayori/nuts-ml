@@ -19,7 +19,7 @@ if __name__ == "__main__":
                  .by('rerange', 0, 255, 0, 1, 'float32')
                  .by('flatten'))
     show_image = ViewImageAnnotation(0, (1, 2), pause=1, figsize=(4, 4))
-    pred_batch = BuildBatch(BATCH_SIZE).by(0, 'vector', 'float32')
+    pred_batch = BuildBatch(BATCH_SIZE).input(0, 'vector', 'float32')
 
     print('loading network...')
     network = create_network()
