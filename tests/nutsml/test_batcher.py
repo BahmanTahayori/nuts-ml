@@ -93,6 +93,7 @@ def test_build_image_batch_exceptions():
     assert str(ex.value).startswith('Images vary in shape')
 
 
+@pytest.mark.filterwarnings("ignore:'by()' is deprecated")
 def test_BuildBatch_deprecated():
     numbers = [4.1, 3.2, 1.1]
     vectors = [np.array([1, 2, 3]), np.array([2, 3, 4]), np.array([3, 4, 5])]

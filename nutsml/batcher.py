@@ -219,7 +219,7 @@ class BuildBatch(Nut):
         """
         Specify and add batch columns to create batch.
 
-        DEPREACTED. Use .input() and .output() instead.
+        DEPRECATED: Use input() and output() instead.
 
         :param int col: column of the sample to extract and to create a
           batch column from.
@@ -236,7 +236,8 @@ class BuildBatch(Nut):
         :return: instance of BuildBatch
         :rtype: BuildBatch
         """
-        warnings.warn("Use .input() or .output() instead.", DeprecationWarning)
+        warnings.warn("'by()' is deprecated. Use input() or output() instead.",
+                      DeprecationWarning)
         self.colspecs.append((col, name, True, args, kwargs))
         return self
 
