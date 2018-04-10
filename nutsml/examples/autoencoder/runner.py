@@ -27,13 +27,19 @@ def load_samples():
     from keras.datasets import mnist
     (x_train, _), (x_test, _) = mnist.load_data()
     h, w, c = INPUT_SHAPE
-    x_train = np.reshape(x_train, (len(x_train), h, w))
-    x_test = np.reshape(x_test, (len(x_test), h, w))
+    x_train = np.reshape(x_train, (len(x_train), h, w, c))
+    x_test = np.reshape(x_test, (len(x_test), h, w, c))
     return list(zip(x_train, x_train)), list(zip(x_test, x_test))
 
 
+@nut_function
+def Diff(sample):
+    x, y = sample
+    return x, y, abs(x - y)  # Add difference image to sample
+
+
 def train():
-    print('creating nuts...')
+    print('\n\ntraining...')
     rerange = TransformImage((0, 1)).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE)
                    .input(0, 'image', 'float32')
@@ -55,12 +61,7 @@ def train():
 
 
 def predict():
-    @nut_function
-    def Diff(sample):
-        x, y = sample
-        return x, y, abs(x - y)  # Adds difference image to sample
-
-    print('creating nuts...')
+    print('\n\npredicting...')
     rerange = TransformImage((0, 1)).by('rerange', 0, 255, 0, 1, 'float32')
     build_batch = (BuildBatch(BATCH_SIZE).input(0, 'image', 'float32'))
 
@@ -79,7 +80,7 @@ def predict():
 
 
 def show_images():
-    print('showing images...')
+    print('\n\nshowing images...')
     train_samples, test_samples = load_samples()
     (train_samples >> Take(10) >> PrintColType() >> ViewImage(0, pause=1) >>
      Consume())
