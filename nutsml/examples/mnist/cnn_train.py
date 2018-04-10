@@ -11,9 +11,9 @@ use nuts for the data-preprocessing.
 from __future__ import print_function
 
 from six.moves import zip, range
-from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick, Mean
+from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick, Mean, NOP
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
-                    PlotLines)
+                    PrintColType, PlotLines)
 
 PICK = 0.1  # Pick 10% of the data for a quick trial
 NUM_EPOCHS = 10
@@ -26,8 +26,8 @@ def load_samples():
     from keras.datasets import mnist
     h, w, c = INPUT_SHAPE
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
-    x_train = x_train.reshape(x_train.shape[0], h, w, c)
-    x_test = x_test.reshape(x_test.shape[0], h, w, c)
+    x_train = x_train.reshape(x_train.shape[0], h, w)
+    x_test = x_test.reshape(x_test.shape[0], h, w)
     return list(zip(x_train, y_train)), list(zip(x_test, y_test))
 
 
@@ -54,7 +54,7 @@ def create_network():
 def train():
     from keras.metrics import categorical_accuracy
 
-    augment = AugmentImage(0).by(10, 'elastic', [5, 5], [100, 100], [0, 100])
+    augment = AugmentImage(0).by('elastic', 10, [5, 5], [100, 100], [0, 100])
     transform = (TransformImage(0)
                  .by('rerange', 0, 255, 0, 1, 'float32'))
     build_batch = (BuildBatch(BATCH_SIZE)
