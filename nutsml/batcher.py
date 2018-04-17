@@ -71,32 +71,48 @@ def build_vector_batch(vectors, dtype):
     return np.vstack(vectors).astype(dtype)
 
 
-def build_tensor_batch(tensors, dtype):
+def build_tensor_batch(tensors, dtype, axes=None):
     """
     Return batch of tensors.
 
     >>> from nutsml.datautil import shapestr
-    >>> tensors = [np.zeros((3, 3)), np.ones((3, 3))]
+    >>> tensors = [np.zeros((2, 3)), np.ones((2, 3))]
     >>> batch = build_tensor_batch(tensors, 'uint8')
     >>> shapestr(batch)
-    '2x3x3'
+    '2x2x3'
 
     >>> print(batch)
     [[[0 0 0]
-      [0 0 0]
       [0 0 0]]
     <BLANKLINE>
      [[1 1 1]
-      [1 1 1]
       [1 1 1]]]
+
+
+    >>> batch = build_tensor_batch(tensors, 'uint8', axes = (1, 0))
+    >>> shapestr(batch)
+    '2x3x2'
+
+    >>> print(batch)
+    [[[0 0]
+      [0 0]
+      [0 0]]
+    <BLANKLINE>
+     [[1 1]
+      [1 1]
+      [1 1]]]
 
     :param iterable tensors: Numpy tensors
     :param numpy data type dtype: Data type of batch, e.g. 'uint8'
-    :return: vstack of tensors
+    :param tuple|None axes: axes order, e.g. to move a channel axis to the
+      last position. (see numpy transpose for details)
+    :return: stack of tensors, with batch axis first.
     :rtype: numpy.array
     """
     if not len(tensors):
         raise ValueError('No tensors to build batch!')
+    if axes:
+        tensors = [np.transpose(t, axes) for t in tensors]
     return np.stack(tensors).astype(dtype)
 
 

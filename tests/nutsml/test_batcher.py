@@ -45,6 +45,11 @@ def test_build_tensor_batch():
     assert batch.dtype == np.uint8
     assert np.array_equal(batch, expected)
 
+    batch = nb.build_tensor_batch(tensors, float, axes=(1, 0, 2))
+    expected = np.stack([np.transpose(t, (1, 0, 2)) for t in tensors])
+    assert batch.dtype == float
+    assert np.array_equal(batch, expected)
+
     with pytest.raises(ValueError) as ex:
         nb.build_tensor_batch([], 'uint8')
     assert str(ex.value).startswith('No tensors ')
