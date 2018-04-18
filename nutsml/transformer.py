@@ -175,6 +175,7 @@ class AugmentImage(Nut):
         ...     .by('contrast', 0.5, [0.7, 1.3])
         ...     .by('fliplr', 0.5)
         ...     .by('flipud', 0.5)
+        ...     .by('occlude', 0.5, [0, 1], [0, 1],[0.1, 0.5], [0.1, 0.5])
         ...     .by('rotate', 0.5, [0, 360]))
 
 
