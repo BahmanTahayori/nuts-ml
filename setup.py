@@ -53,11 +53,11 @@ setup(
         'xlrd >= 1.0.0',
         'dplython >= 0.0.7',
         'numpy >= 1.11.1',
+        'pandas < 0.21.0',  # due Python 3.4 support
         'matplotlib >= 1.5.1',
         'scipy >= 0.17.0',
         'pillow >= 3.0.0',
         'scikit-image >= 0.12.3',
-        'pandas < 0.21',  # due Python 3.4 support
         'pytest >= 3.0.3',
     ],
     tests_require=['pytest >= 3.0.3'],
