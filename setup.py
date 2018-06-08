@@ -53,7 +53,7 @@ setup(
         'xlrd >= 1.0.0',
         'dplython >= 0.0.7',
         'numpy >= 1.11.1',
-        'pandas < 0.21.0',  # due Python 3.4 support
+        'pandas == 0.20.0',  # due Python 3.4 support
         'matplotlib >= 1.5.1',
         'scipy >= 0.17.0',
         'pillow >= 3.0.0',
