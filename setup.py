@@ -57,7 +57,7 @@ setup(
         'scipy >= 0.17.0',
         'pillow >= 3.0.0',
         'scikit-image >= 0.12.3',
-        'pandas >= 0.18.1',
+        'pandas < 0.21',  # due Python 3.4 support
         'pytest >= 3.0.3',
     ],
     tests_require=['pytest >= 3.0.3'],
