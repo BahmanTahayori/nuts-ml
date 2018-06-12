@@ -16,7 +16,6 @@ before_install:
   - pip install --upgrade pip
   - pip install pytest pytest-cov
   - pip install coveralls
-  - pip install nutsflow
 install: 
   - pip install nutsml
 script:
