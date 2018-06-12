@@ -46,14 +46,14 @@ setup(
     author='Stefan Maetschke',
     author_email='stefan.maetschke@gmail.com',
     description='Flow-based data pre-processing for Machine Learning',
-    setup_requires=[
+    install_requires=[
         'six >= 1.10.0',
         'nutsflow >= 1.0.28',
         'pyyaml >= 3.12',
         'xlrd >= 1.0.0',
         'dplython >= 0.0.7',
         'numpy >= 1.11.1',
-        'pandas <= 0.18.1',  # < 0.21.0 due Python 3.4 support
+        #'pandas <= 0.18.1',  # < 0.21.0 due Python 3.4 support
         'matplotlib >= 1.5.1',
         'scipy >= 0.17.0',
         'pillow >= 3.0.0',
