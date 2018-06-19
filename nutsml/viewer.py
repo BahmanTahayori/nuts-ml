@@ -214,6 +214,7 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         :return: unchanged input data
         :rtype: tuple
         """
+
         img = np.squeeze(data[self.imgcol])
         ax = self.axes
         ax.clear()
@@ -222,7 +223,8 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
         for acol in self.annocols:
             annos = data[acol]
             if isinstance(annos, (list, tuple)):
-                for anno in iu.annotation2pltpatch(annos, **self._shapeprops()):
+                props = self._shapeprops()
+                for anno in iu.annotation2pltpatch(annos, **props):
                     ax.add_patch(anno)
             else:
                 fs = ax.get_window_extent().height / 22
@@ -234,5 +236,5 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
                         backgroundcolor=self._textprop('backgroundcolor'),
                         size=fs, family='monospace')
         ax.figure.canvas.draw()
-        plt.waitforbuttonpress(timeout=self.pause)  # or plt.pause(self.pause)
+        plt.waitforbuttonpress(timeout=self.pause)
         return data
