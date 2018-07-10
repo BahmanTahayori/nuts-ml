@@ -8,6 +8,7 @@ import pytest
 import numpy as np
 import nutsml.batcher as nb
 
+from pytest import approx
 from nutsflow import Collect
 
 
@@ -178,3 +179,19 @@ def test_BuildBatch_exceptions():
                        .output(1, 'invalid', 'uint8', 3))
         samples >> build_batch >> Collect()
     assert str(ex.value).startswith('Invalid builder')
+
+
+def test_Mixup():
+    samples = list(zip([1, 2, 3], [4, 5, 6]))
+    build_batch = (nb.BuildBatch(3, prefetch=0)
+                   .input(0, 'number', float)
+                   .output(1, 'number', float))
+    mixup = nb.Mixup(1.0)
+    batches = samples >> build_batch >> mixup >> Collect()
+
+    for input, output in batches:
+        input, output = input[0], output[0]
+        assert min(input) >= 1 and max(input) <= 3
+        assert min(output) >= 4 and max(output) <= 6
+        ri, ro = input[0] - samples[0][0], output[0] - samples[0][1]
+        assert approx(ri, 1e-3) == ro

@@ -60,13 +60,13 @@ def test_ReadImage():
     nt.assert_equal(img_samples[1][0], arr1)
 
     samples = [('label', 'tests/data/img_formats/nut_color.jpg')]
-    img_samples = samples >> ReadImage(1, as_grey=False) >> Collect()
+    img_samples = samples >> ReadImage(1, as_gray=False) >> Collect()
     assert img_samples[0][1].shape == (213, 320, 3)
-    img_samples = samples >> ReadImage(1, as_grey=True) >> Collect()
+    img_samples = samples >> ReadImage(1, as_gray=True) >> Collect()
     assert img_samples[0][1].shape == (213, 320)
 
     samples = ['tests/data/img_formats/nut_color.jpg']
-    img_samples = samples >> ReadImage(None, as_grey=False) >> Collect()
+    img_samples = samples >> ReadImage(None, as_gray=False) >> Collect()
     assert img_samples[0][0].shape == (213, 320, 3)
 
     samples = ['tests/data/img_formats/nut_color.jpg']
