@@ -73,7 +73,7 @@ def ReadLabelDirs(basedir, filepattern='*', exclude='_*'):
 
 
 @nut_function
-def ReadImage(sample, columns, pathfunc=None, as_grey=False, dtype='uint8'):
+def ReadImage(sample, columns, pathfunc=None, as_gray=False, dtype='uint8'):
     """
     Load images for samples.
 
@@ -111,7 +111,7 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False, dtype='uint8'):
       lambda sample: 'tests/data/img_formats/{1}.jpg'.format(*sample)
       or
       None, in this case the image id is take as filepath.
-    :param bool as_grey: If true, load as grayscale image.
+    :param bool as_gray: If true, load as grayscale image.
     :param dtype dtype: Numpy data type of the image.
     :return: Sample with image ids replaced by image (=ndarray)
             of shape (h, w, c) or (h, w)
@@ -126,7 +126,7 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False, dtype='uint8'):
             filepath = pathfunc(sample)
         else:
             filepath = fileid
-        return load_image(filepath, as_grey=as_grey, dtype=dtype)
+        return load_image(filepath, as_gray=as_gray, dtype=dtype)
 
     if columns is None:
         return (load(sample),)  # image as tuple with one element

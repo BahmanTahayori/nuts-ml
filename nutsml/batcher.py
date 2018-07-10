@@ -6,6 +6,7 @@ import warnings
 import numpy as np
 import nutsml.imageutil as ni
 
+from nutsflow import nut_function
 from nutsflow.base import Nut
 from nutsflow.iterfunction import take, PrefetchIterator
 
@@ -335,3 +336,35 @@ class BuildBatch(Nut):
         prefetch = self.prefetch
         batch_gen = self._batch_generator(iter(iterable))
         return PrefetchIterator(batch_gen, prefetch) if prefetch else batch_gen
+
+
+@nut_function
+def Mixup(batch, alpha):
+    """
+    Mixup produces random interpolations between data and labels.
+
+    Usage:
+    ... >> BuildBatch() >> Mixup(0.1) >> network.train() >> ...
+
+    Implementation based on the following paper:
+    mixup: Beyond Empirical Risk Minimization
+    https://arxiv.org/abs/1710.09412
+
+    :param list batch: Batch consisting of list of input data and list of
+           output data, where data must be numeric, e.g. images and
+           one-hot-encoded class labels that can be interpolated between.
+    :param float alpha: Control parameter for beta distribution the
+           interpolation factors are sampled from. Range: [0,...,1]
+    :return:
+    """
+    if alpha <= 0:
+        return batch
+
+    ri = np.arange(len(batch[0][0]))
+    np.random.shuffle(ri)
+    lam = np.random.beta(alpha, alpha)
+    mixup = lambda data: lam * data + (1 - lam) * data[ri]
+
+    inputs = [mixup(i) for i in batch[0]]
+    outputs = [mixup(o) for o in batch[1]]
+    return [inputs, outputs]
