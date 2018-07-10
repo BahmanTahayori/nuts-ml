@@ -355,6 +355,7 @@ def Mixup(batch, alpha):
            one-hot-encoded class labels that can be interpolated between.
     :param float alpha: Control parameter for beta distribution the
            interpolation factors are sampled from. Range: [0,...,1]
+           For alpha <= 0 no mixup is performed.
     :return:
     """
     if alpha <= 0:

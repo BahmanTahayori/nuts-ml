@@ -182,10 +182,21 @@ def test_BuildBatch_exceptions():
 
 
 def test_Mixup():
-    samples = list(zip([1, 2, 3], [4, 5, 6]))
+    numbers1 = [1, 2, 3]
+    numbers2 = [4, 5, 6]
+    samples = list(zip(numbers1, numbers2))
     build_batch = (nb.BuildBatch(3, prefetch=0)
                    .input(0, 'number', float)
                    .output(1, 'number', float))
+
+    # no mixup, return original batch
+    mixup = nb.Mixup(0.0)
+    batches = samples >> build_batch >> mixup >> Collect()
+    inputs, outputs = batches[0]
+    assert list(inputs[0]) == numbers1
+    assert list(outputs[0]) == numbers2
+
+    # mixup with alpaha=1.0
     mixup = nb.Mixup(1.0)
     batches = samples >> build_batch >> mixup >> Collect()
 
