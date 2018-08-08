@@ -203,7 +203,7 @@ class BuildBatch(Nut):
         >>> batches = samples >> build_batch >> Collect()
 
         A batch typically is of the format [[inputs], [outputs]], e.g. in the
-        firs case above [[number, image], [one_hot]], where each of the columns
+        first case above [[number, image], [one_hot]], where each of the columns
         is a Numpy array. If a different structure is required a format function
         can be specified. The following example shows how to build a batch as
         as tuple of columns instead of a list.
@@ -219,7 +219,7 @@ class BuildBatch(Nut):
         :param int batchsize: Size of batch = number of rows in batch.
         :param int prefetch: Number of batches to prefetch. This speeds up
            GPU based training, since one batch is built on CPU while the
-           another is procesed on the GPU.
+           another is processed on the GPU.
         :param function|None fmt: Function to format output.
         """
         self.batchsize = batchsize
