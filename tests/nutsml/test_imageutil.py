@@ -54,7 +54,7 @@ def test_load_image(datadirs):
         assert np.min(img) >= 0
 
     for filepath in glob(pathpattern):
-        img = ni.load_image(filepath, as_gray=True)
+        img = ni.load_image(filepath, as_grey=True)
         assert img.shape == (h, w)
         assert np.max(img) <= 255
         assert np.min(img) >= 0
