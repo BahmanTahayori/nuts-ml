@@ -8,7 +8,7 @@ import random as rnd
 
 from nutsflow import nut_function, nut_sink, NutFunction
 from nutsflow.common import StableRandom
-from nutsml.datautil import group_by
+from nutsml.datautil import group_by, shuffle_sublists
 
 
 @nut_function
@@ -63,88 +63,6 @@ def PartitionByCol(iterable, column, values):
     """
     groups = group_by(iterable, lambda sample: sample[column])
     return tuple(groups.get(v, []) for v in values)
-
-
-@nut_sink
-def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
-    """
-    Randomly split iterable into partitions.
-
-    For the same input data the same split is created every time and is stable
-    across different Python version 2.x or 3.x. A random number generator
-    can be provided to create varying splits.
-
-    >>> train, val = range(10) >> SplitRandom(ratio=0.7)
-    >>> train, val
-    ([6, 3, 1, 7, 0, 2, 4], [5, 9, 8])
-
-    >>> range(10) >> SplitRandom(ratio=0.7)  # Same split again
-    [[6, 3, 1, 7, 0, 2, 4], [5, 9, 8]]
-
-    >>> train, val, test = range(10) >> SplitRandom(ratio=(0.6, 0.3, 0.1))
-    >>> train, val, test
-    ([6, 1, 4, 0, 3, 2], [8, 7, 9], [5])
-
-    >>> data = zip('aabbccddee', range(10))
-    >>> same_letter = lambda t: t[0]
-    >>> train, val = data >> SplitRandom(ratio=0.6, constraint=same_letter)
-    >>> train
-    [('a', 1), ('a', 0), ('d', 7), ('b', 2), ('d', 6), ('b', 3)]
-    >>> val
-    [('c', 5), ('e', 8), ('e', 9), ('c', 4)]
-
-    :param iterable iterable: Iterable over anything. Will be consumed!
-    :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7
-            means 70%, 30% split.
-            Alternatively a list or ratios can be provided, e.g.
-            ratio=(0.6, 0.3, 0.1). Note that ratios must sum up to one.
-    :param function|None constraint: Function that returns key the elements of
-        the iterable are grouped by before partitioning. Useful to ensure
-        that a partition contains related elements, e.g. left and right eye
-        images are not scattered across partitions.
-        Note that constrains have precedence over ratios.
-    :param Random|None rand: Random number generator. The default None
-            ensures that the same split is created every time SplitRandom
-            is called. This is important when continuing an interrupted
-            training session or running the same training on machines with
-            different Python versions. Note that Python's random.Random(0)
-            generates different number for Python 2.x and 3.x!
-    :return: partitions of iterable with sizes according to provided ratios.
-    :rtype: (list, list, ...)
-    """
-    rand = StableRandom(0) if rand is None else rand
-    samples = list(iterable)
-    if hasattr(ratio, '__iter__'):
-        ratios = tuple(ratio)
-        if abs(sum(ratios) - 1.0) > 1e-6:
-            raise ValueError('Ratios must sum up to one: ' + str(ratios))
-    else:
-        ratios = (ratio, 1.0 - ratio)
-    ns = [int(len(samples) * r) for r in ratios]
-
-    if constraint is None:
-        groups = [[s] for s in samples]
-    else:
-        samples = map(tuple, samples)  # in case of numpy arrays
-        # sort and covert to list to make stable across python 2.x, 3.x
-        groups = sorted(list(group_by(samples, constraint).values()))
-    rand.shuffle(groups)
-    groups = iter(groups)
-    splits = []
-
-    def append(split):
-        rand.shuffle(split)
-        splits.append(split)
-
-    for n in ns[:-1]:
-        split = []
-        for group in groups:
-            split.extend(group)
-            if len(split) >= n:
-                append(split)
-                break
-    append([e for g in groups for e in g])  # append remaining groups
-    return splits
 
 
 class ConvertLabel(NutFunction):
@@ -224,3 +142,83 @@ class ConvertLabel(NutFunction):
             return tuple(outsample)
         else:
             return y
+
+
+@nut_sink
+def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
+    """
+    Randomly split iterable into partitions.
+
+    For the same input data the same split is created every time and is stable
+    across different Python version 2.x or 3.x. A random number generator
+    can be provided to create varying splits.
+
+    >>> train, val = range(10) >> SplitRandom(ratio=0.7)
+    >>> train, val
+    ([6, 3, 1, 7, 0, 2, 4], [5, 9, 8])
+
+    >>> range(10) >> SplitRandom(ratio=0.7)  # Same split again
+    [[6, 3, 1, 7, 0, 2, 4], [5, 9, 8]]
+
+    >>> train, val, test = range(10) >> SplitRandom(ratio=(0.6, 0.3, 0.1))
+    >>> train, val, test
+    ([6, 1, 4, 0, 3, 2], [8, 7, 9], [5])
+
+    >>> data = zip('aabbccddee', range(10))
+    >>> same_letter = lambda t: t[0]
+    >>> train, val = data >> SplitRandom(ratio=0.6, constraint=same_letter)
+    >>> train
+    [('a', 1), ('a', 0), ('d', 7), ('b', 2), ('d', 6), ('b', 3)]
+    >>> val
+    [('c', 5), ('e', 8), ('e', 9), ('c', 4)]
+
+    :param iterable iterable: Iterable over anything. Will be consumed!
+    :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7
+            means 70%, 30% split.
+            Alternatively a list or ratios can be provided, e.g.
+            ratio=(0.6, 0.3, 0.1). Note that ratios must sum up to one.
+    :param function|None constraint: Function that returns key the elements of
+        the iterable are grouped by before partitioning. Useful to ensure
+        that a partition contains related elements, e.g. left and right eye
+        images are not scattered across partitions.
+        Note that constrains have precedence over ratios.
+    :param Random|None rand: Random number generator. The default None
+            ensures that the same split is created every time SplitRandom
+            is called. This is important when continuing an interrupted
+            training session or running the same training on machines with
+            different Python versions. Note that Python's random.Random(0)
+            generates different number for Python 2.x and 3.x!
+    :return: partitions of iterable with sizes according to provided ratios.
+    :rtype: (list, list, ...)
+    """
+    rand = StableRandom(0) if rand is None else rand
+    samples = list(iterable)
+
+    if hasattr(ratio, '__iter__'):
+        ratios = tuple(ratio)
+        if abs(sum(ratios) - 1.0) > 1e-6:
+            raise ValueError('Ratios must sum up to one: ' + str(ratios))
+    else:
+        ratios = (ratio, 1.0 - ratio)
+    ns = [int(len(samples) * r) for r in ratios]
+
+    if constraint is None:
+        groups = [[s] for s in samples]
+    else:
+        groups = list(group_by(samples, constraint).values())
+        groups.sort()  # sort to make stable across python 2.x, 3.x
+
+    rand.shuffle(groups)
+    groups = iter(groups)
+    splits = []
+    for n in ns[:-1]:
+        split = []
+        for group in groups:
+            split.extend(group)
+            if len(split) >= n:
+                splits.append(split)
+                break
+    splits.append([e for g in groups for e in g])  # append remaining groups
+    shuffle_sublists(splits, rand)
+
+    return splits

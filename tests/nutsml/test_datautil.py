@@ -45,7 +45,8 @@ def test_random_upsample(sampleset):
 
 def test_random_downsample(sampleset):
     samples = [('pos', 1), ('pos', 1), ('neg', 0)]
-    stratified = sorted(util.random_downsample(samples, 1, rand=StableRandom(0)))
+    stratified = sorted(
+        util.random_downsample(samples, 1, rand=StableRandom(0)))
     assert stratified == [('neg', 0), ('pos', 1)]
 
     stratified1 = util.random_downsample(sampleset, 0, rand=StableRandom(0))
@@ -76,3 +77,9 @@ def test_col_map():
     add_n = lambda x, n: x + n
     assert util.col_map(sample, 1, add_n, 10) == (1, 12, 3)
     assert util.col_map(sample, (0, 2), add_n, 10) == (11, 2, 13)
+
+
+def test_shuffle_sublists():
+    sublists = [[1, 2, 3], [4, 5, 6, 7]]
+    util.shuffle_sublists(sublists, StableRandom(0))
+    assert sublists == [[1, 3, 2], [4, 5, 7, 6]]

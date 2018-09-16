@@ -200,3 +200,22 @@ def col_map(sample, columns, func, *args, **kwargs):
     f, a, kw = func, args, kwargs
     enum_iter = enumerate(sample)
     return tuple(f(e, *a, **kw) if i in colset else e for i, e in enum_iter)
+
+
+def shuffle_sublists(sublists, rand):
+    """
+    Shuffles the lists within a list but not the list itself.
+
+    >>> from nutsflow.common import StableRandom
+    >>> rand = StableRandom(0)
+
+    >>> sublists = [[1, 2, 3], [4, 5, 6, 7]]
+    >>> shuffle_sublists(sublists, rand)
+    >>> sublists
+    [[1, 3, 2], [4, 5, 7, 6]]
+
+    :param sublists: A list containing lists
+    :param Random rand: A random number generator.
+    """
+    for sublist in sublists:
+        rand.shuffle(sublist)
