@@ -88,5 +88,9 @@ ENV/
 # training logs
 log*.txt
 
+# Jupyter notebooks
+Untitled.ipynb
+.ipynb_checkpoints
+
 # temporary data
 temp/
