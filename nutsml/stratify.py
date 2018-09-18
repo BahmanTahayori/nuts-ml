@@ -7,7 +7,7 @@ from __future__ import absolute_import
 import random as rnd
 
 from nutsflow import nut_processor, nut_sink, Sort
-from .datautil import upsample, random_downsample
+from nutsml.datautil import upsample, random_downsample
 
 
 @nut_processor
@@ -23,6 +23,8 @@ def Stratify(iterable, labelcol, labeldist, rand=None):
 
     Note that in contrast to SplitRandom, which generates the same random
     split per default, Stratify generates different stratifications.
+    Furthermore, while the downsampling is random the order of samples
+    remains the same!
 
     While labeldist needs to be provided or computed upfront the actual
     stratification occurs online and only one sample per time is stored
@@ -51,7 +53,8 @@ def Stratify(iterable, labelcol, labeldist, rand=None):
     min_n = float(min(labeldist.values()))
     probs = {l: min_n / n for l, n in labeldist.items()}
     for sample in iterable:
-        if rand.random() < probs[sample[labelcol]]:
+        label = sample[labelcol]
+        if rand.random() < probs[label]:
             yield sample
 
 
@@ -92,3 +95,17 @@ def CollectStratified(iterable, labelcol, mode='downrnd', container=list,
     else:
         raise ValueError('Unknown mode: ' + mode)
     return container(stratified)
+
+
+if __name__ == '__main__':
+    from nutsml import *
+    from nutsflow import *
+    from nutsflow.common import StableRandom
+    from random import Random
+
+    rand = Random(10)
+    labelcol = 1
+    samples = [(0, 'good')] * 10 + [(1, 'bad')] * 10
+    labeldist = samples >> CountValues(labelcol)
+    print(labeldist)
+    print(samples >> Stratify(labelcol, labeldist, rand=rand) >> Head(10))
