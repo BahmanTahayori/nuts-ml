@@ -81,18 +81,31 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False, dtype='uint8'):
     Images are returned as numpy arrays of shape (h, w, c) or (h, w) for
     color images or gray scale images respectively.
     See nutsml.imageutil.load_image for details.
-    
-    >>> from nutsflow import Collect
 
-    >>> samples = ['tests/data/img_formats/nut_color.gif']
-    >>> img_samples = samples >> ReadImage(None) >> Collect()
+    Note that the loaded images replace the image file name|path in the
+    sample. If the images file paths are directly proved (not as a tuple
+    sample) still tuples with the loaded image are returned.
+    
+    >>> from nutsflow import Consume, Collect
+    >>> from nutsml import PrintColType
+
+    >>> images = ['tests/data/img_formats/nut_color.gif']
+    >>> images >> ReadImage(None) >> PrintColType() >> Consume()
+    item 0: <tuple>
+      0: <ndarray> shape:213x320x3 dtype:uint8 range:0..255
 
     >>> samples = [('tests/data/img_formats/nut_color.gif', 'class0')]
     >>> img_samples = samples >> ReadImage(0) >> Collect()
 
     >>> imagepath = 'tests/data/img_formats/*.jpg'
     >>> samples = [(1, 'nut_color'), (2, 'nut_grayscale')]
-    >>> img_samples = samples >> ReadImage(1, imagepath) >> Collect()
+    >>> samples >> ReadImage(1, imagepath) >> PrintColType() >> Consume()
+    item 0: <tuple>
+      0: <int> 1
+      1: <ndarray> shape:213x320x3 dtype:uint8 range:0..248
+    item 1: <tuple>
+      0: <int> 2
+      1: <ndarray> shape:213x320 dtype:uint8 range:18..235
 
     >>> pathfunc = lambda sample: 'tests/data/img_formats/{1}.jpg'.format(*sample)
     >>> img_samples = samples >> ReadImage(1, pathfunc) >> Collect()
@@ -118,14 +131,14 @@ def ReadImage(sample, columns, pathfunc=None, as_grey=False, dtype='uint8'):
     :rtype: tuple
     """
 
-    def load(fileid):
+    def load(filename):
         """Load image for given fileid"""
         if isinstance(pathfunc, str):
-            filepath = pathfunc.replace('*', fileid)
+            filepath = pathfunc.replace('*', filename)
         elif hasattr(pathfunc, '__call__'):
             filepath = pathfunc(sample)
         else:
-            filepath = fileid
+            filepath = filename
         return load_image(filepath, as_grey=as_grey, dtype=dtype)
 
     if columns is None:
@@ -270,3 +283,4 @@ class ReadPandas(NutSource):
         if self.dropnan:
             return (tuple(row) for row in series.dropna().values)
         return (tuple(row) for row in series.values)
+
