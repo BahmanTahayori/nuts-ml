@@ -68,7 +68,7 @@ class TransformImage(NutFunction):
         """
         samples >> TransformImage(imagecols)
 
-        Images are expect to be numpy array of the shape (h, w, c) or (h, w)
+        Images are expected to be numpy arrays of the shape (h, w, c) or (h, w)
         with a range of [0,255] and a dtype of uint8. Transformation should
         result in images with the same properties.
 
