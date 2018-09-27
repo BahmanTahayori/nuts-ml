@@ -95,17 +95,3 @@ def CollectStratified(iterable, labelcol, mode='downrnd', container=list,
     else:
         raise ValueError('Unknown mode: ' + mode)
     return container(stratified)
-
-
-if __name__ == '__main__':
-    from nutsml import *
-    from nutsflow import *
-    from nutsflow.common import StableRandom
-    from random import Random
-
-    rand = Random(10)
-    labelcol = 1
-    samples = [(0, 'good')] * 10 + [(1, 'bad')] * 10
-    labeldist = samples >> CountValues(labelcol)
-    print(labeldist)
-    print(samples >> Stratify(labelcol, labeldist, rand=rand) >> Head(10))
