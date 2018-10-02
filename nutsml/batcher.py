@@ -208,7 +208,7 @@ class BuildBatch(Nut):
         >>> build_batch = (BuildBatch(2, verbose=True)
         ...                .input(1, 'image', np.uint8, True)
         ...                .output(1, 'image', np.uint8, True))
-        >>> batches = samples >> build_batch >> Collect()
+        >>> batches = samples >> build_batch >> Collect()  # doctest: +SKIP
         [[2x1x5x3:uint8], [2x1x5x3:uint8]]
         [[1x1x5x3:uint8], [1x1x5x3:uint8]]
 
@@ -219,9 +219,9 @@ class BuildBatch(Nut):
 
         >>> build_pred_batch = (BuildBatch(2, verbose=True)
         ...                     .input(1, 'image', 'uint8', True))
-        >>> batches = samples >> build_pred_batch >> Collect()
-        [1x5x3:uint8, 1x5x3:uint8]
-        [1x5x3:uint8]
+        >>> batches = samples >> build_pred_batch >> Collect()  # doctest: +SKIP
+        [2x1x5x3:uint8]
+        [1x1x5x3:uint8]
 
 
         :param int batchsize: Size of batch = number of rows in batch.
