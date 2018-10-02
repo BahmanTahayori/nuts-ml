@@ -208,6 +208,8 @@ class BuildBatch(Nut):
         ...                .input(1, 'image', np.uint8, True)
         ...                .output(1, 'image', np.uint8, True))
         >>> batches = samples >> build_batch >> Collect()
+        [[2x1x5x3:uint8], [2x1x5x3:uint8]]
+        [[1x1x5x3:uint8], [1x1x5x3:uint8]]
 
         A training batch is of the format [[inputs], [outputs]], e.g. in the
         first case above [[number, image], [one_hot]], where each of the columns
