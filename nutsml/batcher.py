@@ -194,12 +194,12 @@ class BuildBatch(Nut):
         >>> samples = zip(numbers, images, class_ids)
 
         >>> build_batch = (BuildBatch(batchsize=2, verbose=True)
-        ...                .input(0, 'number', float)
+        ...                .input(0, 'number', 'float32')
         ...                .input(1, 'image', np.uint8, True)
         ...                .output(2, 'one_hot', np.uint8, 3))
         >>> batches = samples >> build_batch >> Collect()
-        [[2:float64, 2x1x5x3:uint8], [2x3:uint8]]
-        [[1:float64, 1x1x5x3:uint8], [1x3:uint8]]
+        [[2:float32, 2x1x5x3:uint8], [2x3:uint8]]
+        [[1:float32, 1x1x5x3:uint8], [1x3:uint8]]
 
         Sample columns can be ignored or reused. Assuming an autoencoder, one
         might which to use the sample image as input and output:
@@ -217,8 +217,10 @@ class BuildBatch(Nut):
         phase, the batch format is just [inputs].
 
         >>> build_pred_batch = (BuildBatch(2, verbose=True)
-        ...                     .input(1, 'image', np.uint8, True))
+        ...                     .input(1, 'image', 'uint8', True))
         >>> batches = samples >> build_pred_batch >> Collect()
+        [1x5x3:uint8, 1x5x3:uint8]
+        [1x5x3:uint8]
 
 
         :param int batchsize: Size of batch = number of rows in batch.
