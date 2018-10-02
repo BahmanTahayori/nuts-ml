@@ -6,6 +6,7 @@ import warnings
 import numpy as np
 import nutsml.imageutil as ni
 
+from nutsml.datautil import shapestr
 from nutsflow import nut_function
 from nutsflow.base import Nut
 from nutsflow.iterfunction import take, PrefetchIterator
@@ -174,13 +175,17 @@ class BuildBatch(Nut):
     Build batches for GPU-based neural network training.
     """
 
-    def __init__(self, batchsize, prefetch=1, fmt=None):
+    def __init__(self, batchsize, prefetch=1, verbose=False):
         """
-        iterable >> BuildBatch(batchsize, prefetch=1)
+        iterable >> BuildBatch(batchsize, prefetch=1, verbose=False)
 
         Take samples in iterable, extract specified columns, convert
         column data to numpy arrays of various types, aggregate converted
         samples into a batch.
+
+        The following example use the verbose flag to print the shape of
+        the batches constructed. This is useful for development and debugging
+        but should be disabled (verbose=False) in production.
 
         >>> from nutsflow import Collect
         >>> numbers = [4.1, 3.2, 1.1]
@@ -188,43 +193,41 @@ class BuildBatch(Nut):
         >>> class_ids = [1, 2, 1]
         >>> samples = zip(numbers, images, class_ids)
 
-        >>> build_batch = (BuildBatch(2, prefetch=0)
+        >>> build_batch = (BuildBatch(batchsize=2, verbose=True)
         ...                .input(0, 'number', float)
         ...                .input(1, 'image', np.uint8, True)
         ...                .output(2, 'one_hot', np.uint8, 3))
         >>> batches = samples >> build_batch >> Collect()
+        [[2:float64, 2x1x5x3:uint8], [2x3:uint8]]
+        [[1:float64, 1x1x5x3:uint8], [1x3:uint8]]
 
         Sample columns can be ignored or reused. Assuming an autoencoder, one
         might which to use the sample image as input and output:
 
-        >>> build_batch = (BuildBatch(2, prefetch=0)
+        >>> build_batch = (BuildBatch(2, verbose=True)
         ...                .input(1, 'image', np.uint8, True)
         ...                .output(1, 'image', np.uint8, True))
         >>> batches = samples >> build_batch >> Collect()
 
-        A batch typically is of the format [[inputs], [outputs]], e.g. in the
+        A training batch is of the format [[inputs], [outputs]], e.g. in the
         first case above [[number, image], [one_hot]], where each of the columns
-        is a Numpy array. If a different structure is required a format function
-        can be specified. The following example shows how to build a batch as
-        as tuple of columns instead of a list.
+        is a Numpy array. If no output/target is provided, as in the prediction
+        phase, the batch format is just [inputs].
 
-        >>> samples = zip(images, images, class_ids)
-        >>> build_batch = (BuildBatch(2, prefetch=0,
-        ...                fmt=lambda b: (b[0], b[1], b[2]) )
-        ...                .input(0, 'image', np.uint8, True)
-        ...                .input(1, 'image', np.uint8, True)
-        ...                .input(2, 'one_hot', np.uint8, 3))
-        >>> batches = samples >> build_batch >> Collect()
+        >>> build_pred_batch = (BuildBatch(2, verbose=True)
+        ...                     .input(1, 'image', np.uint8, True))
+        >>> batches = samples >> build_pred_batch >> Collect()
+
 
         :param int batchsize: Size of batch = number of rows in batch.
         :param int prefetch: Number of batches to prefetch. This speeds up
            GPU based training, since one batch is built on CPU while the
            another is processed on the GPU.
-        :param function|None fmt: Function to format output.
+        :param bool verbose: Print batch shape when True.
         """
         self.batchsize = batchsize
-        self.fmt = fmt
         self.prefetch = prefetch
+        self.verbose = verbose
         self.colspecs = []
         self.builder = {'image': build_image_batch,
                         'number': build_number_batch,
@@ -318,8 +321,17 @@ class BuildBatch(Nut):
                 batch[0 if isinput else 1].append(coldata)
             if not batch[1]:  # no output (prediction phase)
                 batch = batch[0]  # flatten and take only inputs
-            if self.fmt:  # format function for batch given
-                batch = self.fmt(batch)
+            yield batch
+
+    def _print_batch(self, batches):
+        def to_str(batch):
+            return '[' + ', '.join(shapestr(b, True) for b in batch) + ']'
+
+        for batch in batches:
+            if len(batch) == 2:
+                print('[{}, {}]'.format(to_str(batch[0]), to_str(batch[1])))
+            else:
+                print(to_str(batch[0]))
             yield batch
 
     def __rrshift__(self, iterable):
@@ -333,9 +345,12 @@ class BuildBatch(Nut):
         :return: Mini-batches
         :rtype: list of np.array if fmt=None
         """
-        prefetch = self.prefetch
         batch_gen = self._batch_generator(iter(iterable))
-        return PrefetchIterator(batch_gen, prefetch) if prefetch else batch_gen
+        if self.verbose:
+            batch_gen = self._print_batch(batch_gen)
+        elif self.prefetch:
+            batch_gen = PrefetchIterator(batch_gen, self.prefetch)
+        return batch_gen
 
 
 @nut_function

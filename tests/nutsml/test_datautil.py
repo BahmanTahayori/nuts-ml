@@ -27,7 +27,9 @@ def test_isnan():
 
 
 def test_shapestr():
+    assert util.shapestr(np.array([1, 2])) == '2'
     assert util.shapestr(np.zeros((3, 4))) == '3x4'
+    assert util.shapestr(np.zeros((3, 4), dtype='uint8'), True) == '3x4:uint8'
 
 
 def test_random_upsample(sampleset):

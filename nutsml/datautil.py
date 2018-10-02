@@ -28,7 +28,7 @@ def isnan(x):
     return x != x
 
 
-def shapestr(array):
+def shapestr(array, with_dtype=False):
     """
     Return string representation of array shape.
 
@@ -37,11 +37,19 @@ def shapestr(array):
     >>> shapestr(a)
     '3x4'
 
+    >>> a = np.zeros((3,4), dtype='uint8')
+    >>> shapestr(a, True)
+    '3x4:uint8'
+
     :param ndarray array: Numpy array
+    :param bool with_dtype: Append dtype of array to shape string
     :return: Shape as string, e.g shape (3,4) becomes 3x4
     :rtype: str
     """
-    return 'x'.join(str(int(d)) for d in array.shape)
+    sstr = 'x'.join(str(int(d)) for d in array.shape)
+    if with_dtype:
+        sstr += ':' + str(array.dtype)
+    return sstr
 
 
 def upsample(samples, labelcol, rand=None):
