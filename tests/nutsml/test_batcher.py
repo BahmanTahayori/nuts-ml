@@ -9,7 +9,8 @@ import numpy as np
 import nutsml.batcher as nb
 
 from pytest import approx
-from nutsflow import Collect
+from nutsflow import Collect, Consume
+from nutsflow.common import Redirect
 
 
 def test_build_number_batch():
@@ -162,6 +163,35 @@ def test_BuildBatch_exceptions():
                        .output(1, 'invalid', 'uint8', 3))
         samples >> build_batch >> Collect()
     assert str(ex.value).startswith('Invalid builder')
+
+
+def test_BuildBatch_prefetch():
+    samples = [[1], [2]]
+    build_batch = (nb.BuildBatch(2, prefetch=1)
+                   .input(0, 'number', 'uint8'))
+    batches = samples >> build_batch >> Collect()
+    batch = batches[0][0]
+    assert np.array_equal(batch, np.array([1, 2], dtype='uint8'))
+
+
+def test_BuildBatch_verbose():
+    with Redirect() as out:
+        samples = [[1], [2], [3]]
+        build_batch = (nb.BuildBatch(2, verbose=True)
+                       .input(0, 'number', 'uint8'))
+        samples >> build_batch >> Consume()
+    assert out.getvalue() == '[2:uint8]\n[1:uint8]\n'
+
+    with Redirect() as out:
+        samples = [(np.array([1, 2, 3]), 0),
+                   (np.array([4, 5, 6]), 1),
+                   (np.array([7, 8, 9]), 1)]
+        build_batch = (nb.BuildBatch(2, verbose=True)
+                       .input(0, 'vector', 'float32')
+                       .output(1, 'one_hot', 'uint8', 2))
+        samples >> build_batch >> Consume()
+    expected = '[[2x3:float32], [2x2:uint8]]\n[[1x3:float32], [1x2:uint8]]\n'
+    assert out.getvalue() == expected
 
 
 def test_Mixup():

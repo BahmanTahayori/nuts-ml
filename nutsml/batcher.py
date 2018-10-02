@@ -8,6 +8,7 @@ import nutsml.imageutil as ni
 
 from nutsml.datautil import shapestr
 from nutsflow import nut_function
+from nutsflow.common import console
 from nutsflow.base import Nut
 from nutsflow.iterfunction import take, PrefetchIterator
 
@@ -227,7 +228,9 @@ class BuildBatch(Nut):
         :param int prefetch: Number of batches to prefetch. This speeds up
            GPU based training, since one batch is built on CPU while the
            another is processed on the GPU.
+           Note: if verbose=True, prefetch is set to 0 to simplify debugging.
         :param bool verbose: Print batch shape when True.
+           (and sets prefetch=0)
         """
         self.batchsize = batchsize
         self.prefetch = prefetch
@@ -333,9 +336,9 @@ class BuildBatch(Nut):
 
         for batch in batches:
             if len(batch) == 2:
-                print('[{}, {}]'.format(to_str(batch[0]), to_str(batch[1])))
+                console('[{}, {}]'.format(to_str(batch[0]), to_str(batch[1])))
             else:
-                print(to_str(batch[0]))
+                console(to_str(batch))
             yield batch
 
     def __rrshift__(self, iterable):
