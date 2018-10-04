@@ -14,11 +14,11 @@ For instance, the `ReadImage()
 <https://maet3608.github.io/nuts-ml/nutsml.html#module-nutsml.reader>`_ nut
 reads images from a given path and returns Numpy arrays. Here a simple example
   
-.. doctest::  
+ .. doctest::  
 
   >>> samples = [('nut_color.jpg', 'color'), ('nut_grayscale.jpg', 'gray')]
     
-.. doctest::
+ .. doctest::
   
   >>> imagepath = 'tests/data/img_formats/*'
   >>> samples >> ReadImage(0, imagepath) >> PrintColType() >> Consume()  
@@ -48,7 +48,7 @@ and the class label.
 Sometimes it is useful to directly load images that are not part of a sample.
 Setting the column to ``None`` in ``ReadImage()`` enables this:
 
-.. doctest::
+ .. doctest::
 
   >>> images = ['nut_color', 'nut_grayscale']
   >>> imagepath = 'tests/data/img_formats/*.jpg'
@@ -64,7 +64,7 @@ and not just the images.
 Instead of providing a base image path and image file names within samples it is
 also possible to directly provide the full file path within the sample:
 
-.. doctest::
+ .. doctest::
 
    >>> images = ['tests/data/img_formats/nut_color.gif']
    >>> images >> ReadImage(None) >> PrintColType() >> Consume()
@@ -75,7 +75,7 @@ Furthermore ``ReadImage()`` allows to read multiple images at the same time,
 e.g. for samples that contain an image and mask. In the following example we
 read color images and their gray-scale version as pairs
 
-.. doctest::
+ .. doctest::
 
   >>> samples = [('color.jpg', 'grayscale.jpg'), ('color.png', 'grayscale.png')]
   >>> imagepath = 'tests/data/img_formats/nut_*'
