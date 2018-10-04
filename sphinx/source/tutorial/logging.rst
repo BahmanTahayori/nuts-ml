@@ -8,7 +8,7 @@ The following example demonstrates the basics. We have a list of samples
 that we log to a CSV file:
 
 
- .. code:: Python
+.. code:: Python
  
     >>> filepath = 'tests/data/temp_logfile.csv'
     >>> samples = [(1, 2, 3), (4, 5, 6)]
@@ -23,7 +23,7 @@ that we log to a CSV file:
 specify column names for the log file. In this next example we also show
 how to manually close and delete a created log file:
         
- .. code:: Python
+.. code:: Python
  
     >>> logtofile = LogToFile(filepath, cols=(2, 0), colnames=['3rd', '1st'])
     >>> samples >> logtofile >> Consume()
@@ -41,7 +41,7 @@ In this more complex code sketch we will use ``LogToFile`` within a training a l
 and log loss and accuracy per batch, and epoch, mean loss and mean accuracy per
 epoch:
 
- .. code:: Python
+.. code:: Python
  
     log_batch = LogToFile('batchlog.csv', colnames=['loss', 'acc'])
     log_epoch = LogToFile('epochlog.csv', colnames=['epoch', 'loss', 'acc'])
@@ -63,17 +63,17 @@ the number of values must match the number column names defined.
 The same syntactical feature is used for ``Mean`` here. For instance, the following
 three constructs are equivalent:
 
-  .. doctest::
+.. doctest::
   
     >>> [1, 2, 3] >> Mean()
     2.0
   
-  .. doctest::
+.. doctest::
   
     >>> Mean()([1, 2, 3])
     2.0
   
-  .. doctest::
+.. doctest::
   
     >>> mean = Mean()
     >>> mean([1, 2, 3])
