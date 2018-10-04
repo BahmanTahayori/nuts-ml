@@ -18,7 +18,7 @@ def Boost(iterable, batcher, network, targetcol=-1):
     Expects one-hot encoded targets and softmax predictions for output.
 
     | network = Network()
-    | build_batch = BuildBatch(BATCHSIZE, colspec)
+    | build_batch = BuildBatch(BATCHSIZE)
     | boost = Boost(build_batch, network)
     | samples >> boost >> build_batch >> network.train() >> Consume()
 

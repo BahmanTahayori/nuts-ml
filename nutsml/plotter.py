@@ -20,6 +20,7 @@ class PlotLines(NutFunction):  # pragma no coverage
     def __init__(self, ycols,
                  xcols=None,
                  layout=(1, None),
+                 titles=None,
                  every_sec=0,
                  every_n=0,
                  filterfunc=lambda data: True,
@@ -74,6 +75,7 @@ class PlotLines(NutFunction):  # pragma no coverage
         self.xcols = itt.count() if xcols is None else xcols
         self.filepath = filepath
         self.figsize = figsize
+        self.titles = titles
         self.cnt = 0
         self.time = time.clock()
         self.filterfunc = filterfunc
@@ -137,6 +139,8 @@ class PlotLines(NutFunction):  # pragma no coverage
 
         for i, ax in enumerate(self.axes):
             ax.clear()
+            if self.titles:
+                ax.set_title(self.titles[i])
             ax.plot(self.xdata[i], self.ydata[i], '-')
             ax.figure.canvas.draw()
 
