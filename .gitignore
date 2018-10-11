@@ -94,3 +94,6 @@ Untitled.ipynb
 
 # temporary data
 temp/
+
+# pytest
+.pytest_cache
