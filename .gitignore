@@ -96,4 +96,4 @@ Untitled.ipynb
 temp/
 
 # pytest
-.pytest_cache
+.pytest_cache/
