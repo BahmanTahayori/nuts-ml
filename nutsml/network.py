@@ -45,7 +45,7 @@ def PredictNut(batches, func, flatten=True):
     :rtype: typically array with class probabilities (softmax vector)
     """
     for batch in batches:
-        pred_batch = func(*batch)
+        pred_batch = func(batch)
         if flatten:
             for prediction in pred_batch:
                 yield prediction
