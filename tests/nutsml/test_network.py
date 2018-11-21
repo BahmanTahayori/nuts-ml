@@ -23,7 +23,7 @@ class FakeModel(object):
         return sum(X) + 2, sum(y) + 2
 
     def predict(self, X):
-        return X[0]
+        return X
 
     def save_weights(self, weightspath):
         self.saved_weights = weightspath
@@ -49,11 +49,11 @@ class FakeNetwork(Network):
     def predict(self, flatten=True):
         return PredictNut(self.model.predict, flatten)
 
-    def evaluate(self, metrics, predcol=None, targetcol=-1):
+    def evaluate(self, metrics, predcol=None):
         def compute(metric, targets, preds):
             return metric(targets, preds)
 
-        return EvalNut(self, metrics, compute, predcol, targetcol)
+        return EvalNut(self, metrics, compute, predcol)
 
     def save_weights(self, weightspath=None):
         weightspath = super(FakeNetwork, self)._weightspath(weightspath)
@@ -189,10 +189,10 @@ def test_Network():
     assert val_err == [(5, 9), (13, 17)]
 
     prediction = batches >> GetCols(0) >> network.predict() >> Collect()
-    assert prediction == [1, 2, 5, 6]
+    assert prediction == [(1, 2), (5, 6)]
 
     prediction = batches >> GetCols(0) >> network.predict(False) >> Collect()
-    assert prediction == [(1, 2), (5, 6)]
+    assert prediction == [((1, 2),), ((5, 6),)]
 
     batches = [((1, 2), (1, 2)), ((5, 6), (5, 6))]
     acc = lambda X, y: np.sum(X == y)

@@ -54,7 +54,7 @@ def PredictNut(batches, func, flatten=True):
 
 
 @nut_sink
-def EvalNut(batches, network, metrics, compute, predcol=None, targetcol=-1):
+def EvalNut(batches, network, metrics, compute, predcol=None):
     """
     batches >> EvalNut(network, metrics)
 
@@ -74,14 +74,13 @@ def EvalNut(batches, network, metrics, compute, predcol=None, targetcol=-1):
     :param int|None predcol: Index of column in prediction to extract
            for evaluation. If None a single prediction output is
            expected.
-    :param int targetcol: Index of batch column that contain targets.
     :return: Result(s) of evaluation, e.g. accuracy, precision, ...
     :rtype: float or tuple of floats if there is more than one metric
     """
     targets = []
 
     def accumulate(batch):
-        p_batch, target = batch[:targetcol], batch[targetcol]
+        p_batch, target = batch
         targets.extend(target)
         return p_batch
 
@@ -333,7 +332,7 @@ class KerasNetwork(Network):  # pragma no cover
     def predict(self, flatten=True):
         return PredictNut(self.model.predict_on_batch, flatten)
 
-    def evaluate(self, metrics, predcol=None, targetcol=-1):
+    def evaluate(self, metrics, predcol=None):
         from keras import backend as K
 
         def compute(metric, targets, preds):
@@ -344,7 +343,7 @@ class KerasNetwork(Network):  # pragma no cover
             is_vector = hasattr(result, '__iter__')
             return float(np.mean(result) if is_vector else result)
 
-        return EvalNut(self, metrics, compute, predcol, targetcol)
+        return EvalNut(self, metrics, compute, predcol)
 
     def save_weights(self, weightspath=None):
         weightspath = super(KerasNetwork, self)._weightspath(weightspath)
