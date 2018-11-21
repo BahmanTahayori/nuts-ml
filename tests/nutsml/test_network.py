@@ -23,7 +23,7 @@ class FakeModel(object):
         return sum(X) + 2, sum(y) + 2
 
     def predict(self, X):
-        return X
+        return X[0]
 
     def save_weights(self, weightspath):
         self.saved_weights = weightspath
@@ -75,7 +75,7 @@ def test_TrainValNut():
 
 def test_PredictNut():
     batches = [(1, 2), (3, 4)]
-    nut = PredictNut(lambda X, y: [X, y], flatten=True)
+    nut = PredictNut(lambda X: X, flatten=True)
     assert batches >> nut >> Collect() == [1, 2, 3, 4]
 
 
