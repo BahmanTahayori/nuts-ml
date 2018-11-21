@@ -13,7 +13,7 @@ from __future__ import print_function
 from six.moves import zip, range
 from nutsflow import PrintProgress, Collect, Unzip, Shuffle, Pick, Mean, NOP
 from nutsml import (KerasNetwork, TransformImage, AugmentImage, BuildBatch,
-                    PrintColType, PlotLines)
+                    Boost, PrintColType, PlotLines)
 
 PICK = 0.1  # Pick 10% of the data for a quick trial
 NUM_EPOCHS = 10
@@ -54,19 +54,25 @@ def create_network():
 def train():
     from keras.metrics import categorical_accuracy
 
-    augment = AugmentImage(0).by('elastic', 10, [5, 5], [100, 100], [0, 100])
-    transform = (TransformImage(0)
-                 .by('rerange', 0, 255, 0, 1, 'float32'))
-    build_batch = (BuildBatch(BATCH_SIZE)
-                   .input(0, 'image', 'float32')
-                   .output(1, 'one_hot', 'uint8', NUM_CLASSES))
-    plot = PlotLines((0, 1), layout=(2, 1), every_sec=1)
+    print('creating network ...')
+    network = create_network()
 
     print('loading data...')
     train_samples, test_samples = load_samples()
 
-    print('creating network ...')
-    network = create_network()
+    augment = (AugmentImage(0)
+               .by('identical', 1)
+               .by('translate', 0.5, [-3, +3], [-3, +3])
+               .by('rotate', 0.5, [-5, +5])
+               .by('shear', 0.5, [0, 0.2])
+               .by('elastic', 0.5, [5, 5], [100, 100], [0, 100]))
+    transform = (TransformImage(0)
+                 .by('rerange', 0, 255, 0, 1, 'float32'))
+    build_batch = (BuildBatch(BATCH_SIZE, prefetch=0)
+                   .input(0, 'image', 'float32')
+                   .output(1, 'one_hot', 'uint8', NUM_CLASSES))
+    plot = PlotLines((0, 1), layout=(2, 1), every_sec=1)
+
 
     print('training...', NUM_EPOCHS)
     for epoch in range(NUM_EPOCHS):
