@@ -40,7 +40,6 @@ class FakeNetwork(Network):
         return PredictNut(self.func, flatten)
 
 
-@pytest.mark.skip(reason="temporarily skip until boosting is fixed")
 def test_Boost():
     negatives = [(0, 0), (1, 0)]
     positives = [(2, 1), (3, 1), (4, 1)]
@@ -48,7 +47,7 @@ def test_Boost():
 
     build_batch = (BuildBatch(3, prefetch=0)
                    .input(0, 'number', 'uint8')
-                   .input(1, 'one_hot', 'uint8', 2))
+                   .output(1, 'one_hot', 'uint8', 2))
 
     network = FakeNetwork(predict_all_positive)
     boost = Boost(build_batch, network)
