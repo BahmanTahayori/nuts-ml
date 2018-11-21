@@ -13,7 +13,7 @@ from nutsml.datautil import upsample, random_downsample
 @nut_processor
 def Stratify(iterable, labelcol, labeldist, rand=None):
     """
-    iterable >> Stratify(labelcol, labeldist, rand=rnd.Random())
+    iterable >> Stratify(labelcol, labeldist, rand=None)
 
     Stratifies samples by randomly down-sampling according to the given
     label distribution. In detail: samples belonging to the class with the
