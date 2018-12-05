@@ -54,7 +54,7 @@ class Config(dict):
         return filepath.lower().endswith('.json')
 
     def __repr__(self):
-        return json.dumps(self, indent=2, sort_keys=False)
+        return json.dumps(self, indent=2, sort_keys=True)
 
     def load(self, filepath):
         """
