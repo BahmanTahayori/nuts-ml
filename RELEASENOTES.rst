@@ -4,6 +4,8 @@ Release notes
 1.0.39
 ------
 - bug in network.predict fixed for multi-input networks
+- boosting fixed
+- Config is now OrderedDict
 
 1.0.38
 ------
