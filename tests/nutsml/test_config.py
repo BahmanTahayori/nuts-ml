@@ -26,10 +26,12 @@ def test_Config():
     assert cfg['address']['number'] == 7
     assert cfg.address.number == 7
 
+
 def test_repr():
     cfg = nc.Config({'a': '1', 'b': {'c': 2}})
     print(cfg.__repr__())
     assert cfg.__repr__() == expected_repr
+
 
 def test_isjson():
     assert nc.Config.isjson('mydir/somefile.json')
