@@ -7,8 +7,10 @@ import os
 import yaml
 import json
 
+from collections import OrderedDict as odict
 
-class Config(dict):
+
+class Config(odict):
     """
     Dictionary that allows access via keys or attributes.
 
@@ -37,7 +39,7 @@ class Config(dict):
         :param kwargs kwargs: See dict
         """
         wrap = lambda v: Config(v) if type(v) is dict else v
-        kvdict = {k: wrap(v) for k, v in dict(*args, **kwargs).items()}
+        kvdict = odict((k, wrap(v)) for k, v in odict(*args, **kwargs).items())
         super(Config, self).__init__(kvdict)
         self.__dict__ = self
 
@@ -51,6 +53,9 @@ class Config(dict):
         :rtype: bool
         """
         return filepath.lower().endswith('.json')
+
+    def __repr__(self):
+        return json.dumps(self, indent=2, sort_keys=False)
 
     def load(self, filepath):
         """
@@ -80,7 +85,7 @@ class Config(dict):
         """
         writer = json.dump if Config.isjson(filepath) else yaml.dump
         with open(filepath, 'w') as f:
-            writer(dict(self), f)
+            writer(odict(self), f)
 
 
 def load_config(filename):
