@@ -1,3 +1,1 @@
-!!python/object/apply:collections.OrderedDict
-- - [number, 13]
-  - [name, Stefan]
+{name: Stefan, number: 13}
