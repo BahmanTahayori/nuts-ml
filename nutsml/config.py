@@ -38,6 +38,7 @@ class Config(odict):
         :param args args: See dict
         :param kwargs kwargs: See dict
         """
+        super(Config, self).__init__(*args, **kwargs)
         wrap = lambda v: Config(v) if type(v) is dict else v
         kvdict = odict((k, wrap(v)) for k, v in odict(*args, **kwargs).items())
         super(Config, self).__init__(kvdict)
