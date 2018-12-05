@@ -38,10 +38,11 @@ class Config(odict):
         :param args args: See dict
         :param kwargs kwargs: See dict
         """
+        super(Config, self).__init__()
         wrap = lambda v: Config(v) if type(v) is dict else v
         content = ((k, wrap(v)) for k, v in odict(*args, **kwargs).items())
-        super(Config, self).__init__(content)
         self.__dict__ = self
+        self.update(content)
 
     @staticmethod
     def isjson(filepath):
