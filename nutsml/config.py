@@ -8,7 +8,6 @@ import yaml
 import json
 
 
-
 class Config(dict):
     """
     Dictionary that allows access via keys or attributes.
