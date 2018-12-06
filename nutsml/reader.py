@@ -44,10 +44,10 @@ def ReadLabelDirs(basedir, filepattern='*', exclude='_*'):
     the folder the data samples (images, documents, ...) for that class.
 
     >>> from __future__ import print_function
-    >>> from nutsflow import Collect
+    >>> from nutsflow import Sort
 
     >>> read = ReadLabelDirs('tests/data/labeldirs', '*.txt')
-    >>> samples = read >> Collect()
+    >>> samples = read >> Sort()
     >>> for sample in samples:
     ...     print(sample)
     ...
