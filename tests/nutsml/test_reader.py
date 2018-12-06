@@ -10,7 +10,7 @@ import dplython as dp
 import numpy as np
 import numpy.testing as nt
 
-from nutsflow import Collect
+from nutsflow import Collect, Sort
 from nutsml import DplyToList, ReadImage, ReadLabelDirs, ReadPandas
 
 
@@ -29,13 +29,13 @@ def test_DplyToList():
 
 def test_ReadLabelDirs():
     read = ReadLabelDirs('tests/data/labeldirs', '*.txt')
-    samples = read >> Collect()
+    samples = read >> Sort()
     assert samples == [('tests/data/labeldirs/0/test0.txt', '0'),
                        ('tests/data/labeldirs/1/test1.txt', '1'),
                        ('tests/data/labeldirs/1/test11.txt', '1')]
 
     read = ReadLabelDirs('tests/data/labeldirs', '*.txt', '')
-    samples = read >> Collect()
+    samples = read >> Sort()
     assert samples == [('tests/data/labeldirs/0/test0.txt', '0'),
                        ('tests/data/labeldirs/1/test1.txt', '1'),
                        ('tests/data/labeldirs/1/test11.txt', '1'),
