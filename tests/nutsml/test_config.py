@@ -4,15 +4,9 @@
 """
 
 import pytest
+import json
 
 import nutsml.config as nc
-
-expected_repr = """{
-  "a": "1",
-  "b": {
-    "c": 2
-  }
-}"""
 
 
 def test_Config():
@@ -28,9 +22,10 @@ def test_Config():
 
 
 def test_repr():
-    cfg = nc.Config({'a': '1', 'b': {'c': 2}})
-    print(cfg.__repr__())
-    assert cfg.__repr__() == expected_repr
+    data = {'a': '1', 'b': {'c': 2}}
+    cfg = nc.Config(data)
+    expected = json.dumps(data, indent=2, sort_keys=True)
+    assert cfg.__repr__() == expected
 
 
 def test_isjson():
