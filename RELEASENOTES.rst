@@ -1,6 +1,10 @@
 Release notes
 =============
 
+1.0.40
+------
+
+
 1.0.39
 ------
 - bug in network.predict fixed for multi-input networks
