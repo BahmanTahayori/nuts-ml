@@ -114,6 +114,7 @@
   "tests/nutsml/test_common.py::test_SplitRandom_constraint",
   "tests/nutsml/test_common.py::test_ConvertLabel",
   "tests/nutsml/test_config.py::test_Config",
+  "tests/nutsml/test_config.py::test_repr",
   "tests/nutsml/test_config.py::test_isjson",
   "tests/nutsml/test_config.py::test_save_load",
   "tests/nutsml/test_config.py::test_load_config",

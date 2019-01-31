@@ -1,4 +1,0 @@
-{
-  "nutsml/batcher.py::nutsml.batcher.BuildBatch.__init__": true,
-  "tests/nutsml/test_batcher.py::test_BuildBatch_fmt": true
-}
