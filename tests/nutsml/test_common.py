@@ -81,10 +81,10 @@ def test_SplitRandom_constraint():
     data = zip('aabbccddee', range(10))
     train, val = data >> SplitRandom(rand=StableRandom(0), ratio=0.6,
                                      constraint=same_letter) >> Collect()
-    print(train)
-    print(val)
-    assert train == [('a', 1), ('a', 0), ('d', 7), ('b', 2), ('d', 6), ('b', 3)]
-    assert val == [('c', 5), ('e', 8), ('e', 9), ('c', 4)]
+    train.sort()
+    val.sort()
+    assert train == [('a', 0), ('a', 1), ('b', 2), ('b', 3), ('d', 6), ('d', 7)]
+    assert val == [('c', 4), ('c', 5), ('e', 8), ('e', 9)]
 
 
 def test_ConvertLabel():

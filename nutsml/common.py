@@ -206,7 +206,6 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
         groups = [[s] for s in samples]
     else:
         groups = list(group_by(samples, constraint).values())
-        groups.sort()  # sort to make stable across python 2.x, 3.x
 
     rand.shuffle(groups)
     groups = iter(groups)
