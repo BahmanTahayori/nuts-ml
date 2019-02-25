@@ -25,6 +25,7 @@ var/
 *.egg
 *.whl
 *.tar.gz
+*.Identifier
 
 # Sphinx
 docs/doctrees/
@@ -69,7 +70,6 @@ target/
 
 # pyenv
 .python-version
-
 
 # virtualenv
 venv/
