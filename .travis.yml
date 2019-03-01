@@ -15,8 +15,7 @@ addons:
       - gfortran  
 before_install:
   - pip install --upgrade pip
-  - pip install pytest pytest-cov
-  - pip install coveralls
+  - pip install pytest coveralls pytest-cov==2.5.0
 install: 
   - pip install nutsml
 script:
