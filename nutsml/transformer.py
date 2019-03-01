@@ -290,7 +290,8 @@ def RegularImagePatches(iterable, imagecols, pshape, stride):
                     break
             if len(patched) == len(sample):
                 yield patched
-
+            else:
+                break  # one or all patch iterators are depleted
 
 
 @nut_processor
