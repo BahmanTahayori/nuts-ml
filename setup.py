@@ -48,7 +48,8 @@ setup(
     description='Flow-based data pre-processing for Machine Learning',
     install_requires=[
         'nutsflow >= 1.0.31',
-        'pandas < 0.21.0',  # due Python 3.4 support!
+        # 'pandas < 0.21.0',  # Python 3.4 support!
+        'pandas > 0.21.0',
         'six >= 1.10.0',
         'pyyaml >= 3.12',
         'xlrd >= 1.0.0',
@@ -69,7 +70,6 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Natural Language :: English',
