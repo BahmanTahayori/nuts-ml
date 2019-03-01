@@ -79,7 +79,7 @@ def test_SplitRandom_seed():
 def test_SplitRandom_constraint():
     same_letter = lambda t: t[0]
     data = zip('aabbccddee', range(10))
-    train, val = data >> SplitRandom(rand=StableRandom(0), ratio=0.6,
+    train, val = data >> SplitRandom(rand=None, ratio=0.6,
                                      constraint=same_letter) >> Collect()
     train.sort()
     val.sort()

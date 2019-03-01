@@ -167,10 +167,10 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
     >>> data = zip('aabbccddee', range(10))
     >>> same_letter = lambda t: t[0]
     >>> train, val = data >> SplitRandom(ratio=0.6, constraint=same_letter)
-    >>> train
-    [('a', 1), ('a', 0), ('d', 7), ('b', 2), ('d', 6), ('b', 3)]
-    >>> val
-    [('c', 5), ('e', 8), ('e', 9), ('c', 4)]
+    >>> sorted(train)
+    [('a', 0), ('a', 1), ('b', 2), ('b', 3), ('d', 6), ('d', 7)]
+    >>> sorted(val)
+    [('c', 4), ('c', 5), ('e', 8), ('e', 9)]
 
     :param iterable iterable: Iterable over anything. Will be consumed!
     :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7
