@@ -280,16 +280,17 @@ def RegularImagePatches(iterable, imagecols, pshape, stride):
     """
     colset = as_set(imagecols)
     for sample in iterable:
-        patches = ut.col_map(sample, imagecols, ni.patch_iter, pshape, stride)
+        patch_iters = ut.col_map(sample, imagecols, ni.patch_iter, pshape, stride)
         while True:
-            enum_iter = enumerate(patches)
-            try:
-                patched = tuple(next(p) if i in colset else p for i, p in enum_iter)
-            except RuntimeError as e:  # thanks to Python 3.7
-                if e.args[0] == 'generator raised StopIteration':
-                    break
+            patched = []
+            for i, p in enumerate(patch_iters):
+                try:
+                    patch = next(p) if i in colset else p
+                    patched.append(patch)
+                except StopIteration:
+                    pass
             if len(patched) == len(sample):
-                yield patched
+                yield tuple(patched)
             else:
                 break  # one or all patch iterators are depleted
 
