@@ -285,8 +285,7 @@ def RegularImagePatches(iterable, imagecols, pshape, stride):
             patched = []
             for i, p in enumerate(patch_iters):
                 try:
-                    patch = next(p) if i in colset else p
-                    patched.append(patch)
+                    patched.append(next(p) if i in colset else p)
                 except StopIteration:
                     pass
             if len(patched) == len(sample):
