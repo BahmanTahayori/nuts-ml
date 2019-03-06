@@ -77,7 +77,7 @@ class PlotLines(NutFunction):  # pragma no coverage
         self.figsize = figsize
         self.titles = titles
         self.cnt = 0
-        self.time = time.clock()
+        self.time = time.time()
         self.filterfunc = filterfunc
         self.every_sec = every_sec
         self.every_n = every_n
@@ -90,7 +90,7 @@ class PlotLines(NutFunction):  # pragma no coverage
 
     def __delta_sec(self):
         """Return time in seconds (float) consumed between plots so far"""
-        return (time.clock() - self.time)
+        return (time.time() - self.time)
 
     def __should_plot(self, data):
         """Return true if data should be plotted"""
@@ -134,7 +134,7 @@ class PlotLines(NutFunction):  # pragma no coverage
             return data
 
         self.cnt = 0  # reset counter
-        self.time = time.clock()  # reset timer
+        self.time = time.time()  # reset timer
         self._add_data(data)
 
         for i, ax in enumerate(self.axes):
