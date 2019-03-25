@@ -58,8 +58,12 @@ def test_SplitRandom_ratios():
     assert len(test) == 100
 
     with pytest.raises(ValueError) as ex:
-        range(1000) >> SplitRandom(ratio=(0.6, 0.7))
+        range(100) >> SplitRandom(ratio=(0.6, 0.7))
     assert str(ex.value).startswith('Ratios must sum up to one')
+
+    with pytest.raises(ValueError) as ex:
+        range(10) >> SplitRandom(ratio=(1, 0))
+    assert str(ex.value).startswith('Ratios cannot be zero')
 
 
 def test_SplitRandom_stable_default():

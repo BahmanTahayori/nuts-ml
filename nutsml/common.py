@@ -176,7 +176,8 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
     :param float|tuple ratio: Ratio of two partition e.g. a ratio of 0.7
             means 70%, 30% split.
             Alternatively a list or ratios can be provided, e.g.
-            ratio=(0.6, 0.3, 0.1). Note that ratios must sum up to one.
+            ratio=(0.6, 0.3, 0.1). Note that ratios must sum up to one
+            and cannot be zero.
     :param function|None constraint: Function that returns key the elements of
         the iterable are grouped by before partitioning. Useful to ensure
         that a partition contains related elements, e.g. left and right eye
@@ -198,6 +199,8 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
         ratios = tuple(ratio)
         if abs(sum(ratios) - 1.0) > 1e-6:
             raise ValueError('Ratios must sum up to one: ' + str(ratios))
+        if min(ratios) <= 0:
+            raise ValueError('Ratios cannot be zero: ' + str(ratios))
     else:
         ratios = (ratio, 1.0 - ratio)
     ns = [int(len(samples) * r) for r in ratios]
@@ -205,7 +208,6 @@ def SplitRandom(iterable, ratio=0.7, constraint=None, rand=None):
     if constraint is None:
         groups = [[s] for s in samples]
     else:
-        # TODO: sorted group_by will fail for numpy arrays!
         groups = list(group_by(samples, constraint, True).values())
 
     rand.shuffle(groups)
