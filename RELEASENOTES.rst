@@ -5,6 +5,7 @@ Release notes
 ------
 - support for Python 3.4 dropped
 - support for Python 3.7 added
+- catching edge case SplitRandom((1,0))
 
 
 1.0.39
