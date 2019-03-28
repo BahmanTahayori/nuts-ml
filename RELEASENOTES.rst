@@ -1,6 +1,10 @@
 Release notes
 =============
 
+1.0.41
+------
+
+
 1.0.40
 ------
 - support for Python 3.4 dropped
