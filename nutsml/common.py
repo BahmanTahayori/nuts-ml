@@ -16,8 +16,9 @@ def CheckNaN(data):
     """
     Raise exception if data contains NaN.
 
-    Useful to stop training if network doesn't converge and loss gets NaN,
-    e.g. samples >> network.train() >> CheckNan() >> log >> Consume()
+    Useful to stop training if network doesn't converge and loss function
+    returns NaN. Example:
+    samples >> network.train() >> CheckNan() >> log >> Consume()
 
     >>> from nutsflow import Collect
 
@@ -31,7 +32,7 @@ def CheckNaN(data):
     RuntimeError: NaN encountered: nan
 
     :param data: Items or iterables.
-    :return: Return input data if they don't contain NaNs
+    :return: Return input data if it doesn't contain NaN
     :rtype: any
     :raise: RuntimeError if data contains NaN.
     """
