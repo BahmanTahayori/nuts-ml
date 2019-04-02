@@ -152,6 +152,7 @@
   "tests/nutsml/test_imageutil.py::test_brightness",
   "tests/nutsml/test_imageutil.py::test_sharpness",
   "tests/nutsml/test_imageutil.py::test_change_color",
+  "tests/nutsml/test_imageutil.py::test_extract_edges",
   "tests/nutsml/test_imageutil.py::test_gray2rgb",
   "tests/nutsml/test_imageutil.py::test_rgb2gray",
   "tests/nutsml/test_imageutil.py::test_translate",

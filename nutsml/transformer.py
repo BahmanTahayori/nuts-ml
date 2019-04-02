@@ -57,6 +57,7 @@ class TransformImage(NutFunction):
         'sharpness': ni.change_sharpness,
         'brightness': ni.change_brightness,
         'color': ni.change_color,
+        'edges': ni.extract_edges,
         'fliplr': ni.fliplr,
         'flipud': ni.flipud,
         'shear': ni.shear,
@@ -110,6 +111,7 @@ class TransformImage(NutFunction):
         | :func:`sharpness <nutsml.imageutil.sharpness>` (sharpness)
         | :func:`brightness <nutsml.imageutil.brightness>` (brightness)
         | :func:`color <nutsml.imageutil.color>` (color)
+        | :func:`edges <nutsml.imageutil.extract_edges>` (sigma)
         | :func:`fliplr <nutsml.imageutil.fliplr>`
         | :func:`flipud <nutsml.imageutil.flipud>`
         | :func:`shear <nutsml.imageutil.shear>` (shear_factor)

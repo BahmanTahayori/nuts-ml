@@ -3,6 +3,8 @@ Release notes
 
 1.0.41
 ------
+- edge filter added as transformer/augmentation
+- travis config for Python 3.7 fixed
 
 
 1.0.40

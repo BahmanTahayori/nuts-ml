@@ -18,6 +18,7 @@ from six.moves import range, map
 from .datautil import shapestr, isnan
 from PIL import ImageEnhance as ie
 from skimage.color import rgb2gray
+from skimage import feature
 from scipy.ndimage.interpolation import map_coordinates
 from scipy.ndimage.filters import gaussian_filter
 from warnings import warn
@@ -450,6 +451,20 @@ def change_color(image, color=1.0):
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
     return enhance(image, ie.Color, color)
+
+
+def extract_edges(image, sigma):
+    """
+    Extract edges using the Canny algorithm.
+
+    :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'.
+    :param float sigma: Standard deviation of the Gaussian filter.
+    :return: Binary image with extracted edges
+    :rtype: numpy array with range [0,255] and dtype 'uint8'
+    """
+    image = rgb2gray(image)
+    image = feature.canny(image, sigma=sigma)
+    return image.astype('uint8') * 255
 
 
 def gray2rgb(image):
