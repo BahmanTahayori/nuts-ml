@@ -51,7 +51,7 @@ def load_image(filepath, as_grey=False, dtype='uint8', no_alpha=True):
         arr = ski.imread(filepath, as_grey=as_grey).astype(dtype)
     # https://github.com/scikit-image/scikit-image/issues/2406
     if arr.ndim == 1 and arr.shape[0] == 2:
-        arr = arr[0]
+        arr = arr[0]  # pragma: no cover
     if arr.ndim == 3 and arr.shape[2] == 4 and no_alpha:
         arr = arr[..., :3]  # cut off alpha channel
     return arr
