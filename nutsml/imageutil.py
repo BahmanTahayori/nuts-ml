@@ -48,9 +48,10 @@ def load_image(filepath, as_grey=False, dtype='uint8', no_alpha=True):
         arr = np.load(filepath).astype(dtype)
         arr = rgb2gray(arr) if as_grey else arr
     else:
-        # img_num=0 due to 
-        # https://github.com/scikit-image/scikit-image/issues/2406
-        arr = ski.imread(filepath, as_grey=as_grey, img_num=0).astype(dtype)
+        arr = ski.imread(filepath, as_grey=as_grey).astype(dtype)
+    # https://github.com/scikit-image/scikit-image/issues/2406
+    if arr.ndim == 1 and arr.shape[0] == 2:
+        arr = arr[0]
     if arr.ndim == 3 and arr.shape[2] == 4 and no_alpha:
         arr = arr[..., :3]  # cut off alpha channel
     return arr
