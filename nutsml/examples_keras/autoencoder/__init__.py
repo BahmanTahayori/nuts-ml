@@ -1,3 +1,0 @@
-"""
-Example autoencoders using nuts.
-"""
