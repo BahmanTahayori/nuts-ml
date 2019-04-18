@@ -146,7 +146,7 @@ class Network(object):
         >>> predictions = samples >> batcher >> network.predict() >> Collect()  # doctest: +SKIP
 
         :param bool flatten: True: return individual predictions instead
-          of batch of prediction
+          of batched prediction
         :return: Typically returns softmax class probabilities.
         :rtype: ndarray
         """
@@ -258,12 +258,12 @@ class LasagneNetwork(Network):  # pragma no cover
     def predict(self, flatten=True):
         return PredictNut(self.pred_fn, flatten)
 
-    def evaluate(self, metrics, predcol=None, targetcol=-1):
+    def evaluate(self, metrics, predcol=None):
         def compute(metric, targets, preds):
             result = metric(targets, preds)
             return result.eval() if hasattr(result, 'eval') else result
 
-        return EvalNut(self, metrics, compute, predcol, targetcol)
+        return EvalNut(self, metrics, compute, predcol)
 
     def save_weights(self, weightspath=None):
         weightspath = super(LasagneNetwork, self)._weightspath(weightspath)
