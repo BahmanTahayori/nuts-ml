@@ -37,8 +37,8 @@ def assert_equal_image(imagepath, image, rtol=0.01, atol=0.01):
         ni.save_image(imagepath, image)
     expected = ni.load_image(imagepath)
     print(sum(expected), sum(image))
-    print('abs(expected-image).sum()', abs(expected-image).sum())
-    print('rtol=', 100.0*abs(expected-image).sum()/expected.sum() )
+    print('abs(expected-image).sum()', abs(expected - image).sum())
+    print('rtol=', 100.0 * abs(expected - image).sum() / expected.sum())
     nt.assert_allclose(expected, image, rtol=rtol, atol=atol)
 
 
@@ -288,11 +288,10 @@ def test_change_color(datadirs):
 
 def test_extract_edges(datadirs):
     imagedir, _, _, processeddir = datadirs
-    img_arr = ni.load_image(imagedir + 'nut_color.bmp')
+    img_arr = ni.load_image(imagedir + 'nut_edges.bmp')
     new_img = ni.extract_edges(img_arr, 2.0)
-    imagepath = processeddir + 'nut_color_edges.bmp'
-    assert_equal_image(imagepath, new_img, atol=2, rtol=0.5)
-    assert 1==0
+    imagepath = processeddir + 'nut_edges.bmp'
+    assert_equal_image(imagepath, new_img)
 
 
 def test_gray2rgb(datadirs):
