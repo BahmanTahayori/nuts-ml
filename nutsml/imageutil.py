@@ -584,7 +584,7 @@ def resize(image, w, h, **kwargs):
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
     set_default_order(kwargs)
-    return skt.resize(image, (h, w), mode='constant',
+    return skt.resize(image, (h, w), mode='constant', anti_aliasing=False,
                       preserve_range=True, **kwargs).astype('uint8')
 
 
