@@ -36,6 +36,7 @@ def assert_equal_image(imagepath, image, rtol=0.01, atol=0.01):
     if CREATE_TEST_DATA:
         ni.save_image(imagepath, image)
     expected = ni.load_image(imagepath)
+    print(sum(expected), sum(image))
     nt.assert_allclose(expected, image, rtol=rtol, atol=atol)
 
 
