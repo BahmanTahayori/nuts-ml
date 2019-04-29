@@ -75,7 +75,7 @@ def ReadLabelDirs(basedir, filepattern='*', exclude='_*'):
 @nut_function
 def ReadImage(sample, columns, pathfunc=None, as_grey=False, dtype='uint8'):
     """
-    Load images for samples.
+    Load images from filesystem for samples.
 
     Loads images in jpg, gif, png, tif and bmp format.
     Images are returned as numpy arrays of shape (h, w, c) or (h, w) for
