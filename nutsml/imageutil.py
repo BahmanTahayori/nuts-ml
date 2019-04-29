@@ -455,7 +455,7 @@ def change_color(image, color=1.0):
     return enhance(image, ie.Color, color)
 
 
-def extract_edges(image, sigma):
+def extract_edges(image, sigma):   # pragma: no cover
     """
     Extract edges using the Canny algorithm.
 
