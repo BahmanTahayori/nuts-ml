@@ -19,7 +19,7 @@ from glob import glob
 from PIL import ImageEnhance as ie
 
 # Set to True to create test data
-CREATE_TEST_DATA = True
+CREATE_TEST_DATA = False
 
 
 @pytest.fixture(scope="function")

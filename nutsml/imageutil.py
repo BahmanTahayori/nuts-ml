@@ -565,7 +565,7 @@ def rotate(image, angle=0, **kwargs):
                       **kwargs).astype('uint8')
 
 
-def resize(image, w, h, **kwargs):
+def resize(image, w, h, anti_aliasing=False, **kwargs):
     """
     Resize image.
 
@@ -581,14 +581,15 @@ def resize(image, w, h, **kwargs):
     :param numpy array image: Numpy array with range [0,255] and dtype 'uint8'.
     :param int w: Width in pixels.
     :param int h: Height in pixels.
+    :param bool anti_aliasing: Toggle anti aliasing.
     :param kwargs kwargs: Keyword arguments for the underlying scikit-image
        resize function, e.g. order=1 for linear interpolation.
     :return: Resized image
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
     set_default_order(kwargs)
-    return skt.resize(image, (h, w), mode='constant', anti_aliasing=False,
-                      preserve_range=True, **kwargs).astype('uint8')
+    return skt.resize(image, (h, w), mode='constant', preserve_range=True,
+                      anti_aliasing=anti_aliasing, **kwargs).astype('uint8')
 
 
 def shear(image, shear_factor, **kwargs):
