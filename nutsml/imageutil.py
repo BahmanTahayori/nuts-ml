@@ -48,7 +48,8 @@ def load_image(filepath, as_grey=False, dtype='uint8', no_alpha=True):
         arr = np.load(filepath).astype(dtype)
         arr = rgb2gray(arr) if as_grey else arr
     else:
-        arr = ski.imread(filepath, as_grey=as_grey).astype(dtype)
+        img = ski.imread(filepath, as_grey=as_grey)
+        arr = np.array(img, dtype=dtype)
     # https://github.com/scikit-image/scikit-image/issues/2406
     if arr.ndim == 1 and arr.shape[0] == 2:
         arr = arr[0]  # pragma: no cover
