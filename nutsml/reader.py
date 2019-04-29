@@ -262,7 +262,7 @@ class ReadPandas(NutSource):
         """
         _, ext = os.path.splitext(filepath.lower())
         if ext == '.tsv':
-            return pd.read_table(filepath, **self.kwargs)
+            return pd.read_csv(filepath, sep='\t', **self.kwargs)
         if ext == '.csv':
             return pd.read_csv(filepath, **self.kwargs)
         if ext == '.xlsx':
