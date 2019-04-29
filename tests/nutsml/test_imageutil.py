@@ -19,7 +19,7 @@ from glob import glob
 from PIL import ImageEnhance as ie
 
 # Set to True to create test data
-CREATE_DATA = False
+CREATE_TEST_DATA = False
 
 
 @pytest.fixture(scope="function")
@@ -33,7 +33,7 @@ def datadirs():
 
 
 def assert_equal_image(imagepath, image, rtol=0.01, atol=0.01):
-    if CREATE_DATA:
+    if CREATE_TEST_DATA:
         ni.save_image(imagepath, image)
     expected = ni.load_image(imagepath)
     nt.assert_allclose(expected, image, rtol=rtol, atol=atol)

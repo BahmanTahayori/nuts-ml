@@ -117,7 +117,7 @@ def load_config(filename):
             filepath = os.path.join(dirpath, filename)
             filepaths.append(filepath)
             with open(filepath, 'r') as f:
-                return Config(yaml.load(f, Loader=yaml.FullLoader))
+                return Config(yaml.safe_load(f))
         except IOError:
             pass
     raise IOError('Configuration file not found: ' + ', '.join(filepaths))
