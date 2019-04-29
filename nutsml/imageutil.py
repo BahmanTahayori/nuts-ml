@@ -465,7 +465,7 @@ def extract_edges(image, sigma):
     :rtype: numpy array with range [0,255] and dtype 'uint8'
     """
     image = rgb2gray(image)
-    params = dict(sigma=sigma, low_threshold=None, high_threshold=None,
+    params = dict(sigma=sigma, low_threshold=0.1, high_threshold=50.0,
                   mask=None, use_quantiles=False)
     image = feature.canny(image, **params)
     return image.astype('uint8') * 255

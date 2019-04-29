@@ -289,7 +289,7 @@ def test_extract_edges(datadirs):
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
     new_img = ni.extract_edges(img_arr, 2.0)
     imagepath = processeddir + 'nut_color_edges.bmp'
-    assert_equal_image(imagepath, new_img, rtol=1.6, atol=1.6)
+    assert_equal_image(imagepath, new_img)
 
 
 def test_gray2rgb(datadirs):
