@@ -10,7 +10,7 @@ from __future__ import print_function
 import numpy as np
 
 from nutsflow import (nut_processor, nut_sink, nut_function, Collect, Map,
-                      Flatten, Get)
+                      Flatten, Get, Print)
 
 
 @nut_processor
@@ -80,9 +80,10 @@ def EvalNut(batches, network, metrics, compute, predcol=None):
     targets = []
 
     def accumulate(batch):
-        p_batch, target = batch
+        inputs, outputs = batch
+        target = outputs[0] if isinstance(outputs, list) else outputs
         targets.extend(target)
-        return p_batch
+        return inputs
 
     preds = (batches >> Map(accumulate) >> network.predict(flatten=False) >>
              Get(predcol) >> Flatten() >> Collect())
@@ -355,3 +356,132 @@ class KerasNetwork(Network):  # pragma no cover
 
     def print_layers(self):
         self.model.summary()
+
+
+class PytorchNetwork(Network):  # pragma no cover
+    """
+    Wrapper for Pytorch models:
+    https://pytorch.org/docs/stable/_modules/torch/nn/modules/module.html
+    """
+
+    def __init__(self, model, weightspath='weights_pytorch_net.pt'):
+        """
+        Construct wrapper around Pytorch model.
+
+        :param Pytorch model model: Pytorch model to wrap.
+               model needs to have three attributes:
+               | model.device:, e.g 'cuda:0' or 'cpu'
+               | model.optimizer: e.g. torch.optim.SGD
+               | model.losses: (list of) loss functions, e.g. F.cross_entropy
+        :param string weightspath: Filepath to save/load model weights.
+        """
+        Network.__init__(self, weightspath)
+
+        assert hasattr(model, 'device')
+        assert hasattr(model, 'optimizer')
+        assert hasattr(model, 'losses')
+        self.model = model
+        model.to(model.device)
+
+    def _to_tensor(self, batches):
+        """
+        Convert collection of batches into Pytorch tensors.
+
+        :param iter batches: Collection of batches.
+        :return: List of batches as Pytorch tensors
+        :rtype: [tensors]
+        """
+        import torch
+        return [torch.as_tensor(b, device=self.model.device) for b in batches]
+
+    def _to_tensors(self, x_batches, y_batches):
+        """
+        Convert two collection of batches (inputs, outputs) into tensors.
+        :param iter batches x_batches: e.g. Collection of input batches.
+        :param iter batches y_batches: e.g. Collection of output batches.
+        :return: tuple with two lists of tensors
+        :rtype: ([x_tensors], [y_tensors])
+        """
+        return self._to_tensor(x_batches), self._to_tensor(y_batches)
+
+    def _to_list(self, x):
+        return x if isinstance(x, list) else [x]
+
+    def _train_batch(self, x_batches, y_batches, **kwargs):
+        x_tensors, y_tensors = self._to_tensors(x_batches, y_batches)
+        model = self.model
+        model.optimizer.zero_grad()
+        y_preds = self._to_list(model(*x_tensors))
+        loss_fns = self._to_list(model.losses)
+        losses = []
+        for loss_fn, y_pred, y_true in zip(loss_fns, y_preds, y_tensors):
+            loss = loss_fn(y_pred, y_true)
+            loss.backward()
+            losses.append(loss.item())
+        model.optimizer.step()
+        return [np.mean(losses)] + losses if len(losses) > 1 else losses[0]
+
+    def train(self, **kwargs):
+        self.model.train()
+        return TrainValNut(self._train_batch, **kwargs)
+
+    def _validate_batch(self, x_batches, y_batches, **kwargs):
+        import torch
+        losses = []
+        with torch.no_grad():
+            x_tensors, y_tensors = self._to_tensors(x_batches, y_batches)
+            model = self.model
+            y_preds = self._to_list(model(*x_tensors))
+            loss_fns = self._to_list(model.losses)
+            for loss_fn, y_pred, y_true in zip(loss_fns, y_preds, y_tensors):
+                loss = loss_fn(y_pred, y_true)
+                losses.append(loss.item())
+        return [np.mean(losses)] + losses if len(losses) > 1 else losses[0]
+
+    def validate(self, **kwargs):
+        self.model.eval()
+        return TrainValNut(self._validate_batch, **kwargs)
+
+    def _predict_batch(self, x_batches):
+        import torch
+        with torch.no_grad():
+            x_tensors = self._to_tensor(x_batches)
+            y_preds = self.model(*x_tensors)
+            return [p.cpu().numpy() for p in y_preds]
+
+    def predict(self, flatten=True):
+        self.model.eval()
+        return PredictNut(self._predict_batch, flatten)
+
+    def evaluate(self, metrics, predcol=None):
+        def compute(metric, targets, preds):
+            result = metric(targets, preds)
+            return result.item() if hasattr(result, 'item') else result
+
+        self.model.eval()
+        return EvalNut(self, metrics, compute, predcol)
+
+    def save_weights(self, weightspath=None):
+        import torch
+        weightspath = super(PytorchNetwork, self)._weightspath(weightspath)
+        torch.save(self.model.state_dict(), weightspath)
+
+    def load_weights(self, weightspath=None):
+        import torch
+        weightspath = super(PytorchNetwork, self)._weightspath(weightspath)
+        self.model.load_state_dict(torch.load(weightspath))
+
+    def print_layers(self, input_shape=None):
+        """
+        Print network architecture (and layer dimensions).
+
+        :param tuple|None input_shape: (C, H, W) or None
+               If None, layer dimensions and param numbers are not reported.
+        :param kwargs kwargs: Keyword arguments for torchsummary.summary
+        """
+        if input_shape:
+            from torchsummary import summary
+            device = self.model.device[:4]  # remove GPU id, e.g. cuda:0
+            summary(self.model, input_shape, device=device)
+        else:
+            print(str(self.model))
