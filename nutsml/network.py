@@ -1,7 +1,7 @@
 """
 .. module:: network
-   :synopsis: Wrapper around other network APIs such as Lasagne or Keras
-              to enable usage within nuts-flow.
+   :synopsis: Wrapper around other network APIs such as Lasagne, Keras and
+              Pytorch to enable usage within nuts-flow/ml.
               For instance, with a wrapped network one can write:
               samples >> build_batch >> network.train() >> log_loss >> Consume()
 """
@@ -97,8 +97,8 @@ def EvalNut(batches, network, metrics, compute, predcol=None):
 class Network(object):
     """
     Abstract base class for networks. Allows to wrap existing network APIs
-    such as Lasagne or Keras into an API that enables direct usage of the
-    network as a Nut in a nuts flow.
+    such as Lasagne, Keras or Pytorch into an API that enables direct usage
+    of the network as a Nut in a nuts flow.
     """
 
     def __init__(self, weightspath):
@@ -405,9 +405,26 @@ class PytorchNetwork(Network):  # pragma no cover
         return self._to_tensor(x_batches), self._to_tensor(y_batches)
 
     def _to_list(self, x):
+        """
+        Wraps x in a list if it is not already a list.
+
+        :param object x: Any object.
+        :return: x wrapped in list
+        :rtype: list
+        """
         return x if isinstance(x, list) else [x]
 
-    def _train_batch(self, x_batches, y_batches, **kwargs):
+    def _train_batch(self, x_batches, y_batches):
+        """
+        Performs a single gradient step on a batch.
+
+        :param [ndarray] x_batches: List of input batches
+        :param [ndarray] y_batches: List of output/target batches
+        :return: losses. If there is multiple outputs then a list with
+                the losses for each output and the mean over these losses
+                is returned. Otherwise a single float with the loss is returned.
+        :rtype: float|[float]
+        """
         x_tensors, y_tensors = self._to_tensors(x_batches, y_batches)
         model = self.model
         model.optimizer.zero_grad()
@@ -421,11 +438,17 @@ class PytorchNetwork(Network):  # pragma no cover
         model.optimizer.step()
         return [np.mean(losses)] + losses if len(losses) > 1 else losses[0]
 
-    def train(self, **kwargs):
-        self.model.train()
-        return TrainValNut(self._train_batch, **kwargs)
+    def _validate_batch(self, x_batches, y_batches):
+        """
+        Performs a forward step to compute losses.
 
-    def _validate_batch(self, x_batches, y_batches, **kwargs):
+        :param [ndarray] x_batches: List of input batches
+        :param [ndarray] y_batches: List of output/target batches
+        :return: losses. If there is multiple outputs then a list with
+                the losses for each output and the mean over these losses
+                is returned. Otherwise a single float with the loss is returned.
+        :rtype: float|[float]
+        """
         import torch
         losses = []
         with torch.no_grad():
@@ -438,16 +461,27 @@ class PytorchNetwork(Network):  # pragma no cover
                 losses.append(loss.item())
         return [np.mean(losses)] + losses if len(losses) > 1 else losses[0]
 
-    def validate(self, **kwargs):
-        self.model.eval()
-        return TrainValNut(self._validate_batch, **kwargs)
-
     def _predict_batch(self, x_batches):
+        """
+        Performs a forward step to compute output.
+
+        :param [ndarray] x_batches: List of input batches
+        :return: network outputs
+        :rtype: list
+        """
         import torch
         with torch.no_grad():
             x_tensors = self._to_tensor(x_batches)
             y_preds = self.model(*x_tensors)
             return [p.cpu().numpy() for p in y_preds]
+
+    def train(self, **kwargs):
+        self.model.train()
+        return TrainValNut(self._train_batch, **kwargs)
+
+    def validate(self, **kwargs):
+        self.model.eval()
+        return TrainValNut(self._validate_batch, **kwargs)
 
     def predict(self, flatten=True):
         self.model.eval()
@@ -476,8 +510,7 @@ class PytorchNetwork(Network):  # pragma no cover
         Print network architecture (and layer dimensions).
 
         :param tuple|None input_shape: (C, H, W) or None
-               If None, layer dimensions and param numbers are not reported.
-        :param kwargs kwargs: Keyword arguments for torchsummary.summary
+               If None, layer dimensions and param numbers are not printed.
         """
         if input_shape:
             from torchsummary import summary

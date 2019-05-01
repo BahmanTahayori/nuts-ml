@@ -67,8 +67,7 @@ class Model(nn.Module):
         # required properties of a model to be wrapped as PytorchNetwork!
         self.device = device  # 'cuda', 'cuda:0' or 'gpu'
         self.losses = F.cross_entropy  # can be list of losses
-        #self.optimizer = optim.Adam(self.parameters(), lr=0.01)
-        self.optimizer = optim.SGD(self.parameters(), lr=0.01, momentum=0.5)
+        self.optimizer = optim.Adam(self.parameters())
 
     def forward(self, x):
         """Forward pass through network for input x"""
@@ -147,7 +146,7 @@ if __name__ == '__main__':
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     model = Model(device)
     network = PytorchNetwork(model)
-    #network.load_weights()
+    # network.load_weights()
     network.print_layers((1, 28, 28))
 
     print('training ...')
