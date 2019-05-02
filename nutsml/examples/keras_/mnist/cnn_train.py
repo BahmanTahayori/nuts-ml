@@ -1,6 +1,6 @@
 """
 .. module:: cnn_train
-   :synopsis: Example nuts-ml pipeline for viewing annotations and predictions 
+   :synopsis: Example nuts-ml pipeline for training a CNN on MNIST
 
 This is code is based on a Keras example (see here)
 https://github.com/fchollet/keras/blob/master/examples/mnist_cnn.py
