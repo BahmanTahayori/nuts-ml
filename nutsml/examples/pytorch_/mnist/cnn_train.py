@@ -15,15 +15,14 @@ from nutsml.network import PytorchNetwork
 from utils import download_mnist, load_mnist
 
 
-class Flatten(nn.Module):
-    """Flatten layer"""
+class Reshape(nn.Module):
+    """Flatten convolutional to linear"""
 
     def __init__(self):
-        super(Flatten, self).__init__()
+        super(Reshape, self).__init__()
 
     def forward(self, x):
-        x = x.view(x.size(0), -1)
-        return x
+        return x.view(x.size(0), -1)
 
 
 class Model(nn.Module):
@@ -36,15 +35,15 @@ class Model(nn.Module):
         self.layers = nn.Sequential(
             nn.Conv2d(1, 10, kernel_size=5),
             nn.MaxPool2d(2),
-            nn.ReLU(),
+            nn.ReLU(True),
+            nn.BatchNorm2d(10),
             nn.Conv2d(10, 20, kernel_size=5),
-            nn.Dropout(),
             nn.MaxPool2d(2),
-            nn.ReLU(),
-            Flatten(),
+            nn.ReLU(True),
+            nn.BatchNorm2d(20),
+            Reshape(),
             nn.Linear(320, 50),
-            nn.ReLU(),
-            nn.Dropout(),
+            nn.ReLU(True),
             nn.Linear(50, 10),
         )
 
