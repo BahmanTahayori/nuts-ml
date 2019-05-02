@@ -1,6 +1,7 @@
-import requests
-import pickle
-import gzip
+"""
+.. module:: cnn_train
+   :synopsis: Example nuts-ml pipeline for training a CNN on MNIST
+"""
 
 import torch
 import torch.nn.functional as F
@@ -11,32 +12,14 @@ import nutsml as nm
 import numpy as np
 
 from nutsml.network import PytorchNetwork
-from pathlib import Path
-
-BATCHSIZE = 64
-EPOCHS = 3
+from utils import download_mnist, load_mnist
 
 
-def download_mnist():
-    folder = Path("data/mnist")
-    filename = "mnist.pkl.gz"
-    fullpath = folder / filename
-    url = "http://deeplearning.net/data/mnist/" + filename
-    folder.mkdir(parents=True, exist_ok=True)
-    if not fullpath.exists():
-        content = requests.get(url).content
-        fullpath.open("wb").write(content)
-    return fullpath
-
-
-def load_mnist(filepath):
-    with gzip.open(filepath.as_posix(), "rb") as f:
-        data = pickle.load(f, encoding="latin-1")
-    (x_train, y_train), (x_valid, y_valid), _ = data
-    return x_train, y_train, x_valid, y_valid
 
 
 class Flatten(nn.Module):
+    """Flatten layer"""
+
     def __init__(self):
         super(Flatten, self).__init__()
 
@@ -46,6 +29,8 @@ class Flatten(nn.Module):
 
 
 class Model(nn.Module):
+    """CNN model"""
+
     def __init__(self, device='cpu'):
         super(Model, self).__init__()
 
@@ -66,7 +51,7 @@ class Model(nn.Module):
 
         # required properties of a model to be wrapped as PytorchNetwork!
         self.device = device  # 'cuda', 'cuda:0' or 'gpu'
-        self.losses = F.cross_entropy  # can be list of losses
+        self.losses = F.cross_entropy  # can be list of loss functions
         self.optimizer = optim.Adam(self.parameters())
 
     def forward(self, x):
@@ -74,23 +59,33 @@ class Model(nn.Module):
         return self.layers(x)
 
 
+# definition of nuts
+BATCHSIZE = 64
 build_batch = (nm.BuildBatch(BATCHSIZE, verbose=False)
                .input(0, 'image', 'float32', True)
                .output(1, 'number', 'int64'))
 build_pred_batch = (nm.BuildBatch(BATCHSIZE, verbose=False)
                     .input(0, 'image', 'float32', True))
-augment = nm.AugmentImage(0).by('identical', 0.5).by('rotate', 0.5, [-30, 30])
+augment = (nm.AugmentImage(0)
+           .by('identical', 1)
+           .by('translate', 0.2, [-3, +3], [-3, +3])
+           .by('rotate', 0.2, [-30, +30])
+           .by('shear', 0.2, [0, 0.2])
+           .by('elastic', 0.2, [5, 5], [100, 100], [0, 100])
+           )
 vec2img = nf.MapCol(0, lambda x: (x.reshape([28, 28]) * 255).astype('uint8'))
 sample_gen = lambda x, y: zip(iter(x), iter(y))
 
 
 def accuracy(y_true, y_pred):
+    """Compute accuracy"""
     from sklearn.metrics import accuracy_score
     return accuracy_score(y_true, np.array(y_pred).argmax(1))
 
 
-def train(network, x, y):
-    for epoch in range(EPOCHS):
+def train(network, x, y, epochs=3):
+    """Train network for given number of epochs"""
+    for epoch in range(epochs):
         print('epoch', epoch + 1)
         losses = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
                   augment >> nf.Shuffle(1000) >> build_batch >>
@@ -99,12 +94,14 @@ def train(network, x, y):
 
 
 def validate(network, x, y):
+    """Compute validation/test loss (= mean over batch losses)"""
     losses = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
               build_batch >> network.validate() >> nf.Collect())
     print('val loss:', np.mean(losses))
 
 
 def predict(network, x, y):
+    """Compute network outputs and print accuracy"""
     preds = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
              build_pred_batch >> network.predict() >> nf.Collect())
     acc = accuracy(y, preds)
@@ -112,13 +109,15 @@ def predict(network, x, y):
 
 
 def evaluate(network, x, y):
+    """Evaluate network performance (here accuracy)"""
     metrics = [accuracy]
     result = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
               build_batch >> network.evaluate(metrics))
     print(result)
 
 
-def show_errors(network, x, y):
+def view_misclassified_images(network, x, y):
+    """Show misclassified images"""
     make_label = nf.Map(lambda s: (s[0], 'true:%d  pred:%d' % (s[1], s[2])))
     filter_error = nf.Filter(lambda s: s[1] != s[2])
     view_image = nm.ViewImageAnnotation(0, 1, pause=1)
@@ -129,9 +128,10 @@ def show_errors(network, x, y):
      view_image >> nf.Consume())
 
 
-def view_images(x, y):
+def view_augmented_images(x, y, n=10):
+    """Show n augmented images"""
     view_image = nm.ViewImageAnnotation(0, 1, pause=1)
-    zip(x, y) >> vec2img >> augment >> view_image >> nf.Consume()
+    zip(x, y) >> vec2img >> augment >> nf.Take(n) >> view_image >> nf.Consume()
 
 
 if __name__ == '__main__':
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     x_train, y_train, x_test, y_test = load_mnist(filepath)
 
     # print('viewing images...')
-    # view_images(x_test, y_test)
+    # view_augmented_images(x_test, y_test)
 
     print('creating model...')
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     network.print_layers((1, 28, 28))
 
     print('training ...')
-    train(network, x_train, y_train)
+    train(network, x_train, y_train, epochs=3)
     network.save_weights()
 
     print('validating ...')
@@ -163,4 +163,4 @@ if __name__ == '__main__':
     evaluate(network, x_test, y_test)
 
     # print('showing errors ...')
-    # show_errors(network, x_test, y_test)
+    # view_misclassified_images(network, x_test, y_test)
