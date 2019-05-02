@@ -77,7 +77,7 @@ vec2img = nf.MapCol(0, lambda x: (x.reshape([28, 28]) * 255).astype('uint8'))
 def accuracy(y_true, y_pred):
     """Compute accuracy"""
     from sklearn.metrics import accuracy_score
-    return accuracy_score(y_true, np.array(y_pred).argmax(1))
+    return 100 * accuracy_score(y_true, y_pred.argmax(1))
 
 
 def train(network, x, y, epochs=3):
@@ -102,7 +102,7 @@ def predict(network, x, y):
     preds = (zip(x, y) >> nf.PrintProgress(x) >> vec2img >>
              build_pred_batch >> network.predict() >> nf.Collect())
     acc = accuracy(y, preds)
-    print('test acc', 100.0 * acc)
+    print('test acc', acc)
 
 
 def evaluate(network, x, y):
@@ -110,7 +110,7 @@ def evaluate(network, x, y):
     metrics = [accuracy]
     result = (zip(x, y) >> nf.PrintProgress(x) >> vec2img >>
               build_batch >> network.evaluate(metrics))
-    print(result)
+    return result
 
 
 def view_misclassified_images(network, x, y):
@@ -136,9 +136,6 @@ if __name__ == '__main__':
     filepath = download_mnist()
     x_train, y_train, x_test, y_test = load_mnist(filepath)
 
-    # print('viewing images...')
-    # view_augmented_images(x_test, y_test)
-
     print('creating model...')
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     model = Model(device)
@@ -150,14 +147,18 @@ if __name__ == '__main__':
     train(network, x_train, y_train, epochs=3)
     network.save_weights()
 
-    print('validating ...')
-    validate(network, x_test, y_test)
-
-    print('predicting ...')
-    predict(network, x_test, y_test)
-
     print('evaluating ...')
-    evaluate(network, x_test, y_test)
+    print('train acc:', evaluate(network, x_train, y_train))
+    print('test  acc:', evaluate(network, x_test, y_test))
+
+    # print('validating ...')
+    # validate(network, x_test, y_test)
+
+    # print('predicting ...')
+    # predict(network, x_test, y_test)
+
+    # print('viewing images...')
+    # view_augmented_images(x_test, y_test)
 
     # print('showing errors ...')
     # view_misclassified_images(network, x_test, y_test)
