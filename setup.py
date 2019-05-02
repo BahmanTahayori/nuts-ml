@@ -47,7 +47,7 @@ setup(
     author_email='stefan.maetschke@gmail.com',
     description='Flow-based data pre-processing for Machine Learning',
     install_requires=[
-        'nutsflow >= 1.0.31',
+        'nutsflow >= 1.0.33',
         # 'pandas < 0.21.0',  # Python 3.4 support!
         'pandas > 0.21.0',
         'six >= 1.10.0',
