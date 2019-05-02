@@ -3,8 +3,9 @@ Release notes
 
 1.0.41
 ------
-- edge filter added as transformer/augmentation
+- edge filter added as transformer and augmentation
 - travis config for Python 3.7 fixed
+- Wrapper for Pytorch models added
 
 
 1.0.40
