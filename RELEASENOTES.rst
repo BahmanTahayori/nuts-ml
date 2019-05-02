@@ -1,6 +1,10 @@
 Release notes
 =============
 
+1.0.42
+------
+-
+
 1.0.41
 ------
 - edge filter added as transformer and augmentation
