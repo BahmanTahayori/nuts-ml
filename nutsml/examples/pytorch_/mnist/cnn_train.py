@@ -15,8 +15,6 @@ from nutsml.network import PytorchNetwork
 from utils import download_mnist, load_mnist
 
 
-
-
 class Flatten(nn.Module):
     """Flatten layer"""
 
@@ -29,9 +27,10 @@ class Flatten(nn.Module):
 
 
 class Model(nn.Module):
-    """CNN model"""
+    """Pytorch model"""
 
     def __init__(self, device='cpu'):
+        """Construct model on given device, e.g. 'cpu' or 'cuda'"""
         super(Model, self).__init__()
 
         self.layers = nn.Sequential(
@@ -74,7 +73,6 @@ augment = (nm.AugmentImage(0)
            .by('elastic', 0.2, [5, 5], [100, 100], [0, 100])
            )
 vec2img = nf.MapCol(0, lambda x: (x.reshape([28, 28]) * 255).astype('uint8'))
-sample_gen = lambda x, y: zip(iter(x), iter(y))
 
 
 def accuracy(y_true, y_pred):
@@ -87,7 +85,7 @@ def train(network, x, y, epochs=3):
     """Train network for given number of epochs"""
     for epoch in range(epochs):
         print('epoch', epoch + 1)
-        losses = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
+        losses = (zip(x, y) >> nf.PrintProgress(x) >> vec2img >>
                   augment >> nf.Shuffle(1000) >> build_batch >>
                   network.train() >> nf.Collect())
         print('train loss:', np.mean(losses))
@@ -95,14 +93,14 @@ def train(network, x, y, epochs=3):
 
 def validate(network, x, y):
     """Compute validation/test loss (= mean over batch losses)"""
-    losses = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
+    losses = (zip(x, y) >> nf.PrintProgress(x) >> vec2img >>
               build_batch >> network.validate() >> nf.Collect())
     print('val loss:', np.mean(losses))
 
 
 def predict(network, x, y):
     """Compute network outputs and print accuracy"""
-    preds = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
+    preds = (zip(x, y) >> nf.PrintProgress(x) >> vec2img >>
              build_pred_batch >> network.predict() >> nf.Collect())
     acc = accuracy(y, preds)
     print('test acc', 100.0 * acc)
@@ -111,7 +109,7 @@ def predict(network, x, y):
 def evaluate(network, x, y):
     """Evaluate network performance (here accuracy)"""
     metrics = [accuracy]
-    result = (sample_gen(x, y) >> nf.PrintProgress(x) >> vec2img >>
+    result = (zip(x, y) >> nf.PrintProgress(x) >> vec2img >>
               build_batch >> network.evaluate(metrics))
     print(result)
 
@@ -122,7 +120,7 @@ def view_misclassified_images(network, x, y):
     filter_error = nf.Filter(lambda s: s[1] != s[2])
     view_image = nm.ViewImageAnnotation(0, 1, pause=1)
 
-    preds = (sample_gen(x, y) >> vec2img >> build_pred_batch >>
+    preds = (zip(x, y) >> vec2img >> build_pred_batch >>
              network.predict() >> nf.Map(np.argmax) >> nf.Collect())
     (zip(x, y, preds) >> vec2img >> filter_error >> make_label >>
      view_image >> nf.Consume())

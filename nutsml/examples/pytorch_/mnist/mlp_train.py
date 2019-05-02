@@ -16,9 +16,10 @@ from utils import download_mnist, load_mnist
 
 
 class Model(nn.Module):
-    """MLP model"""
+    """Pytorch model"""
 
     def __init__(self, device):
+        """Construct model on given device, e.g. 'cpu' or 'cuda'"""
         super(Model, self).__init__()
         self.fc1 = nn.Linear(28 * 28, 500)
         self.fc2 = nn.Linear(500, 256)
@@ -30,6 +31,7 @@ class Model(nn.Module):
         self.optimizer = optim.Adam(self.parameters())
 
     def forward(self, x):
+        """Forward pass through network for input x"""
         x = x.view(-1, 28 * 28)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
@@ -40,7 +42,7 @@ class Model(nn.Module):
 def accuracy(y_true, y_pred):
     """Compute accuracy"""
     from sklearn.metrics import accuracy_score
-    return 100 * accuracy_score(y_true, np.array(y_pred).argmax(1))
+    return 100 * accuracy_score(y_true, y_pred.argmax(1))
 
 
 def evaluate(network, x, y):
@@ -49,16 +51,8 @@ def evaluate(network, x, y):
     build_batch = (nm.BuildBatch(64)
                    .input(0, 'vector', 'float32')
                    .output(1, 'number', 'int64'))
-    acc = zip(iter(x), iter(y)) >> build_batch >> network.evaluate(metrics)
+    acc = zip(x, y) >> build_batch >> network.evaluate(metrics)
     return acc
-
-
-def predict(network, x, y):
-    """Compute network outputs and print accuracy"""
-    build_batch = nm.BuildBatch(64).input(0, 'vector', 'float32')
-    preds = (zip(iter(x), iter(y)) >> build_batch >> network.predict() >> nf.Collect())
-    acc = accuracy(y, preds)
-    print('test acc', acc)
 
 
 def train(network, epochs=3):
@@ -67,15 +61,16 @@ def train(network, epochs=3):
     filepath = download_mnist()
     x_train, y_train, x_test, y_test = load_mnist(filepath)
 
-    build_batch = (nm.BuildBatch(64, verbose=False)
+    plot = nm.PlotLines(None, every_sec=0.2)
+    build_batch = (nm.BuildBatch(128, verbose=False)
                    .input(0, 'vector', 'float32')
                    .output(1, 'number', 'int64'))
 
     for epoch in range(epochs):
         print('epoch', epoch + 1)
-        losses = (zip(iter(x_train), iter(y_train)) >>
-                  nf.PrintProgress(x_train) >> nf.Shuffle(100) >> build_batch >>
-                  network.train() >> nf.Collect())
+        losses = (zip(x_train, y_train) >> nf.PrintProgress(x_train) >>
+                  nf.Shuffle(1000) >> build_batch >>
+                  network.train() >> plot >> nf.Collect())
         acc_test = evaluate(network, x_test, y_test)
         acc_train = evaluate(network, x_train, y_train)
         print('train loss : {:.6f}'.format(np.mean(losses)))
