@@ -46,6 +46,7 @@ class Model(nn.Module):
             nn.ReLU(True),
             nn.Linear(50, 10),
         )
+        self.to(device)  # set device before constructing optimizer
 
         # required properties of a model to be wrapped as PytorchNetwork!
         self.device = device  # 'cuda', 'cuda:0' or 'gpu'

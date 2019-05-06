@@ -25,6 +25,8 @@ class Model(nn.Module):
         self.fc2 = nn.Linear(500, 256)
         self.fc3 = nn.Linear(256, 10)
 
+        self.to(device)  # set device before constructing optimizer
+
         # required properties of a model to be wrapped as PytorchNetwork!
         self.device = device  # 'cuda', 'cuda:0' or 'gpu'
         self.losses = nn.CrossEntropyLoss()  # can be list of loss functions
