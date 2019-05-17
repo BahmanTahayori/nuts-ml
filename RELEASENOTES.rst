@@ -3,7 +3,7 @@ Release notes
 
 1.0.42
 ------
--
+- batchstr() added
 
 1.0.41
 ------

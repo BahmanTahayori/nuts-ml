@@ -32,6 +32,14 @@ def test_shapestr():
     assert util.shapestr(np.zeros((3, 4), dtype='uint8'), True) == '3x4:uint8'
 
 
+def test_batchstr():
+    a = np.zeros((3, 4), dtype='uint8')
+    b = np.zeros((1, 2, 2), dtype='float16')
+    assert util.batchstr([a]) == '[3x4:uint8]'
+    assert util.batchstr([a, b]) == '[3x4:uint8, 1x2x2:float16]'
+    assert util.batchstr([a, b], False) == '[3x4, 1x2x2]'
+
+
 def test_random_upsample(sampleset):
     samples = [('pos', 1), ('pos', 1), ('neg', 0)]
     stratified = sorted(util.upsample(samples, 1, rand=StableRandom(0)))

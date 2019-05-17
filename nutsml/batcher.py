@@ -6,7 +6,7 @@ import warnings
 import numpy as np
 import nutsml.imageutil as ni
 
-from nutsml.datautil import shapestr
+from nutsml.datautil import batchstr
 from nutsflow import nut_function
 from nutsflow.common import console
 from nutsflow.base import Nut
@@ -331,14 +331,12 @@ class BuildBatch(Nut):
             yield batch
 
     def _print_batch(self, batches):
-        def to_str(batch):
-            return '[' + ', '.join(shapestr(b, True) for b in batch) + ']'
-
         for batch in batches:
             if len(batch) == 2:
-                console('[{}, {}]'.format(to_str(batch[0]), to_str(batch[1])))
+                fmtstr = '[{}, {}]'
+                console(fmtstr.format(batchstr(batch[0]), batchstr(batch[1])))
             else:
-                console(to_str(batch))
+                console(batchstr(batch))
             yield batch
 
     def __rrshift__(self, iterable):

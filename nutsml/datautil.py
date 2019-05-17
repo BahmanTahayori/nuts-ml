@@ -52,6 +52,26 @@ def shapestr(array, with_dtype=False):
     return sstr
 
 
+def batchstr(batch, with_dtype=True):
+    """
+    Return string representation of a batch/list of arrays.
+
+    See shapestr(array) for details of array representation.
+
+    >>> import numpy as np
+    >>> a = np.zeros((3,4), dtype='uint8')
+    >>> b = np.zeros((1,2,2), dtype='float16')
+    >>> batchstr([a, b])
+    '[3x4:uint8, 1x2x2:float16]'
+
+    :param list batch: Iterable over numpy arrays
+    :param bool with_dtype: Append dtype of array to shape string
+    :return: String representation of the batch
+    :rtype: str
+    """
+    return '[' + ', '.join(shapestr(b, with_dtype) for b in batch) + ']'
+
+
 def upsample(samples, labelcol, rand=None):
     """
     Up-sample sample set.
