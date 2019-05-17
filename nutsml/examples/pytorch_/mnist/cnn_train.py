@@ -142,7 +142,7 @@ if __name__ == '__main__':
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     model = Model(device)
     network = PytorchNetwork(model)
-    #network.load_weights()
+    network.load_weights()
     network.print_layers((1, 28, 28))
 
     print('training ...')
