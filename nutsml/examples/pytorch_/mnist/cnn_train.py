@@ -78,7 +78,8 @@ vec2img = nf.MapCol(0, lambda x: (x.reshape([28, 28]) * 255).astype('uint8'))
 def accuracy(y_true, y_pred):
     """Compute accuracy"""
     from sklearn.metrics import accuracy_score
-    return 100 * accuracy_score(y_true, y_pred.argmax(1))
+    y_pred = [yp.argmax() for yp in y_pred]
+    return 100 * accuracy_score(y_true, y_pred)
 
 
 def train(network, x, y, epochs=3):
@@ -141,7 +142,7 @@ if __name__ == '__main__':
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
     model = Model(device)
     network = PytorchNetwork(model)
-    # network.load_weights()
+    #network.load_weights()
     network.print_layers((1, 28, 28))
 
     print('training ...')
@@ -152,11 +153,11 @@ if __name__ == '__main__':
     print('train acc:', evaluate(network, x_train, y_train))
     print('test  acc:', evaluate(network, x_test, y_test))
 
-    # print('validating ...')
-    # validate(network, x_test, y_test)
+    print('validating ...')
+    validate(network, x_test, y_test)
 
-    # print('predicting ...')
-    # predict(network, x_test, y_test)
+    print('predicting ...')
+    predict(network, x_test, y_test)
 
     # print('viewing images...')
     # view_augmented_images(x_test, y_test)

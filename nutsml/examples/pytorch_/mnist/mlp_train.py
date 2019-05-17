@@ -44,7 +44,8 @@ class Model(nn.Module):
 def accuracy(y_true, y_pred):
     """Compute accuracy"""
     from sklearn.metrics import accuracy_score
-    return 100 * accuracy_score(y_true, y_pred.argmax(1))
+    y_pred = [yp.argmax() for yp in y_pred]
+    return 100 * accuracy_score(y_true, y_pred)
 
 
 def evaluate(network, x, y):

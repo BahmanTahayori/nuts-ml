@@ -383,26 +383,24 @@ class PytorchNetwork(Network):  # pragma no cover
         self.model = model
         model.to(model.device)
 
-    def _to_tensor(self, batches):
+    def _to_tensor(self, batches, flatten):
         """
         Convert collection of batches into Pytorch tensors.
 
         :param iter batches: Collection of batches.
-        :return: List of batches as Pytorch tensors
-        :rtype: [tensors]
+        :param bool flatten: If true and batch contains only one column
+               return single tensor instead of list of tensors.
+        :return: List of batches as Pytorch tensors or a single tensor
+        :rtype: [tensors] or tensor
         """
         import torch
-        return [torch.as_tensor(b, device=self.model.device) for b in batches]
+        T = lambda b: torch.as_tensor(b, device=self.model.device)
+        tensors = [T(b) for b in batches if not isinstance(b, str)]
+        if flatten and len(tensors) == 1:
+            return tensors[0]
+        return tensors
 
-    def _to_tensors(self, x_batches, y_batches):
-        """
-        Convert two collection of batches (inputs, outputs) into tensors.
-        :param iter batches x_batches: e.g. Collection of input batches.
-        :param iter batches y_batches: e.g. Collection of output batches.
-        :return: tuple with two lists of tensors
-        :rtype: ([x_tensors], [y_tensors])
-        """
-        return self._to_tensor(x_batches), self._to_tensor(y_batches)
+
 
     def _to_list(self, x):
         """
@@ -414,7 +412,7 @@ class PytorchNetwork(Network):  # pragma no cover
         """
         return x if isinstance(x, list) else [x]
 
-    def _train_batch(self, x_batches, y_batches):
+    def _train_batch(self, x_batches, y_batches, *args):
         """
         Performs a single gradient step on a batch.
 
@@ -425,10 +423,11 @@ class PytorchNetwork(Network):  # pragma no cover
                 is returned. Otherwise a single float with the loss is returned.
         :rtype: float|[float]
         """
-        x_tensors, y_tensors = self._to_tensors(x_batches, y_batches)
+        x_tensors = self._to_tensor(x_batches, True)
+        y_tensors = self._to_tensor(y_batches, False)
         model = self.model
         model.optimizer.zero_grad()
-        y_preds = self._to_list(model(*x_tensors))
+        y_preds = self._to_list(model(x_tensors, *args))
         loss_fns = self._to_list(model.losses)
         losses = []
         for loss_fn, y_pred, y_true in zip(loss_fns, y_preds, y_tensors):
@@ -438,7 +437,7 @@ class PytorchNetwork(Network):  # pragma no cover
         model.optimizer.step()
         return [np.mean(losses)] + losses if len(losses) > 1 else losses[0]
 
-    def _validate_batch(self, x_batches, y_batches):
+    def _validate_batch(self, x_batches, y_batches, *args):
         """
         Performs a forward step to compute losses.
 
@@ -452,16 +451,17 @@ class PytorchNetwork(Network):  # pragma no cover
         import torch
         losses = []
         with torch.no_grad():
-            x_tensors, y_tensors = self._to_tensors(x_batches, y_batches)
+            x_tensors = self._to_tensor(x_batches, True)
+            y_tensors = self._to_tensor(y_batches, False)
             model = self.model
-            y_preds = self._to_list(model(*x_tensors))
+            y_preds = self._to_list(model(x_tensors, *args))
             loss_fns = self._to_list(model.losses)
             for loss_fn, y_pred, y_true in zip(loss_fns, y_preds, y_tensors):
                 loss = loss_fn(y_pred, y_true)
                 losses.append(loss.item())
         return [np.mean(losses)] + losses if len(losses) > 1 else losses[0]
 
-    def _predict_batch(self, x_batches):
+    def _predict_batch(self, x_batches, *args):
         """
         Performs a forward step to compute output.
 
@@ -471,8 +471,8 @@ class PytorchNetwork(Network):  # pragma no cover
         """
         import torch
         with torch.no_grad():
-            x_tensors = self._to_tensor(x_batches)
-            y_preds = self.model(*x_tensors)
+            x_tensors = self._to_tensor(x_batches, True)
+            y_preds = self.model(x_tensors, *args)
             return [p.cpu().numpy() for p in y_preds]
 
     def train(self, **kwargs):
