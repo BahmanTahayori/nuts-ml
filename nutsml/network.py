@@ -400,8 +400,6 @@ class PytorchNetwork(Network):  # pragma no cover
             return tensors[0]
         return tensors
 
-
-
     def _to_list(self, x):
         """
         Wraps x in a list if it is not already a list.
