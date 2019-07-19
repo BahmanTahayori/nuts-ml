@@ -74,7 +74,7 @@ def build_vector_batch(vectors, dtype):
     return np.vstack(vectors).astype(dtype)
 
 
-def build_tensor_batch(tensors, dtype, axes=None):
+def build_tensor_batch(tensors, dtype, axes=None, expand=None):
     """
     Return batch of tensors.
 
@@ -91,8 +91,18 @@ def build_tensor_batch(tensors, dtype, axes=None):
      [[1 1 1]
       [1 1 1]]]
 
+    >>> batch = build_tensor_batch(tensors, 'uint8', expand=0)
+    >>> shapestr(batch)
+    '2x1x2x3'
 
-    >>> batch = build_tensor_batch(tensors, 'uint8', axes = (1, 0))
+    >>> print(batch)
+    [[[[0 0 0]
+       [0 0 0]]]
+    <BLANKLINE>
+     [[[1 1 1]
+       [1 1 1]]]]
+
+    >>> batch = build_tensor_batch(tensors, 'uint8', axes=(1, 0))
     >>> shapestr(batch)
     '2x3x2'
 
@@ -109,13 +119,17 @@ def build_tensor_batch(tensors, dtype, axes=None):
     :param numpy data type dtype: Data type of batch, e.g. 'uint8'
     :param tuple|None axes: axes order, e.g. to move a channel axis to the
       last position. (see numpy transpose for details)
+    :param int|None expand: Add empty dimension at expand dimension.
+        (see numpy expand_dims for details).
     :return: stack of tensors, with batch axis first.
     :rtype: numpy.array
     """
     if not len(tensors):
         raise ValueError('No tensors to build batch!')
-    if axes:
+    if axes is not None:
         tensors = [np.transpose(t, axes) for t in tensors]
+    if expand is not None:
+        tensors = [np.expand_dims(t, expand) for t in tensors]
     return np.stack(tensors).astype(dtype)
 
 

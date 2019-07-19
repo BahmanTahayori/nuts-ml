@@ -47,6 +47,10 @@ def test_build_tensor_batch():
     assert batch.dtype == np.uint8
     assert np.array_equal(batch, expected)
 
+    batch = nb.build_tensor_batch(tensors, 'uint8', expand=0)
+    expected = np.stack([np.expand_dims(t, 0) for t in tensors])
+    assert np.array_equal(batch, expected)
+
     batch = nb.build_tensor_batch(tensors, float, axes=(1, 0, 2))
     expected = np.stack([np.transpose(t, (1, 0, 2)) for t in tensors])
     assert batch.dtype == float
