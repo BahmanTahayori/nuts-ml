@@ -1,6 +1,10 @@
 Release notes
 =============
 
+1.0.43
+------
+
+
 1.0.42
 ------
 - batchstr() added
