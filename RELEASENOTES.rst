@@ -4,6 +4,7 @@ Release notes
 1.0.43
 ------
 
+- axis_off added to ViewImages
 
 1.0.42
 ------
