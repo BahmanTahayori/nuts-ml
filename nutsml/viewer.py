@@ -82,7 +82,7 @@ class ViewImage(NutFunction):  # pragma no coverage
     """
 
     def __init__(self, imgcols, layout=(1, None), figsize=None,
-                 pause=0.0001, **imargs):
+                 pause=0.0001, axis_off=False, **imargs):
         """
         iterable >> ViewImage(imgcols, layout=(1, None), figsize=None, **plotargs)
 
@@ -125,9 +125,11 @@ class ViewImage(NutFunction):  # pragma no coverage
         if n != r * c:
             raise ValueError("Number of images and layout don't match!")
 
+
         fig = plt.figure(figsize=figsize)
         fig.canvas.set_window_title('ViewImage')
         self.axes = [fig.add_subplot(r, c, i + 1) for i in range(n)]
+        self.axis_off = axis_off
         self.imgcols = imgcols
         self.pause = pause
         self.imargs = imargs
@@ -142,6 +144,8 @@ class ViewImage(NutFunction):  # pragma no coverage
         """
         for imgcol, ax in zip(self.imgcols, self.axes):
             ax.clear()
+            if self.axis_off:
+                ax.set_axis_off()
             img = data if imgcol is None else data[imgcol]
             img = np.squeeze(img)  # remove single-dim axis, e.g. MxNx1
             ax.imshow(img, **self.imargs)
