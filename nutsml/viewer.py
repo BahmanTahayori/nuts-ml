@@ -6,6 +6,8 @@
 from __future__ import print_function
 from __future__ import absolute_import
 
+import time
+
 import numpy as np
 import nutsml.imageutil as iu
 
@@ -82,7 +84,8 @@ class ViewImage(NutFunction):  # pragma no coverage
     """
 
     def __init__(self, imgcols, layout=(1, None), figsize=None,
-                 pause=0.0001, axis_off=False, **imargs):
+                 pause=0.0001, axis_off=False,
+                 every_sec=0, every_n=0, **imargs):
         """
         iterable >> ViewImage(imgcols, layout=(1, None), figsize=None, **plotargs)
 
@@ -114,6 +117,10 @@ class ViewImage(NutFunction):  # pragma no coverage
         :param tuple figsize: Figure size in inch.
         :param float pause: Waiting time in seconds after each plot.
                Pressing a key skips the waiting time.
+        :param bool axis_off: Enable or disable display of figure axes.
+        :param float every_sec: View every given second, e.g. to print
+                every 2.5 sec every_sec = 2.5
+        :param int every_n: View every n-th call.
         :param kwargs imargs: Keyword arguments passed on to matplotlib's
             imshow() function. See
             http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
@@ -132,7 +139,21 @@ class ViewImage(NutFunction):  # pragma no coverage
         self.axis_off = axis_off
         self.imgcols = imgcols
         self.pause = pause
+        self.cnt = 0
+        self.time = time.time()
+        self.every_sec = every_sec
+        self.every_n = every_n
         self.imargs = imargs
+
+    def __delta_sec(self):
+        """Return time in seconds (float) consumed between prints so far"""
+        return time.time() - self.time
+
+    def __should_view(self):
+        """Return true if data should be viewed"""
+        self.cnt += 1
+        return (self.cnt >= self.every_n and
+                self.__delta_sec() >= self.every_sec)
 
     def __call__(self, data):
         """
@@ -142,6 +163,12 @@ class ViewImage(NutFunction):  # pragma no coverage
         :return: unchanged input data
         :rtype: tuple
         """
+        if not self.__should_view():
+            return data
+
+        self.cnt = 0  # reset counter
+        self.time = time.time()  # reset timer
+
         for imgcol, ax in zip(self.imgcols, self.axes):
             ax.clear()
             if self.axis_off:

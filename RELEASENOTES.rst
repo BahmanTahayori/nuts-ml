@@ -4,7 +4,8 @@ Release notes
 1.0.43
 ------
 
-- axis_off added to ViewImages
+- axis_off added to ViewImage
+- every_sec, every_n added to ViewImage
 
 1.0.42
 ------
