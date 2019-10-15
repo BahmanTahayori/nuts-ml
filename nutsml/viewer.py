@@ -84,7 +84,7 @@ class ViewImage(NutFunction):  # pragma no coverage
     """
 
     def __init__(self, imgcols, layout=(1, None), figsize=None,
-                 pause=0.0001, axis_off=False,
+                 pause=0.0001, axis_off=False, labels_off=False,
                  every_sec=0, every_n=0, **imargs):
         """
         iterable >> ViewImage(imgcols, layout=(1, None), figsize=None, **plotargs)
@@ -118,6 +118,7 @@ class ViewImage(NutFunction):  # pragma no coverage
         :param float pause: Waiting time in seconds after each plot.
                Pressing a key skips the waiting time.
         :param bool axis_off: Enable or disable display of figure axes.
+        :param bool lables_off: Enable or disable display of axes labels.
         :param float every_sec: View every given second, e.g. to print
                 every 2.5 sec every_sec = 2.5
         :param int every_n: View every n-th call.
@@ -137,6 +138,7 @@ class ViewImage(NutFunction):  # pragma no coverage
         fig.canvas.set_window_title('ViewImage')
         self.axes = [fig.add_subplot(r, c, i + 1) for i in range(n)]
         self.axis_off = axis_off
+        self.labels_off = labels_off
         self.imgcols = imgcols
         self.pause = pause
         self.cnt = 0
@@ -173,6 +175,9 @@ class ViewImage(NutFunction):  # pragma no coverage
             ax.clear()
             if self.axis_off:
                 ax.set_axis_off()
+            if self.labels_off:
+                ax.get_xaxis().set_visible(False)
+                ax.get_yaxis().set_visible(False)
             img = data if imgcol is None else data[imgcol]
             img = np.squeeze(img)  # remove single-dim axis, e.g. MxNx1
             ax.imshow(img, **self.imargs)
