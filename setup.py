@@ -36,9 +36,11 @@ class PyTest(TestCommand):
         errcode = pytest.main(self.test_args)
         sys.exit(errcode)
 
+
 def load_readme():
     with open('README.rst', encoding='utf-8') as f:
         return f.read()
+
 
 setup(
     name='nutsml',
