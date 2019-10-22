@@ -36,6 +36,9 @@ class PyTest(TestCommand):
         errcode = pytest.main(self.test_args)
         sys.exit(errcode)
 
+def load_readme():
+    with open('README.rst', encoding='utf-8') as f:
+        return f.read()
 
 setup(
     name='nutsml',
@@ -46,6 +49,8 @@ setup(
     author='Stefan Maetschke',
     author_email='stefan.maetschke@gmail.com',
     description='Flow-based data pre-processing for Machine Learning',
+    long_description=load_readme(),
+    long_description_content_type='text/x-rst',
     install_requires=[
         'nutsflow >= 1.0.34',
         # 'pandas < 0.21.0',  # Python 3.4 support!
