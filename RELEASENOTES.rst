@@ -1,6 +1,10 @@
 Release notes
 =============
 
+1.0.44
+------
+
+
 1.0.43
 ------
 - axis_off and labels_off added to ViewImage
