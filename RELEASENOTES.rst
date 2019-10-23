@@ -5,6 +5,7 @@ Release notes
 ------
 - axis_off and labels_off added to ViewImage
 - every_sec, every_n added to ViewImage
+- long_description added to setup.py
 
 1.0.42
 ------
