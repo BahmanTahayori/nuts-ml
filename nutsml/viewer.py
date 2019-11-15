@@ -106,6 +106,7 @@ class ViewImage(NutFunction):  # pragma no coverage
         >>> samples = [(1, 'nut_color'), (2, 'nut_grayscale')]
         >>> read_image = ReadImage(1, imagepath)
         >>> samples >> read_image >> ViewImage(1) >> Consume() # doctest: +SKIP
+        >>> samples >> read_image >> ViewImage(1, cmap='gray') >> Consume() # doctest: +SKIP
 
         :param int|tuple|None imgcols: Index or tuple of indices of data columns
                containing images (ndarray). Use None if images are provided
@@ -123,7 +124,7 @@ class ViewImage(NutFunction):  # pragma no coverage
                 every 2.5 sec every_sec = 2.5
         :param int every_n: View every n-th call.
         :param kwargs imargs: Keyword arguments passed on to matplotlib's
-            imshow() function. See
+            imshow() function, e.g. cmap='gray'.  See
             http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
         """
         imgcols = (None,) if imgcols is None else as_tuple(imgcols)
