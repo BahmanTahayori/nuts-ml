@@ -55,7 +55,6 @@ setup(
     long_description_content_type='text/x-rst',
     install_requires=[
         'nutsflow >= 1.0.34',
-        # 'pandas < 0.21.0',  # Python 3.4 support!
         'pandas > 0.21.0',
         'six >= 1.10.0',
         'pyyaml >= 3.12',
@@ -64,7 +63,6 @@ setup(
         'scipy >= 0.17.0',
         'pillow >= 3.0.0',
         'scikit-image >= 0.12.3',
-        'pytest >= 3.0.3',
     ],
     tests_require=['pytest >= 3.0.3'],
     platforms='any',
