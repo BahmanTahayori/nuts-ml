@@ -67,7 +67,7 @@ class Config(dict):
         :return: returns loaded configuration.
         :rtype: Config
         """
-        yaml_load = lambda fp: yaml.load(fp, Loader=yaml.FullLoader)
+        yaml_load = lambda fp: yaml.load(fp, Loader=yaml.SafeLoader)
         reader = json.load if Config.isjson(filepath) else yaml_load
         with open(filepath, 'r') as f:
             self.__init__(reader(f))
