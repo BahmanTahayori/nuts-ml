@@ -283,7 +283,7 @@ def test_change_color(datadirs):
     img_arr = ni.load_image(imagedir + 'nut_color.bmp')
     new_img = ni.change_color(img_arr, 2.0)
     imagepath = processeddir + 'nut_color_color.bmp'
-    assert_equal_image(imagepath, new_img)
+    assert_equal_image(imagepath, new_img, rtol=0.3, atol=0)
 
 @pytest.mark.skip(reason="Canny behaves differently under py3k linux :(")
 def test_extract_edges(datadirs):
