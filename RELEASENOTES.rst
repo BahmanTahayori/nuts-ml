@@ -3,7 +3,7 @@ Release notes
 
 1.0.44
 ------
-
+- safe loading of yaml config files
 
 1.0.43
 ------
