@@ -66,7 +66,7 @@ def test_load_image(datadirs):
         img = ni.load_image(filepath)
         fdir, fname = op.split(filepath)
         arr = np.load(arraydir + fname + '.npy')
-        if not filepath.endswith('.tif'):
+        if not filepath.endswith('.tif'):  # TODO: fix TIF issue
             nt.assert_allclose(img, arr)
 
 
