@@ -72,6 +72,7 @@ setup(
         'test': PyTest,
         'clean': CleanCommand,
     },
+    keywords=['machine learning', 'deep learning', 'image processing'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 2.7',
