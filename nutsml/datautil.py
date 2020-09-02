@@ -28,6 +28,27 @@ def isnan(x):
     return x != x
 
 
+def istensor(x, attrs=['shape', 'dtype', 'min', 'max']):
+    """
+    Return true if x has shape, dtype, min and max.
+
+    Will be true for Numpy and PyTorch tensors.
+
+    >>> import numpy as np
+    >>> M = np.zeros((2,3))
+    >>> istensor(M)
+    True
+
+    >>> istensor([1,2,3])
+    False
+
+    :param object x: Any object
+    :param list[str] attrs: Object attributes that 'define' a tensor.
+    :return: True if x is some tensor object.
+    """
+    return all(hasattr(x, a) for a in attrs)
+
+
 def shapestr(array, with_dtype=False):
     """
     Return string representation of array shape.

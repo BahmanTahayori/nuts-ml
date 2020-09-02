@@ -26,6 +26,11 @@ def test_isnan():
     assert util.isnan(np.NaN)
 
 
+def test_istensor():
+    assert util.istensor(np.zeros((2, 3)))
+    assert not util.istensor([1, 2])
+
+
 def test_shapestr():
     assert util.shapestr(np.array([1, 2])) == '2'
     assert util.shapestr(np.zeros((3, 4))) == '3x4'

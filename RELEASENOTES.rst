@@ -4,6 +4,7 @@ Release notes
 1.0.44
 ------
 - safe loading of yaml config files
+- PrintColType now prints PyTorch tensors
 
 1.0.43
 ------

@@ -12,7 +12,7 @@ import numpy as np
 import nutsml.imageutil as iu
 
 from six.moves import range
-from .datautil import shapestr
+from .datautil import shapestr, istensor
 from nutsflow import NutFunction, nut_function
 from nutsflow.common import as_tuple, as_set
 from matplotlib import pyplot as plt
@@ -60,16 +60,16 @@ class PrintColType(NutFunction):
         :return: data unchanged
         :rtype: same as data
         """
+
         cols = None if self.cols is None else as_tuple(self.cols)
         self.cnt += 1
         print('item {}: <{}>'.format(self.cnt, type(data).__name__))
         for i, e in enumerate(as_tuple(data)):
             if cols is None or i in cols:
                 print('  {}: <{}>'.format(i, type(e).__name__), end=' ')
-                if isinstance(e, np.ndarray):
-                    text = 'shape:{} dtype:{} range:{}..{}'
-                    print(
-                        text.format(shapestr(e), e.dtype, np.min(e), np.max(e)))
+                if istensor(e):
+                    msg = 'shape:{} dtype:{} range:{}..{}'
+                    print(msg.format(shapestr(e), e.dtype, e.min(), e.max()))
                 else:
                     print('{}'.format(str(e)))
         return data
