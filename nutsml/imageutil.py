@@ -331,7 +331,7 @@ def occlude(image, x, y, w, h, color=0):
     return image2
 
 
-def normalize_histo(image, gamma=1.0):
+def normalize_histo(image, gamma=1.0): # pragma no coverage
     """
     Perform histogram normalization on image.
 
