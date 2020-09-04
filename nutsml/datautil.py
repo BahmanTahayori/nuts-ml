@@ -103,8 +103,9 @@ def stype(obj):
     """
     typestr = lambda obj: '<' + type(obj).__name__ + '> '
     mklist = lambda obj: ', '.join(stype(o) for o in obj)
+    mkset = lambda obj: ', '.join(stype(o) for o in sorted(obj))
     mkdict = lambda obj: ', '.join(
-        str(k) + ':' + stype(v) for k, v in obj.items())
+        str(k) + ':' + stype(v) for k, v in sorted(obj.items()))
     if istensor(obj, ['shape', 'dtype']):
         return typestr(obj) + shapestr(obj, True)
     if isinstance(obj, list):
@@ -112,7 +113,7 @@ def stype(obj):
     if isinstance(obj, tuple):
         return '(' + mklist(obj) + ')'
     if isinstance(obj, set):
-        return '{' + mklist(obj) + '}'
+        return '{' + mkset(obj) + '}'
     if isinstance(obj, dict):
         return '{' + mkdict(obj) + '}'
     return typestr(obj) + str(obj)
