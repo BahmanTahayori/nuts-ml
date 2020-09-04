@@ -73,6 +73,51 @@ def shapestr(array, with_dtype=False):
     return sstr
 
 
+def stype(obj):
+    """
+    Return string shape representation of structured objects.
+
+    >>> import numpy as np
+    >>> a = np.zeros((3,4), dtype='uint8')
+    >>> b = np.zeros((1,2), dtype='float32')
+
+    >>> stype(a)
+    '<ndarray> 3x4:uint8'
+
+    >>> stype(b)
+    '<ndarray> 1x2:float32'
+
+    >>> stype([a, (b, b)])
+    '[<ndarray> 3x4:uint8, (<ndarray> 1x2:float32, <ndarray> 1x2:float32)]'
+
+    >>> stype([1, 2.0, [a], [b]])
+    '[<int> 1, <float> 2.0, [<ndarray> 3x4:uint8], [<ndarray> 1x2:float32]]'
+
+    >>> stype({'a':a, 'b':b, 'c':True})
+    '{a:<ndarray> 3x4:uint8, b:<ndarray> 1x2:float32, c:<bool> True}'
+
+    :param object obj: Any object
+    :return: String representation of object where arrays are replace by their
+             shape and dtype descriptions
+    :rtype: str
+    """
+    typestr = lambda obj: '<' + type(obj).__name__ + '> '
+    mklist = lambda obj: ', '.join(stype(o) for o in obj)
+    mkdict = lambda obj: ', '.join(
+        str(k) + ':' + stype(v) for k, v in obj.items())
+    if istensor(obj, ['shape', 'dtype']):
+        return typestr(obj) + shapestr(obj, True)
+    if isinstance(obj, list):
+        return '[' + mklist(obj) + ']'
+    if isinstance(obj, tuple):
+        return '(' + mklist(obj) + ')'
+    if isinstance(obj, set):
+        return '{' + mklist(obj) + '}'
+    if isinstance(obj, dict):
+        return '{' + mkdict(obj) + '}'
+    return typestr(obj) + str(obj)
+
+
 def batchstr(batch, with_dtype=True):
     """
     Return string representation of a batch/list of arrays.

@@ -12,7 +12,7 @@ import numpy as np
 import nutsml.imageutil as iu
 
 from six.moves import range
-from .datautil import shapestr, istensor
+from .datautil import shapestr, istensor, stype
 from nutsflow import NutFunction, nut_function
 from nutsflow.common import as_tuple, as_set
 from matplotlib import pyplot as plt
@@ -75,6 +75,39 @@ class PrintColType(NutFunction):
         return data
 
 
+class PrintType(NutFunction):
+    def __init__(self):
+        """
+        iterable >> PrintType()
+
+        Print type and shape information for structured data.
+
+        >>> import numpy as np
+        >>> from nutsflow import Consume
+
+        >>> a = np.zeros((3, 4), dtype='uint8')
+        >>> b = np.zeros((1, 2), dtype='float32')
+        >>> data = [(a, b), 1.1, [[a], 2]]
+        >>> data >> PrintType() >> Consume()
+        (<ndarray> 3x4:uint8, <ndarray> 1x2:float32)
+        <float> 1.1
+        [[<ndarray> 3x4:uint8], <int> 2]
+
+        """
+        pass
+
+    def __call__(self, data):
+        """
+        Print data info.
+
+        :param object data: Any object.
+        :return: data unchanged
+        :rtype: same as object
+        """
+        print(stype(data))
+        return data
+
+
 # TODO: Fix deprecation warning
 # MatplotlibDeprecationWarning: Using default event loop until function specific
 # to this GUI is implemented
@@ -84,10 +117,11 @@ class ViewImage(NutFunction):  # pragma no coverage
     """
 
     def __init__(self, imgcols, layout=(1, None), figsize=None,
-                 pause=0.0001, axis_off=False, labels_off=False,
+                 pause=0.0001, axis_off=False, labels_off=False, titles=None,
                  every_sec=0, every_n=0, **imargs):
         """
-        iterable >> ViewImage(imgcols, layout=(1, None), figsize=None, **plotargs)
+        iterable >> ViewImage(imgcols, layout=(1, None), figsize=None,
+        **plotargs)
 
         |  Images should be numpy arrays in one of the following formats:
         |  MxN - luminance (grayscale, float array only)
@@ -102,11 +136,14 @@ class ViewImage(NutFunction):  # pragma no coverage
 
         >>> from nutsflow import Consume
         >>> from nutsml import ReadImage
+
         >>> imagepath = 'tests/data/img_formats/*.jpg'
         >>> samples = [(1, 'nut_color'), (2, 'nut_grayscale')]
         >>> read_image = ReadImage(1, imagepath)
         >>> samples >> read_image >> ViewImage(1) >> Consume() # doctest: +SKIP
-        >>> samples >> read_image >> ViewImage(1, cmap='gray') >> Consume() # doctest: +SKIP
+
+        >>> view_gray = ViewImage(1, cmap='gray')
+        >>> samples >> read_image >> view_gray >> Consume() # doctest: +SKIP
 
         :param int|tuple|None imgcols: Index or tuple of indices of data columns
                containing images (ndarray). Use None if images are provided
@@ -134,12 +171,12 @@ class ViewImage(NutFunction):  # pragma no coverage
         if n != r * c:
             raise ValueError("Number of images and layout don't match!")
 
-
         fig = plt.figure(figsize=figsize)
         fig.canvas.set_window_title('ViewImage')
         self.axes = [fig.add_subplot(r, c, i + 1) for i in range(n)]
         self.axis_off = axis_off
         self.labels_off = labels_off
+        self.titles = titles
         self.imgcols = imgcols
         self.pause = pause
         self.cnt = 0
@@ -172,13 +209,15 @@ class ViewImage(NutFunction):  # pragma no coverage
         self.cnt = 0  # reset counter
         self.time = time.time()  # reset timer
 
-        for imgcol, ax in zip(self.imgcols, self.axes):
+        for i, (imgcol, ax) in enumerate(zip(self.imgcols, self.axes)):
             ax.clear()
             if self.axis_off:
                 ax.set_axis_off()
             if self.labels_off:
                 ax.get_xaxis().set_visible(False)
                 ax.get_yaxis().set_visible(False)
+            if self.titles:
+                ax.set_title(self.titles[i])
             img = data if imgcol is None else data[imgcol]
             img = np.squeeze(img)  # remove single-dim axis, e.g. MxNx1
             ax.imshow(img, **self.imargs)
@@ -219,7 +258,8 @@ class ViewImageAnnotation(NutFunction):  # pragma no coverage
                Pressing a key skips the waiting time.
         :param string interpolation: Interpolation for imshow, e.g.
                 'nearest', 'bilinear', 'bicubic'. for details see
-                http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.imshow
+                http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot
+                .imshow
         :param kwargs annoargs: Keyword arguments for visual properties of
                annotation, e.g.  edgecolor='y', linewidth=1
         """

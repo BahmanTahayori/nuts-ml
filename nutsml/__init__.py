@@ -15,5 +15,6 @@ from nutsml.transformer import (TransformImage, AugmentImage, ImageMean,
                                 ImagePatchesByAnnotation,
                                 ImageAnnotationToMask)
 from nutsml.common import CheckNaN, SplitRandom, PartitionByCol, ConvertLabel
-from nutsml.viewer import (ViewImage, ViewImageAnnotation, PrintColType)
+from nutsml.viewer import (ViewImage, ViewImageAnnotation, PrintColType,
+                           PrintType)
 from nutsml.writer import WriteImage

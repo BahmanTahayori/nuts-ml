@@ -5,6 +5,8 @@ Release notes
 ------
 - safe loading of yaml config files
 - PrintColType now prints PyTorch tensors
+- titles added to ViewImage
+-
 
 1.0.43
 ------

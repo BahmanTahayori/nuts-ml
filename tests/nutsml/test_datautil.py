@@ -37,6 +37,24 @@ def test_shapestr():
     assert util.shapestr(np.zeros((3, 4), dtype='uint8'), True) == '3x4:uint8'
 
 
+def test_stype():
+    a = np.zeros((3, 4), dtype='uint8')
+    b = np.zeros((1, 2), dtype='float32')
+    assert util.stype(1.1) == '<float> 1.1'
+    assert util.stype([1, 2]) == '[<int> 1, <int> 2]'
+    assert util.stype((1, 2)) == '(<int> 1, <int> 2)'
+    assert util.stype({1, 2}) == '{<int> 1, <int> 2}'
+    assert util.stype([1, (2, 3.1)]) == '[<int> 1, (<int> 2, <float> 3.1)]'
+    assert util.stype(a) == '<ndarray> 3x4:uint8'
+    assert util.stype(b) == '<ndarray> 1x2:float32'
+    expect = '[<ndarray> 3x4:uint8, [<ndarray> 1x2:float32]]'
+    assert util.stype([a, [b]]) == expect
+    expect = '[[<ndarray> 3x4:uint8], [<ndarray> 1x2:float32]]'
+    assert util.stype([[a], [b]]) == expect
+    expect = '{a:<ndarray> 3x4:uint8, b:<ndarray> 1x2:float32}'
+    assert util.stype({'a': a, 'b': b}) == expect
+
+
 def test_batchstr():
     a = np.zeros((3, 4), dtype='uint8')
     b = np.zeros((1, 2, 2), dtype='float16')
