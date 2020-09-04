@@ -63,7 +63,7 @@ def test_PrintColType():
 def test_PrintType():
     a = np.zeros((3, 4), dtype='uint8')
     b = np.zeros((1, 2), dtype='float32')
-    with Redirect() as out1:
+    with Redirect() as out:
         data = [(a, b), 1.1, [[a], 2]]
         data >> PrintType() >> Consume()
-    assert out1.getvalue() == expected_type_info[1:]
+    assert out.getvalue() == expected_type_info[1:]
