@@ -218,5 +218,11 @@
   "tests/nutsml/test_transformer.py::test_ImageMean",
   "tests/nutsml/test_transformer.py::test_ImageChannelMean",
   "tests/nutsml/test_viewer.py::test_PrintColType",
-  "tests/nutsml/test_writer.py::test_ImageWriter"
+  "tests/nutsml/test_writer.py::test_ImageWriter",
+  "nutsml/datautil.py::nutsml.datautil.istensor",
+  "nutsml/datautil.py::nutsml.datautil.stype",
+  "nutsml/viewer.py::nutsml.viewer.PrintType.__init__",
+  "tests/nutsml/test_datautil.py::test_istensor",
+  "tests/nutsml/test_datautil.py::test_stype",
+  "tests/nutsml/test_viewer.py::test_PrintType"
 ]
