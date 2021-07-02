@@ -11,6 +11,7 @@
 
 
 by maet 
+2019
 
 **nuts-ml** is a data pre-processing library for GPU based deep learning
 that provides common pre-processing functions as independent, reusable units. 
@@ -50,5 +51,7 @@ which is described `here <https://maet3608.github.io/nuts-flow/>`_.
 
 
 
+
+by SM
 
 
