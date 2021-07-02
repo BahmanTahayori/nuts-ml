@@ -9,6 +9,9 @@
 - `Examples <https://github.com/maet3608/nuts-ml/tree/master/nutsml/examples>`_
 - `Github <https://github.com/maet3608/nuts-ml>`_
 
+
+by maet 
+
 **nuts-ml** is a data pre-processing library for GPU based deep learning
 that provides common pre-processing functions as independent, reusable units. 
 These so called 'nuts' can be freely arranged to build data flows that 
